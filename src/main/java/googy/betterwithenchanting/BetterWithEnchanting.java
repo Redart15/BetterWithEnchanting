@@ -9,7 +9,6 @@ import net.minecraft.client.render.block.color.BlockColorDispatcher;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
 import net.minecraft.client.render.block.model.BlockModelStandard;
 import net.minecraft.client.render.item.model.ItemModelDispatcher;
-import net.minecraft.client.render.texture.stitcher.TextureRegistry;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.block.Blocks;
@@ -23,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.helper.BlockBuilder;
 import turniplabs.halplibe.helper.EntityHelper;
+import turniplabs.halplibe.helper.ModelHelper;
 import turniplabs.halplibe.helper.RecipeBuilder;
 import turniplabs.halplibe.util.ConfigHandler;
 import turniplabs.halplibe.util.GameStartEntrypoint;
@@ -30,6 +30,8 @@ import turniplabs.halplibe.util.ModelEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 
 import java.util.Properties;
+
+import googy.betterwithenchanting.block.EnchantmentTableRenderer;
 
 
 public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, RecipeEntrypoint, GameStartEntrypoint {
@@ -67,7 +69,7 @@ public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, Re
 	public void onRecipesReady() {
 		RecipeBuilder.Shaped(MOD_ID, " B ", "DCD", "CCC")
 			.addInput('B', Items.BOOK)
-			.addInput('C', "minecraft:cobblestones")
+			.addInput('C', Blocks.OBSIDIAN)
 			.addInput('D', config.getBoolean("expensive_crafting") ? Blocks.BLOCK_DIAMOND : Items.DIAMOND)
 			.create("enchantingtable", new ItemStack(ENCHANTMENT_TABLE));
 	}
@@ -79,7 +81,6 @@ public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, Re
 			.setTex(BlockModelStandard.BLOCK_TEXTURES, MOD_ID + ":block/enchantment_table/bottom", Side.BOTTOM)
 			.setTex(BlockModelStandard.BLOCK_TEXTURES, MOD_ID + ":block/enchantment_table/side", Side.WEST, Side.NORTH, Side.SOUTH, Side.EAST)
 		);
-		TextureRegistry.getTexture(MOD_ID + ":block/enchantment_table/top");
 	}
 
 	@Override
@@ -87,11 +88,14 @@ public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, Re
 		EntityHelper.createTileEntity(TileEntityEnchantmentTable.class, NamespaceID.getPermanent(MOD_ID, "enchantment_table"));
 	}
 
+	@Override public void initTileEntityModels(TileEntityRenderDispatcher dispatcher) {
+		ModelHelper.setTileEntityModel(TileEntityEnchantmentTable.class, EnchantmentTableRenderer::new);
+	}
+
 	public BetterWithEnchanting() {/*	PacketMixin.callAddIdClassMapping(Global.config.getInt("packet_enchant_id"), false, true, PacketEnchantItem.class); */}
 	@Override public void initNamespaces() {/* no need */}
 	@Override public void initItemModels(ItemModelDispatcher dispatcher) {/* no need */}
 	@Override public void initEntityModels(EntityRenderDispatcher dispatcher) {/* no need */}
-	@Override public void initTileEntityModels(TileEntityRenderDispatcher dispatcher) {/* no need */}
 	@Override public void initBlockColors(BlockColorDispatcher dispatcher) {/* no need */}
 	@Override public void afterGameStart() {/* no need */}
 }
