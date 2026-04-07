@@ -1,6 +1,5 @@
 package googy.betterwithenchanting.block;
 
-import googy.betterwithenchanting.block.entity.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.interfaces.mixins.IEntityPlayer;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogicRotatable;

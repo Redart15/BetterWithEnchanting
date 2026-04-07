@@ -1,6 +1,6 @@
 package googy.betterwithenchanting.interfaces.mixins;
 
-import googy.betterwithenchanting.block.entity.TileEntityEnchantmentTable;
+import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 
 public interface IEntityPlayer
 {

@@ -1,7 +1,7 @@
 package googy.betterwithenchanting.mixin;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
-import googy.betterwithenchanting.block.entity.TileEntityEnchantmentTable;
+import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.interfaces.mixins.IEntityPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.net.handler.PacketHandlerClient;

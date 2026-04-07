@@ -1,7 +1,7 @@
 package googy.betterwithenchanting;
 
 import googy.betterwithenchanting.block.BlockEnchantmentTable;
-import googy.betterwithenchanting.block.entity.TileEntityEnchantmentTable;
+import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.render.EntityRenderDispatcher;
 import net.minecraft.client.render.TileEntityRenderDispatcher;

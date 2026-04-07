@@ -1,6 +1,6 @@
 package googy.betterwithenchanting.mixin;
 
-import googy.betterwithenchanting.block.entity.TileEntityEnchantmentTable;
+import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.gui.GuiEnchantmentTable;
 import googy.betterwithenchanting.interfaces.mixins.IEntityPlayer;
 import net.minecraft.client.Minecraft;

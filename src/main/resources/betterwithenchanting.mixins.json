@@ -14,7 +14,6 @@
     "NetClientHandlerMixin",
     "ItemStackMixin",
     "EntityLivingMixin",
-    "EntityBobberMixin",
     "ItemToolMixin",
     "WorldMixin",
     "PacketMixin"

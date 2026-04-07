@@ -1,7 +1,7 @@
 package googy.betterwithenchanting.gui;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
-import googy.betterwithenchanting.block.entity.TileEntityEnchantmentTable;
+import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.network.packet.PacketEnchantItem;
 import googy.betterwithenchanting.inventory.ContainerEnchantmentTable;
 import net.minecraft.client.entity.player.PlayerLocalMultiplayer;

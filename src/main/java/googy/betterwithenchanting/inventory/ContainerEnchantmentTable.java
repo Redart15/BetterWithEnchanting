@@ -1,6 +1,6 @@
 package googy.betterwithenchanting.inventory;
 
-import googy.betterwithenchanting.block.entity.TileEntityEnchantmentTable;
+import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.enchantment.Enchantment;
 import googy.betterwithenchanting.enchantment.EnchantmentData;
 import googy.betterwithenchanting.enchantment.Enchantments;

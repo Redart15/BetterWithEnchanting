@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.mixin;
+package googy.betterwithenchanting.compat.stardew.mixin;
 
 import googy.betterwithenchanting.enchantment.Enchantments;
 import googy.betterwithenchanting.utils.EnchantmentUtils;
@@ -12,17 +12,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(value = EntityFishingBobber.class, remap = false)
-public abstract class EntityBobberMixin extends Entity
-{
-	public EntityBobberMixin(World world)
-	{
+public abstract class EntityBobberMixin extends Entity {
+	public EntityBobberMixin(World world) {
 		super(world);
 	}
 
-
 	@ModifyVariable(method = "tick", at = @At("STORE"), ordinal = 1)
-	int getCatchRate(int catchRate)
-	{
+	int getCatchRate(int catchRate) {
 		if (catchRate != 500) return catchRate;
 
 		EntityFishingBobber thisBobber = (EntityFishingBobber) (Object) this;
@@ -32,8 +28,8 @@ public abstract class EntityBobberMixin extends Entity
 
 		int rate = catchRate - (baitLevel * 100);
 
-		boolean rainBonus = thisBobber.world.canBlockBeRainedOn((int)Math.floor(thisBobber.x), (int)Math.floor(thisBobber.y) + 1, (int)Math.floor(thisBobber.z));
-		boolean algaeRate = thisBobber.world.getBlockId((int)Math.floor(thisBobber.x), (int)Math.floor(thisBobber.y) + 1, (int)Math.floor(thisBobber.z)) == Blocks.ALGAE.id();
+		boolean rainBonus = thisBobber.world.canBlockBeRainedOn((int) Math.floor(thisBobber.x), (int) Math.floor(thisBobber.y) + 1, (int) Math.floor(thisBobber.z));
+		boolean algaeRate = thisBobber.world.getBlockId((int) Math.floor(thisBobber.x), (int) Math.floor(thisBobber.y) + 1, (int) Math.floor(thisBobber.z)) == Blocks.ALGAE.id();
 
 		int limit = 50; // smallest possible catchRate value
 		if (rainBonus) limit += 200;

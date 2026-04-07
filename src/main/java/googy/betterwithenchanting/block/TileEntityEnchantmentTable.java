@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.block.entity;
+package googy.betterwithenchanting.block;
 
 import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
