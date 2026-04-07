@@ -6,84 +6,71 @@ import googy.betterwithenchanting.enchantment.EnchantmentData;
 import googy.betterwithenchanting.enchantment.Enchantments;
 import googy.betterwithenchanting.utils.EnchantmentUtils;
 import net.minecraft.core.InventoryAction;
-import net.minecraft.core.block.Block;
-import net.minecraft.core.crafting.ICrafting;
-import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.block.Blocks;
+import net.minecraft.core.crafting.ContainerListener;
+import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.player.gamemode.Gamemode;
-import net.minecraft.core.player.inventory.Container;
-import net.minecraft.core.player.inventory.IInventory;
-import net.minecraft.core.player.inventory.InventoryPlayer;
+import net.minecraft.core.player.inventory.container.Container;
+import net.minecraft.core.player.inventory.container.ContainerInventory;
+import net.minecraft.core.player.inventory.menu.MenuAbstract;
 import net.minecraft.core.player.inventory.slot.Slot;
 import net.minecraft.core.world.World;
 
 import java.util.List;
 import java.util.Random;
 
-public class ContainerEnchantmentTable extends Container
-{
+public class ContainerEnchantmentTable extends MenuAbstract {
 	public TileEntityEnchantmentTable enchantmentTable;
 	public int[] enchantCost = new int[3];
 
 	private final Random random = new Random();
 
-	public ContainerEnchantmentTable(InventoryPlayer inventoryplayer, TileEntityEnchantmentTable enchantmentTable)
-	{
+	public ContainerEnchantmentTable(ContainerInventory inventoryplayer, TileEntityEnchantmentTable enchantmentTable) {
 		this.enchantmentTable = enchantmentTable;
-
 		addSlot(new Slot(enchantmentTable, 0, 15, 47));
 		addSlot(new EnchantFuelSlot(enchantmentTable, 1, 35, 47));
-
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {
 				this.addSlot(new Slot(inventoryplayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
 			}
 		}
-
 		for (int i = 0; i < 9; ++i) {
 			this.addSlot(new Slot(inventoryplayer, i, 8 + i * 18, 142));
 		}
-
 		updateEnchantmentsCosts();
 	}
 
 
-	public boolean enchantItem(EntityPlayer player, int enchantOption)
-	{
+	public boolean enchantItem(Player player, int enchantOption) {
 		if (!playerCanEnchant(player, enchantOption)) return false;
-
 		int cost = enchantCost[enchantOption];
-		if (player.gamemode != Gamemode.creative)
-		{
+		if (player.gamemode != Gamemode.creative) {
 			player.score -= cost;
-			if (getSlot(1).hasStack())
-				getSlot(1).getStack().stackSize -= enchantOption + 1;
+			if (this.getSlot(1).hasItem()) {
+				this.getSlot(1).getItemStack().stackSize -= enchantOption + 1;
+			}
 		}
-
-		ItemStack stack = getSlot(0).getStack();
+		ItemStack stack = getSlot(0).getItemStack();
 		List<EnchantmentData> enchantments = EnchantmentUtils.generateEnchantmentsList(random, stack, cost);
 		if (enchantments == null) return false;
-
 		EnchantmentUtils.addEnchantments(stack, enchantments);
 		forceUpdateInventory();
-
 		return true;
 	}
 
 
 	@Override
-	public void onCraftMatrixChanged(IInventory iinventory)
-	{
-		updateEnchantmentsCosts();
-		super.onCraftMatrixChanged(iinventory);
+	public void slotsChanged(Container iinventory) {
+		this.updateEnchantmentsCosts();
+		super.slotsChanged(iinventory);
 	}
 
-	void updateEnchantmentsCosts()
-	{
+	void updateEnchantmentsCosts() {
 		World world = enchantmentTable.worldObj;
 		if (world == null) return;
 
-		ItemStack stack = getSlot(0).getStack();
+		ItemStack stack = getSlot(0).getItemStack();
 
 		if (stack == null) return;
 
@@ -102,13 +89,14 @@ public class ContainerEnchantmentTable extends Container
 
 				if (x == 0 && z == 0) continue;
 
-				if (!world.isAirBlock(posX + x, posY, posZ + z) || !world.isAirBlock(posX + x, posY + 1, posZ + z)) continue; // something obstructing the bookshelf
+				if (!world.isAirBlock(posX + x, posY, posZ + z) || !world.isAirBlock(posX + x, posY + 1, posZ + z))
+					continue; // something obstructing the bookshelf
 
 				int cornerBottom = world.getBlockId(posX + x * 2, posY, posZ + z * 2);
 				int cornerTop = world.getBlockId(posX + x * 2, posY + 1, posZ + z * 2);
 
-				if (cornerBottom == Block.bookshelfPlanksOak.id) bookshelfs++;
-				if (cornerTop == Block.bookshelfPlanksOak.id) bookshelfs++;
+				if (cornerBottom == Blocks.BOOKSHELF_PLANKS_OAK.id()) bookshelfs++;
+				if (cornerTop == Blocks.BOOKSHELF_PLANKS_OAK.id()) bookshelfs++;
 
 				if (x == 0 || z == 0) continue;
 
@@ -117,90 +105,78 @@ public class ContainerEnchantmentTable extends Container
 				int sideZBottom = world.getBlockId(posX + x, posY, posZ + z * 2);
 				int sideZTop = world.getBlockId(posX + x, posY + 1, posZ + z * 2);
 
-				if (sideZBottom == Block.bookshelfPlanksOak.id) bookshelfs++;
-				if (sideZTop == Block.bookshelfPlanksOak.id) bookshelfs++;
-				if (sideXBottom == Block.bookshelfPlanksOak.id) bookshelfs++;
-				if (sideXTop == Block.bookshelfPlanksOak.id) bookshelfs++;
+				if (sideZBottom == Blocks.BOOKSHELF_PLANKS_OAK.id()) bookshelfs++;
+				if (sideZTop == Blocks.BOOKSHELF_PLANKS_OAK.id()) bookshelfs++;
+				if (sideXBottom == Blocks.BOOKSHELF_PLANKS_OAK.id()) bookshelfs++;
+				if (sideXTop == Blocks.BOOKSHELF_PLANKS_OAK.id()) bookshelfs++;
 			}
 		}
 
 		if (bookshelfs > 15)
 			bookshelfs = 15;
 
-		for (int i = 0; i < 3; i++)
-		{
+		for (int i = 0; i < 3; i++) {
 			enchantCost[i] = EnchantmentUtils.calcEnchantmentCost(i, bookshelfs);
 		}
 	}
 
 	@Override
-	public void updateInventory()
-	{
-		super.updateInventory();
-
-		for (ICrafting crafting : crafters)
-		{
-			for (int i = 0; i < enchantCost.length; i++)
-			{
+	public void broadcastChanges() {
+		super.broadcastChanges();
+		for (ContainerListener crafting : this.containerListeners) {
+			for (int i = 0; i < enchantCost.length; i++) {
 				crafting.updateCraftingInventoryInfo(this, i, enchantCost[i]);
 			}
 		}
 	}
 
-	public void forceUpdateInventory()
-	{
-		for (int i = 0; i < this.inventorySlots.size(); i++)
-		{
-			ItemStack stack = inventorySlots.get(i).getStack();
+	public void forceUpdateInventory() {
+		for (int i = 0; i < this.lastSlots.size(); i++) {
+			ItemStack stack = slots.get(i).getItemStack();
 
 			ItemStack stackCopy = stack != null ? stack.copy() : null;
-			inventoryItemStacks.set(i, stackCopy);
+			lastSlots.set(i, stackCopy);
 
-			for (ICrafting crafter : this.crafters)
-			{
+			for (ContainerListener crafter : this.containerListeners) {
 				crafter.updateInventorySlot(this, i, stackCopy);
 			}
 		}
-
-		updateInventory();
+		this.broadcastChanges();
 	}
 
 	@Override
-	public void updateClientProgressBar(int id, int value)
-	{
+	public void setData(int id, int value) {
 		if (id >= 0 && id < enchantCost.length)
 			enchantCost[id] = value;
 	}
 
-	public boolean playerCanEnchant(EntityPlayer player, int option)
-	{
-		return getSlot(0).hasStack() &&
-			EnchantmentUtils.getEnchantments(getSlot(0).getStack()).isEmpty() &&
+	public boolean playerCanEnchant(Player player, int option) {
+		return getSlot(0).hasItem() &&
+			EnchantmentUtils.getEnchantments(getSlot(0).getItemStack()).isEmpty() &&
 			(player.score >= enchantCost[option] || player.gamemode == Gamemode.creative) &&
 			(getFuelAmount() > option || player.gamemode == Gamemode.creative);
 	}
 
-	public int getFuelAmount()
-	{
-		if (!getSlot(1).hasStack()) return 0;
-		return getSlot(1).getStack().stackSize;
+	public int getFuelAmount() {
+		if (!getSlot(1).hasItem()) {
+			return 0;
+		}
+		return getSlot(1).getItemStack().stackSize;
 	}
 
 	@Override
-	public List<Integer> getMoveSlots(InventoryAction action, Slot slot, int target, EntityPlayer entityPlayer)
-	{
+	public boolean stillValid(Player player) {
+		return enchantmentTable.stillValid(player);
+	}
+
+	/// TODO: Impelement the functions
+	@Override
+	public List<Integer> getMoveSlots(InventoryAction action, Slot slot, int target, Player entityPlayer) {
 		return null;
 	}
 
 	@Override
-	public List<Integer> getTargetSlots(InventoryAction action, Slot slot, int target, EntityPlayer entityPlayer)
-	{
+	public List<Integer> getTargetSlots(InventoryAction action, Slot slot, int target, Player entityPlayer) {
 		return null;
-	}
-
-	@Override
-	public boolean isUsableByPlayer(EntityPlayer player)
-	{
-		return enchantmentTable.canInteractWith(player);
 	}
 }

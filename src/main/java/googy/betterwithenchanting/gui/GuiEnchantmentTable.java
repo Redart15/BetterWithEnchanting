@@ -1,17 +1,15 @@
 package googy.betterwithenchanting.gui;
 
+import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.block.entity.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.network.packet.PacketEnchantItem;
 import googy.betterwithenchanting.inventory.ContainerEnchantmentTable;
-import googy.betterwithenchanting.utils.GuiUtils;
-import net.minecraft.client.entity.player.EntityClientPlayerMP;
-import net.minecraft.client.gui.GuiContainer;
-import net.minecraft.core.net.command.TextFormatting;
-import net.minecraft.core.player.inventory.InventoryPlayer;
+import net.minecraft.client.entity.player.PlayerLocalMultiplayer;
+import net.minecraft.client.gui.container.ScreenContainerAbstract;
+import net.minecraft.core.player.inventory.container.ContainerInventory;
 import org.lwjgl.opengl.GL11;
 
-public class GuiEnchantmentTable extends GuiContainer
-{
+public class GuiEnchantmentTable extends ScreenContainerAbstract {
 	TileEntityEnchantmentTable enchantmentTable;
 	ContainerEnchantmentTable enchantmentTableContainer;
 
@@ -25,32 +23,27 @@ public class GuiEnchantmentTable extends GuiContainer
 	private final int ACTIVE_LEVEL_OFFSET = 223;
 	private final int DEACTIVATED_LEVEL_OFFSET = 239;
 
-	public GuiEnchantmentTable(InventoryPlayer inventory, TileEntityEnchantmentTable tileEntity)
-	{
+	public GuiEnchantmentTable(ContainerInventory inventory, TileEntityEnchantmentTable tileEntity) {
 		super(new ContainerEnchantmentTable(inventory, tileEntity));
 		enchantmentTable = tileEntity;
-		enchantmentTableContainer = (ContainerEnchantmentTable)inventorySlots;
+		enchantmentTableContainer = (ContainerEnchantmentTable) inventorySlots;
 	}
 
 	@Override
-	public void drawScreen(int x, int y, float renderPartialTicks)
-	{
+	public void render(int x, int y, float renderPartialTicks) {
 		mouseX = x;
 		mouseY = y;
-
-		super.drawScreen(x, y, renderPartialTicks);
+		super.render(x, y, renderPartialTicks);
 	}
 
 	@Override
-	public void mouseClicked(int x, int y, int mouseButton)
-	{
+	public void mouseClicked(int x, int y, int mouseButton) {
 		super.mouseClicked(x, y, mouseButton);
 
 		int guiX = (width - xSize) / 2;
 		int guiY = (height - ySize) / 2;
 
-		for (int i = 0; i < 3; i++)
-		{
+		for (int i = 0; i < 3; i++) {
 			int buttonWidth = 108;
 			int buttonHeight = 19;
 			int buttonX = guiX + 60;
@@ -60,10 +53,9 @@ public class GuiEnchantmentTable extends GuiContainer
 			if (!isMouseOver) continue;
 
 			boolean canEnchant = enchantmentTableContainer.playerCanEnchant(mc.thePlayer, i);
-			if (canEnchant)
-			{
-				if (mc.thePlayer instanceof EntityClientPlayerMP)
-					mc.getSendQueue().addToSendQueue(new PacketEnchantItem(enchantmentTableContainer.windowId, i));
+			if (canEnchant) {
+				if (mc.thePlayer instanceof PlayerLocalMultiplayer)
+					mc.getSendQueue().addToSendQueue(new PacketEnchantItem(enchantmentTableContainer.containerId, i));
 				else
 					enchantmentTableContainer.enchantItem(mc.thePlayer, i);
 			}
@@ -71,12 +63,10 @@ public class GuiEnchantmentTable extends GuiContainer
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float delta)
-	{
+	protected void drawGuiContainerBackgroundLayer(float delta) {
 		GL11.glColor4f(1, 1, 1, 1);
 
-		int guiTexture = GuiUtils.getGuiTexture("enchantment_table.png");
-		mc.renderEngine.bindTexture(guiTexture);
+		this.mc.textureManager.loadTexture("/assets/" + BetterWithEnchanting.MOD_ID + "/gui/" + "enchantment_table.png").bind();
 
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
@@ -90,8 +80,7 @@ public class GuiEnchantmentTable extends GuiContainer
 		int levelSize = 16;
 
 		// draw enchant buttons
-		for (int i = 0; i < 3; i++)
-		{
+		for (int i = 0; i < 3; i++) {
 			int buttonX = x + 60;
 			int buttonY = y + 14 + buttonHeight * i;
 
@@ -111,15 +100,14 @@ public class GuiEnchantmentTable extends GuiContainer
 		}
 
 		// draw enchant cost
-		for (int i = 0; i < 3; i++)
-		{
-			if (!enchantmentTableContainer.getSlot(0).hasStack()) continue;
+		for (int i = 0; i < 3; i++) {
+			if (!enchantmentTableContainer.getSlot(0).hasItem()) continue;
 			int color = enchantmentTableContainer.playerCanEnchant(mc.thePlayer, i) ? 16777088 : 6839882;
 
 			String costText = String.valueOf(enchantmentTableContainer.enchantCost[i]);
-			int costWidth = mc.fontRenderer.getStringWidth(costText);
+			int costWidth = mc.font.getStringWidth(costText);
 
-			mc.fontRenderer.drawStringWithShadow(costText, x + 166 - costWidth, y + 23 + buttonHeight * i, color);
+			mc.font.drawStringWithShadow(costText, x + 166 - costWidth, y + 23 + buttonHeight * i, color);
 		}
 
 		// draw player's score
@@ -129,12 +117,12 @@ public class GuiEnchantmentTable extends GuiContainer
 
 			String scoreText = "Score:";
 			String scoreNumberText = String.valueOf(mc.thePlayer.score);
-			int scoreWidth = mc.fontRenderer.getStringWidth(scoreText);
-			int scoreNumberWidth = mc.fontRenderer.getStringWidth(scoreNumberText);
-			int fontHeight = mc.fontRenderer.fontHeight;
+			int scoreWidth = mc.font.getStringWidth(scoreText);
+			int scoreNumberWidth = mc.font.getStringWidth(scoreNumberText);
+			int fontHeight = mc.font.fontHeight;
 
-			mc.fontRenderer.drawStringWithShadow(scoreText, xPos - scoreWidth/2, yPos, 0xFFFFFF);
-			mc.fontRenderer.drawStringWithShadow(scoreNumberText, xPos - scoreNumberWidth/2, yPos + fontHeight + 1, 16777088);
+			mc.font.drawStringWithShadow(scoreText, xPos - scoreWidth / 2, yPos, 0xFFFFFF);
+			mc.font.drawStringWithShadow(scoreNumberText, xPos - scoreNumberWidth / 2, yPos + fontHeight + 1, 16777088);
 		}
 
 		GL11.glColor4f(1, 1, 1, 1);

@@ -1,26 +1,29 @@
 {
-    "required": true,
-    "minVersion": "0.8",
-    "package": "googy.betterwithenchanting.mixin",
-    "compatibilityLevel": "JAVA_8",
-    "mixins": [
-      "EntityPlayerMixin",
-      "EntityPlayerMPMixin",
-      "EntityPlayerSPMixin",
-      "NetServerHandlerMixin",
-      "NetClientHandlerMixin",
-      "ItemStackMixin",
-      "EntityLivingMixin",
-      "EntityBobberMixin",
-      "ItemToolMixin",
-      "WorldMixin",
-      "PacketMixin"
-    ],
-    "client": [
-      "GuiTooltipMixin",
-      "PlayerControllerMixin"
-    ],
-    "injectors": {
-        "defaultRequire": 1
+  "required": true,
+  "minVersion": "0.8",
+  "mixinextras": {
+    "minVersion": "0.5.0"
+  },
+  "package": "googy.betterwithenchanting.mixin",
+  "compatibilityLevel": "JAVA_${java}",
+  "mixins": [
+    "EntityPlayerMixin",
+    "EntityPlayerMPMixin",
+    "EntityPlayerSPMixin",
+    "NetServerHandlerMixin",
+    "NetClientHandlerMixin",
+    "ItemStackMixin",
+    "EntityLivingMixin",
+    "EntityBobberMixin",
+    "ItemToolMixin",
+    "WorldMixin",
+    "PacketMixin"
+  ],
+  "client": [
+    "GuiTooltipMixin",
+    "PlayerControllerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
   }
 }

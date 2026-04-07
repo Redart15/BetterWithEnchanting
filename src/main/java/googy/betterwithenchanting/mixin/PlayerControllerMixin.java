@@ -12,8 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = PlayerController.class, remap = false)
-public class PlayerControllerMixin
-{
+public class PlayerControllerMixin {
 	@Shadow
 	@Final
 	protected Minecraft mc;
@@ -21,11 +20,11 @@ public class PlayerControllerMixin
 	protected int blockHitDelay;
 
 	@Redirect(method = "continueDestroyBlock", at = @At(value = "FIELD", target = "Lnet/minecraft/client/player/controller/PlayerController;blockHitDelay:I", opcode = Opcodes.GETFIELD))
-	public int getBlockHitDelay(PlayerController instance)
-	{
+	public int getBlockHitDelay(PlayerController instance) {
 		int quickstrikeLevel = EnchantmentUtils.getLevel(mc.thePlayer.getHeldItem(), Enchantments.quickstrike);
-		if (quickstrikeLevel > 0)
+		if (quickstrikeLevel > 0) {
 			return 0;
+		}
 
 		return this.blockHitDelay;
 	}

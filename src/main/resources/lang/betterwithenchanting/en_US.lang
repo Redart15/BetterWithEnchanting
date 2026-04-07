@@ -1,4 +1,5 @@
-tile.betterwithenchanting.enchantmenttable.name = Enchantment Table
+tile.betterwithenchanting.enchantment.table.name = Enchantment Table
+tile.betterwithenchanting.enchantment.table.desc = Its a kind of magic.
 
 enchantment.betterwithenchanting.haste.name = Haste
 enchantment.betterwithenchanting.unbreaking.name = Unbreaking

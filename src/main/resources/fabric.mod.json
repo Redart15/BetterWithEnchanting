@@ -2,32 +2,35 @@
   "schemaVersion": 1,
   "id": "betterwithenchanting",
   "version": "${version}",
-
   "name": "Better With Enchanting",
   "description": "Adds enchanting",
   "authors": [
-    ""
+		"Googy",
+    "Useless",
+		"Redart15"
   ],
   "contact": {
-    "homepage": "",
-    "sources": ""
+    "homepage": "https://github.com/dopeasswizard/BetterWithEnchanting",
+    "sources": "https://github.com/dopeasswizard/BetterWithEnchanting",
+		"issues": "https://github.com/dopeasswizard/BetterWithEnchanting/issues"
   },
 
   "license": "CC0-1.0",
 
   "environment": "*",
   "entrypoints": {
-    "main": [
-			"googy.betterwithenchanting.BetterWithEnchanting"
-    ]
-  },
-  "mixins": [
-      "betterwithenchanting.mixins.json"
-  ],
+    "main": 						["googy.betterwithenchanting.BetterWithEnchanting"],
+		"beforeGameStart": 	["googy.betterwithenchanting.BetterWithEnchanting"],
+		"afterGameStart": 	["googy.betterwithenchanting.BetterWithEnchanting"],
+		"initModels": 			["googy.betterwithenchanting.BetterWithEnchanting"],
+		"recipesReady": 		["googy.betterwithenchanting.BetterWithEnchanting"]
+	},
+  "mixins": ["betterwithenchanting.mixins.json"],
 
-  "depends": {
-    "fabricloader": ">=0.13.3"
-  },
-  "suggests": {
-  }
+	"depends": {
+		"fabricloader": ">=${fabricloader}",
+		"minecraft": "*",
+		"java": ">=${java}"
+ },
+	"suggests": {"modmenu": ">=${modmenu}"}
 }

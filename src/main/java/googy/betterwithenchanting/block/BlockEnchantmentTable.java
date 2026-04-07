@@ -1,51 +1,33 @@
 package googy.betterwithenchanting.block;
 
-import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.block.entity.TileEntityEnchantmentTable;
-import googy.betterwithenchanting.gui.GuiEnchantmentTable;
 import googy.betterwithenchanting.interfaces.mixins.IEntityPlayer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.EntityPlayerSP;
 import net.minecraft.core.block.Block;
-import net.minecraft.core.block.BlockTileEntity;
-import net.minecraft.core.block.entity.TileEntity;
-import net.minecraft.core.block.entity.TileEntityFurnace;
-import net.minecraft.core.block.entity.TileEntityTrommel;
+import net.minecraft.core.block.BlockLogicRotatable;
 import net.minecraft.core.block.material.Material;
-import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.entity.player.Player;
+import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
-import net.minecraft.server.entity.player.EntityPlayerMP;
 
-public class BlockEnchantmentTable extends BlockTileEntity
-{
+public class BlockEnchantmentTable extends BlockLogicRotatable {
 
-	public BlockEnchantmentTable(String key, int id)
-	{
-		super(key, id, Material.stone);
+	public BlockEnchantmentTable(Block<?> block) {
+		super(block, Material.stone);
 		setBlockBounds(0, 0, 0, 1, 12f / 16, 1);
+		block.withEntity(TileEntityEnchantmentTable::new);
 	}
 
 	@Override
-	public boolean isSolidRender()
-	{
+	public boolean isSolidRender() {
 		return false;
 	}
 
 	@Override
-	public boolean blockActivated(World world, int x, int y, int z, EntityPlayer player)
-	{
-		if (world.isClientSide) return true;
-
-		TileEntityEnchantmentTable tile = (TileEntityEnchantmentTable) world.getBlockTileEntity(x, y, z);
-		if (tile != null)
-			((IEntityPlayer)player).displayGUIEnchantmentTable(tile);
-
+	public boolean onBlockRightClicked(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced) {
+		if (!world.isClientSide) {
+			TileEntityEnchantmentTable tile = (TileEntityEnchantmentTable) world.getTileEntity(x, y, z);
+			((IEntityPlayer) player).displayGUIEnchantmentTable(tile);
+		}
 		return true;
-	}
-
-	@Override
-	protected TileEntity getNewBlockEntity()
-	{
-		return new TileEntityEnchantmentTable();
 	}
 }
