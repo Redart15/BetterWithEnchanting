@@ -14,7 +14,7 @@
     "sources": "https://github.com/dopeasswizard/BetterWithEnchanting",
 		"issues": "https://github.com/dopeasswizard/BetterWithEnchanting/issues"
   },
-
+	"icon": "icon.png",
   "license": "CC0-1.0",
 
   "environment": "*",
