@@ -27,7 +27,7 @@ public class BaitEnchantment extends Enchantment {
 
 	@Override
 	public String getName() {
-		if(!FabricLoader.getInstance().isModLoaded("stardew")){
+		if(FabricLoader.getInstance().isModLoaded("stardew")){
 			return I18n.getInstance().translateKey("disabled");
 		}
 		return super.getName();
