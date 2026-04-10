@@ -5,7 +5,7 @@
     <option name="MAIN_CLASS_NAME" value="net.fabricmc.devlaunchinjector.Main" />
     <module name="BetterWithEnchanting.main" />
     <shortenClasspath name="ARGS_FILE" />
-    <option name="VM_PARAMETERS" value="-Dfabric.dli.config=C:\Users\Pjoter\IdeaProjects\BetterWithEnchanting\.gradle\loom-cache\launch.cfg -Dfabric.dli.env=client -Djava.library.path=C:\Users\Pjoter\IdeaProjects\BetterWithEnchanting\.gradle\loom-cache\natives\1.7.7.0_01 -Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient -Dfabric.gameVersion=1.7.7.0_01" />
+    <option name="VM_PARAMETERS" value="-Dfabric.dli.config=E:\User\Artem\games\minecraft\BTA\red_mods\projects\mods\better-with-enchanting\BetterWithEnchanting\.gradle\loom-cache\launch.cfg -Dfabric.dli.env=client -Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/" />
     <method v="2">
       <option name="Make" enabled="true" />
