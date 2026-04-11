@@ -10,35 +10,68 @@ import net.minecraft.core.player.inventory.container.Container;
 import net.minecraft.core.util.helper.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Random;
+
 public class TileEntityEnchantmentTable extends TileEntity implements Container {
 	protected ItemStack[] items = new ItemStack[2];
+	protected Random random = new Random();
 
-	public int ticks;
-	public float pageFlip;
-	public float prevPageFlip;
-	public float flipT;
-	public float flipA;
-	public float bookSpread;
-	public float prevBookSpread;
-	public float bookRot;
-	public float prevBookRot;
-	public float tRot;
-	public float itemRot;
+	protected int ticks;
+	protected float pageFlip;
+	protected float prevPageFlip;
+	protected float flipT;
+	protected float flipA;
+	protected float bookSpread;
+	protected float prevBookSpread;
+	protected float bookRot;
+	protected float prevBookRot;
+	protected float tRot;
+	protected float itemRot;
+
+	public static String[] labels = new String[]{
+		"powerful", "strong", "loyal", "vital", "enduring", "focused", "potent", "swift", "agile",
+		"unbreaking", "fortunate", "wise", "keen", "resilient", "tireless", "durable", "fierce",
+		"lethal", "dominant", "pure", "exalted", "blessed", "enchanced", "elevated",
+
+		"frail", "feeble", "briddle", "cursed", "blighted", "tainted", "rotten", "vulnerable", "exposed",
+		"broken", "ruined", "fractured", "crippled", "confused", "dazed", "unstable", "deranged", "delirious",
+		"drained", "exhausted", "sinister", "suppressed", "profane", "forsaken"
+	};
+	private final int[] labelIndexes = new int[3];
+	private byte type = 0;
+
+	public void setRandomLabel() {
+		for (int i = 0; i < labelIndexes.length; i++) {
+			labelIndexes[i] = this.getNewLabel();
+		}
+		this.type = (byte) this.random.nextInt(8);
+	}
+
+	public int 	getNewLabel() {
+		return random.nextInt(labels.length);
+	}
+
+	public String getAtIndex(int i) {
+		return labels[labelIndexes[i % 3] % labels.length];
+	}
+
+	public boolean getType(int i) {
+		return ((this.type >> (i % 3)) & 1) == 1;
+	}
 
 	@Override
-	public void tick()
-	{
+	public void tick() {
 		ticks++;
 		prevBookSpread = bookSpread;
 		prevBookRot = bookRot;
 
-		Player player = worldObj.getClosestPlayer((float)this.x + 0.5F, (float)this.y + 0.5F, (float)this.z + 0.5F, 3.0D);
+		Player player = worldObj.getClosestPlayer((float) this.x + 0.5F, (float) this.y + 0.5F, (float) this.z + 0.5F, 3.0D);
 		boolean cRot = false;
 
 		if (player != null) {
-			double x = player.x - (double)((float)this.x + 0.5F);
-			double z = player.z - (double)((float)this.z + 0.5F);
-			tRot = (float)Math.atan2(z, x);
+			double x = player.x - (double) ((float) this.x + 0.5F);
+			double z = player.z - (double) ((float) this.z + 0.5F);
+			tRot = (float) Math.atan2(z, x);
 			cRot = true;
 		}
 
@@ -50,23 +83,23 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 			if (bookSpread < 0.5F || worldObj.rand.nextInt(40) == 0) {
 				float f = flipT;
 				while (true) {
-					flipT += (float)(worldObj.rand.nextInt(4) - worldObj.rand.nextInt(4));
+					flipT += (float) (worldObj.rand.nextInt(4) - worldObj.rand.nextInt(4));
 					if (f != flipT) break;
 				}
 			}
 		} else bookSpread -= 0.1F;
 
-		while (bookRot >= (float)Math.PI) bookRot -= ((float)Math.PI * 2.0F);
-		while (bookRot < -(float)Math.PI) bookRot += ((float)Math.PI * 2.0F);
-		while (tRot >= (float)Math.PI) tRot -= ((float)Math.PI * 2.0F);
-		while (tRot < -(float)Math.PI) tRot += ((float)Math.PI * 2.0F);
-		while (itemRot >= (float)Math.PI) itemRot -= ((float)Math.PI * 2.0F);
-		while (itemRot < -(float)Math.PI) itemRot += ((float)Math.PI * 2.0F);
+		while (bookRot >= (float) Math.PI) bookRot -= ((float) Math.PI * 2.0F);
+		while (bookRot < -(float) Math.PI) bookRot += ((float) Math.PI * 2.0F);
+		while (tRot >= (float) Math.PI) tRot -= ((float) Math.PI * 2.0F);
+		while (tRot < -(float) Math.PI) tRot += ((float) Math.PI * 2.0F);
+		while (itemRot >= (float) Math.PI) itemRot -= ((float) Math.PI * 2.0F);
+		while (itemRot < -(float) Math.PI) itemRot += ((float) Math.PI * 2.0F);
 
 		float f;
 
-		for (f = tRot - bookRot; f >= (float)Math.PI; f -= (float)Math.PI * 2.0F);
-		while (f < -(float)Math.PI) f += ((float)Math.PI * 2.0F);
+		for (f = tRot - bookRot; f >= (float) Math.PI; f -= (float) Math.PI * 2.0F) ;
+		while (f < -(float) Math.PI) f += ((float) Math.PI * 2.0F);
 
 		bookRot += f * 0.4F;
 		bookSpread = MathHelper.clamp(bookSpread, 0.0F, 1.0F);
@@ -134,6 +167,20 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 				items[slot] = ItemStack.readItemStackFromNbt(itemTag);
 			}
 		}
+		if (tagCompound.containsKey("Labels")) {
+			this.type = (byte) (tagCompound.getByte("Type") & 0b111);
+			ListTag labelTag = tagCompound.getList("Labels");
+			for (int i = 0; i < labelIndexes.length; i++) {
+				if (i < labelTag.tagCount()) {
+					CompoundTag label = (CompoundTag) labelTag.tagAt(i);
+					this.labelIndexes[i] = label.getInteger("Index") % labels.length;
+				} else {
+					this.labelIndexes[i] = this.getNewLabel();
+				}
+			}
+		}else{
+			this.setRandomLabel();
+		}
 	}
 
 	@Override
@@ -150,10 +197,22 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 			itemsTag.addTag(itemTag);
 		}
 		tagCompound.put("Items", itemsTag);
+		tagCompound.putByte("Type", this.type);
+		ListTag labelTagList = new ListTag();
+		for (int i = 0; i < this.labelIndexes.length; i++) {
+			int label = labelIndexes[i];
+			if (label > labels.length || label < 0) {
+				label = this.getNewLabel();
+			}
+			CompoundTag labelTag = new CompoundTag();
+			labelTag.putInt("Index", label);
+		}
+		tagCompound.put("Labels", labelTagList);
 	}
 
 	@Override
-	public void sortContainer() {}
+	public void sortContainer() {
+	}
 
 	@Override
 	public boolean stillValid(Player entityplayer) {
