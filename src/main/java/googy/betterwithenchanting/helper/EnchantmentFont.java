@@ -14,7 +14,7 @@ public class EnchantmentFont {
 	public static final int GALACTIC_INDEX_NUMBERS = GALACTIC_INDEX + 3 * COLOMNSIZE;
 	public static final int ILLAGER_INDEX = GALACTIC_INDEX_NUMBERS + COLOMNSIZE;
 	public static final int ILLAGER_INDEX_NUMBERS = ILLAGER_INDEX + 3 * COLOMNSIZE;
-	public static final Texture TEXTURE = Minecraft.getMinecraft().textureManager.loadTexture("/assets/" + MOD_ID + "/font/enchantment_letters.png");
+	public static final Texture TEXTURE = Minecraft.getMinecraft().textureManager.loadTexture("/assets/" + MOD_ID + "/gui/enchantment_letters.png");
 
 	public static Texture getTex() {
 		return TEXTURE;

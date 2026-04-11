@@ -34,7 +34,7 @@ public class GuiEnchantmentTable extends ScreenContainerAbstract {
 	private static byte[] charWidth = new byte[65536];
 
 	static {
-		InputStream stream = Texture.class.getResourceAsStream("/assets/" + MOD_ID + "/font/enchant.bin");
+		InputStream stream = Texture.class.getResourceAsStream("/assets/" + MOD_ID + "/gui/enchant.bin");
 
 		if (stream == null) {
 			throw new RuntimeException("Missing font data");
