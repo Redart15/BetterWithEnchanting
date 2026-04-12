@@ -2,7 +2,10 @@ package googy.betterwithenchanting;
 
 import googy.betterwithenchanting.block.BlockEnchantmentTable;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
+import googy.betterwithenchanting.particle.ParticleGlyph;
+import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.client.entity.particle.ParticleDispatcher;
 import net.minecraft.client.render.EntityRenderDispatcher;
 import net.minecraft.client.render.TileEntityRenderDispatcher;
 import net.minecraft.client.render.block.color.BlockColorDispatcher;
@@ -24,17 +27,14 @@ import turniplabs.halplibe.helper.BlockBuilder;
 import turniplabs.halplibe.helper.EntityHelper;
 import turniplabs.halplibe.helper.ModelHelper;
 import turniplabs.halplibe.helper.RecipeBuilder;
-import turniplabs.halplibe.util.ConfigHandler;
-import turniplabs.halplibe.util.GameStartEntrypoint;
-import turniplabs.halplibe.util.ModelEntrypoint;
-import turniplabs.halplibe.util.RecipeEntrypoint;
+import turniplabs.halplibe.util.*;
 
 import java.util.Properties;
 
 import googy.betterwithenchanting.block.EnchantmentTableRenderer;
 
 
-public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, RecipeEntrypoint, GameStartEntrypoint {
+public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, RecipeEntrypoint, GameStartEntrypoint, ClientModInitializer, ClientStartEntrypoint {
 	public static final String MOD_ID = "betterwithenchanting";
 	public static final Logger LOG = LoggerFactory.getLogger(MOD_ID);
 	public static final ConfigHandler config;
@@ -92,10 +92,21 @@ public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, Re
 		ModelHelper.setTileEntityModel(TileEntityEnchantmentTable.class, EnchantmentTableRenderer::new);
 	}
 
+	@Override
+	public void beforeClientStart() {
+		ParticleDispatcher.getInstance().addDispatch(
+			"enchant", (world, x, y, z, xa, ya, za, id) -> new ParticleGlyph(world, x, y, z, xa, ya, za));
+	}
+
 	public BetterWithEnchanting() {/*	PacketMixin.callAddIdClassMapping(Global.config.getInt("packet_enchant_id"), false, true, PacketEnchantItem.class); */}
 	@Override public void initNamespaces() {/* no need */}
 	@Override public void initItemModels(ItemModelDispatcher dispatcher) {/* no need */}
 	@Override public void initEntityModels(EntityRenderDispatcher dispatcher) {/* no need */}
 	@Override public void initBlockColors(BlockColorDispatcher dispatcher) {/* no need */}
 	@Override public void afterGameStart() {/* no need */}
+	@Override public void onInitializeClient() {/* no need */}
+
+	@Override public void afterClientStart() {/* no need */}
+
+
 }

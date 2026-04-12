@@ -4,11 +4,13 @@ import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.helper.EnchantmentFont;
 import googy.betterwithenchanting.network.packet.PacketEnchantItem;
 import googy.betterwithenchanting.inventory.ContainerEnchantmentTable;
+import googy.betterwithenchanting.utils.EnchantmentUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.PlayerLocalMultiplayer;
-import net.minecraft.client.gui.container.ScreenContainerAbstract;
 import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.client.render.texture.Texture;
+import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.item.Items;
 import net.minecraft.core.player.inventory.container.ContainerInventory;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
@@ -18,7 +20,7 @@ import java.io.InputStream;
 
 import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
 
-public class GuiEnchantmentTable extends ScreenContainerAbstract {
+public class GuiEnchantmentTable extends ScreenFix {
 	private static final int ACTIVE_BUTTON_OFFSET = 166;
 	private static final int DEACTIVATED_BUTTON_OFFSET = 185;
 	private static final int MOUSEOVER_BUTTON_OFFSET = 204;
@@ -55,8 +57,8 @@ public class GuiEnchantmentTable extends ScreenContainerAbstract {
 
 	@Override
 	public void render(int x, int y, float renderPartialTicks) {
-		mouseX = x;
-		mouseY = y;
+		this.mouseX = x;
+		this.mouseY = y;
 		super.render(x, y, renderPartialTicks);
 	}
 
@@ -205,13 +207,13 @@ public class GuiEnchantmentTable extends ScreenContainerAbstract {
 			}
 			int iLeft = (charWidth[index] >> 4);
 			int iRight = (charWidth[index] & 15) + 1;
-			int rowIndex = Math.floorDiv(index, EnchantmentFont.ROWSIZE);
-			int columnIndex = index - rowIndex * EnchantmentFont.ROWSIZE;
+			int rowIndex = Math.floorDiv(index, EnchantmentFont.ROW_SIZE);
+			int columnIndex = index - rowIndex * EnchantmentFont.ROW_SIZE;
 			double len = ((double) iRight - (double) iLeft - 0.02F) / (double) EnchantmentFont.USIZE * sy;
-			double uMin = ((double) columnIndex * EnchantmentFont.COLOMNSIZE + (double) iLeft) / (EnchantmentFont.COLOMNSIZE * EnchantmentFont.USIZE);
-			double uMax = ((double) columnIndex * EnchantmentFont.COLOMNSIZE + (double) iRight) / (EnchantmentFont.COLOMNSIZE * EnchantmentFont.USIZE);
-			double vMin = (double) rowIndex / EnchantmentFont.ROWSIZE;
-			double vMax = vMin + 1.0f / EnchantmentFont.ROWSIZE;
+			double uMin = ((double) columnIndex * EnchantmentFont.COLUMN_SIZE + (double) iLeft) / (EnchantmentFont.COLUMN_SIZE * EnchantmentFont.USIZE);
+			double uMax = ((double) columnIndex * EnchantmentFont.COLUMN_SIZE + (double) iRight) / (EnchantmentFont.COLUMN_SIZE * EnchantmentFont.USIZE);
+			double vMin = (double) rowIndex / EnchantmentFont.ROW_SIZE;
+			double vMax = vMin + 1.0f / EnchantmentFont.ROW_SIZE;
 			t.addVertexWithUV(ex, y, 0, uMin, vMin);
 			t.addVertexWithUV(ex, y + sy, 0, uMin, vMax);
 			t.addVertexWithUV(ex + len, y + sy, 0, uMax, vMax);
@@ -225,5 +227,15 @@ public class GuiEnchantmentTable extends ScreenContainerAbstract {
 		t.draw();
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		return (int) ex;
+	}
+
+	@Override
+	public int getTargetSlot(ItemStack stackInSlot, int clickedItemId) {
+		if (stackInSlot != null && stackInSlot.getItem().id == Items.DYE.id && stackInSlot.getMetadata() == 4) {
+			return 2;
+		} else if (EnchantmentUtils.getEnchantments(stackInSlot).isEmpty()) {
+			return 1;
+		}
+		return 0;
 	}
 }

@@ -17,12 +17,14 @@ import net.minecraft.core.player.inventory.menu.MenuAbstract;
 import net.minecraft.core.player.inventory.slot.Slot;
 import net.minecraft.core.world.World;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 public class ContainerEnchantmentTable extends MenuAbstract {
 	public TileEntityEnchantmentTable enchantmentTable;
 	public int[] enchantCost = new int[3];
+	protected int bookLevel;
 
 	private final Random random = new Random();
 
@@ -68,56 +70,56 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 
 	void updateEnchantmentsCosts() {
 		World world = enchantmentTable.worldObj;
-		if (world == null) return;
-
 		ItemStack stack = getSlot(0).getItemStack();
-
-		if (stack == null) return;
+		if (world == null || stack == null) {
+			return;
+		}
 
 		List<Enchantment> pool = Enchantments.getPossible(stack.getItem());
-		if (pool.isEmpty()) return;
+		if (pool.isEmpty()) {
+			return;
+		}
 
+		int posX = this.enchantmentTable.x;
+		int posY = this.enchantmentTable.y;
+		int posZ = this.enchantmentTable.z;
 
-		int posX = enchantmentTable.x;
-		int posY = enchantmentTable.y;
-		int posZ = enchantmentTable.z;
-
-		int bookshelfs = 0;
+		this.bookLevel = 0;
 
 		for (int x = -1; x <= 1; x++) {
 			for (int z = -1; z <= 1; z++) {
-
-				if (x == 0 && z == 0) continue;
-
-				if (!world.isAirBlock(posX + x, posY, posZ + z) || !world.isAirBlock(posX + x, posY + 1, posZ + z))
+				if ((x == 0 && z == 0)
+					|| !world.isAirBlock(posX + x, posY, posZ + z)
+					|| !world.isAirBlock(posX + x, posY + 1, posZ + z)
+				) {
 					continue; // something obstructing the bookshelf
+				}
 
-				int cornerBottom = world.getBlockId(posX + x * 2, posY, posZ + z * 2);
-				int cornerTop = world.getBlockId(posX + x * 2, posY + 1, posZ + z * 2);
-
-				if (cornerBottom == Blocks.BOOKSHELF_PLANKS_OAK.id()) bookshelfs++;
-				if (cornerTop == Blocks.BOOKSHELF_PLANKS_OAK.id()) bookshelfs++;
-
-				if (x == 0 || z == 0) continue;
-
-				int sideXBottom = world.getBlockId(posX + x * 2, posY, posZ + z);
-				int sideXTop = world.getBlockId(posX + x * 2, posY + 1, posZ + z);
-				int sideZBottom = world.getBlockId(posX + x, posY, posZ + z * 2);
-				int sideZTop = world.getBlockId(posX + x, posY + 1, posZ + z * 2);
-
-				if (sideZBottom == Blocks.BOOKSHELF_PLANKS_OAK.id()) bookshelfs++;
-				if (sideZTop == Blocks.BOOKSHELF_PLANKS_OAK.id()) bookshelfs++;
-				if (sideXBottom == Blocks.BOOKSHELF_PLANKS_OAK.id()) bookshelfs++;
-				if (sideXTop == Blocks.BOOKSHELF_PLANKS_OAK.id()) bookshelfs++;
+				this.checkForBookShelf(world, posX + x * 2, posY, posZ + z * 2);
+				this.checkForBookShelf(world, posX + x * 2, posY + 1, posZ + z * 2);
+				if (x == 0 || z == 0) {
+					continue;
+				}
+				this.checkForBookShelf(world, posX + x * 2, posY, posZ + z);
+				this.checkForBookShelf(world, posX + x * 2, posY + 1, posZ + z);
+				this.checkForBookShelf(world, posX + x, posY, posZ + z * 2);
+				this.checkForBookShelf(world, posX + x, posY + 1, posZ + z * 2);
 			}
 		}
-
-		if (bookshelfs > 15)
-			bookshelfs = 15;
-
+		this.bookLevel =  Math.min(this.bookLevel, 15);
 		for (int i = 0; i < 3; i++) {
-			enchantCost[i] = EnchantmentUtils.calcEnchantmentCost(i, bookshelfs);
+			this.enchantCost[i] = EnchantmentUtils.calcEnchantmentCost(i, this.bookLevel);
 		}
+	}
+
+	private void checkForBookShelf(World world, int x, int y, int z) {
+		if (world.getBlockId(x, y, z) == Blocks.BOOKSHELF_PLANKS_OAK.id()) {
+			bookLevel++;
+		}
+	}
+
+	public int getBookLevel(){
+		return this.bookLevel;
 	}
 
 	@Override
@@ -172,11 +174,45 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 	/// TODO: Impelement the functions
 	@Override
 	public List<Integer> getMoveSlots(InventoryAction action, Slot slot, int target, Player entityPlayer) {
-		return null;
+		if (slot.index >= 0 && slot.index <= 3) {
+			return this.getSlots(slot.index, 1, false);
+		} else {
+			if (action == InventoryAction.MOVE_ALL) {
+				if (slot.index >= 3 && slot.index <= 30) {
+					return this.getSlots(3, 27, false);
+				}
+
+				if (slot.index >= 30 && slot.index <= 38) {
+					return this.getSlots(30, 9, false);
+				}
+			}
+
+			return slot.index >= 3 && slot.index <= 38 ? this.getSlots(3, 36, false) : null;
+		}
 	}
 
 	@Override
 	public List<Integer> getTargetSlots(InventoryAction action, Slot slot, int target, Player entityPlayer) {
-		return null;
+		if (slot.index >= 3 && slot.index <= 39) {
+			if (action != InventoryAction.MOVE_ALL) {
+				if (target == 1) {
+					return this.getSlots(0, 1, false);
+				}
+				if (target == 2) {
+					return this.getSlots(1, 1, false);
+				}
+			}
+			if (slot.index <= 29) {
+				return this.getSlots(30, 9, false);
+			}
+			if (slot.index >= 31 && slot.index <= 38) {
+				return this.getSlots(3, 27, false);
+			}
+		}
+		if (slot.index >= 0 && slot.index <= 2) {
+			return slot.index == 2 ? this.getSlots(3, 36, true) : this.getSlots(3, 36, false);
+		} else {
+			return Collections.emptyList();
+		}
 	}
 }

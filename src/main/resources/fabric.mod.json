@@ -19,11 +19,14 @@
 
   "environment": "*",
   "entrypoints": {
-    "main": 						["googy.betterwithenchanting.BetterWithEnchanting"],
-		"beforeGameStart": 	["googy.betterwithenchanting.BetterWithEnchanting"],
-		"afterGameStart": 	["googy.betterwithenchanting.BetterWithEnchanting"],
-		"initModels": 			["googy.betterwithenchanting.BetterWithEnchanting"],
-		"recipesReady": 		["googy.betterwithenchanting.BetterWithEnchanting"]
+    "main": 							["googy.betterwithenchanting.BetterWithEnchanting"],
+		"beforeGameStart": 		["googy.betterwithenchanting.BetterWithEnchanting"],
+		"afterGameStart": 		["googy.betterwithenchanting.BetterWithEnchanting"],
+		"initModels": 				["googy.betterwithenchanting.BetterWithEnchanting"],
+		"recipesReady": 			["googy.betterwithenchanting.BetterWithEnchanting"],
+		"client": 						["googy.betterwithenchanting.BetterWithEnchanting"],
+		"beforeClientStart": 	["googy.betterwithenchanting.BetterWithEnchanting"],
+		"afterClientStart":		["googy.betterwithenchanting.BetterWithEnchanting"]
 	},
   "mixins": ["betterwithenchanting.mixins.json"],
 

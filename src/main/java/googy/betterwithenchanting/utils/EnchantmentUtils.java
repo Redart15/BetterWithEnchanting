@@ -92,7 +92,9 @@ public class EnchantmentUtils {
 
 	public static List<EnchantmentData> getEnchantments(ItemStack stack) {
 		List<EnchantmentData> enchantments = new ArrayList<>();
-
+		if(stack == null){
+			return enchantments;
+		}
 		ListTag enchantList = getEnchantmentsList(stack);
 
 		for (int i = 0; i < enchantList.tagCount(); i++) {

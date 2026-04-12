@@ -7,20 +7,22 @@
   "package": "googy.betterwithenchanting.mixin",
   "compatibilityLevel": "JAVA_${java}",
   "mixins": [
+    "EntityLivingMixin",
     "EntityPlayerMixin",
     "EntityPlayerMPMixin",
     "EntityPlayerSPMixin",
-    "NetServerHandlerMixin",
-    "NetClientHandlerMixin",
     "ItemStackMixin",
-    "EntityLivingMixin",
     "ItemToolMixin",
-    "WorldMixin",
-    "PacketMixin"
+    "NetClientHandlerMixin",
+    "NetServerHandlerMixin",
+    "PacketMixin",
+    "WorldMixin"
   ],
   "client": [
     "GuiTooltipMixin",
-    "PlayerControllerMixin"
+    "ParticleEngineMixin",
+    "PlayerControllerMixin",
+    "ScreenContainerAbstractAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
