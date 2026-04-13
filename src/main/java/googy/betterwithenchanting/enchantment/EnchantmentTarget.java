@@ -1,9 +1,7 @@
 package googy.betterwithenchanting.enchantment;
 
-import net.minecraft.core.item.Item;
-import net.minecraft.core.item.ItemArmor;
-import net.minecraft.core.item.ItemBow;
-import net.minecraft.core.item.ItemFishingRod;
+import googy.betterwithenchanting.BetterWithEnchanting;
+import net.minecraft.core.item.*;
 import net.minecraft.core.item.tool.*;
 
 public class EnchantmentTarget {
@@ -19,6 +17,7 @@ public class EnchantmentTarget {
 	public static final Bow BOW = new Bow();
 	public static final FishingRod FISHING_ROD = new FishingRod();
 	public static final Breakable BREAKABLE = new Breakable();
+	public static final Bottle BOTTLE = new Bottle();
 
 
 	public boolean canEnchant(Item item) {
@@ -99,5 +98,9 @@ public class EnchantmentTarget {
 		public boolean canEnchant(Item item) {
 			return item.isDamagable();
 		}
+	}
+
+	public static class Bottle extends EnchantmentTarget {
+		public boolean canEnchant(Item item) {return item.id == BetterWithEnchanting.SCORE_BOTTLE.id;}
 	}
 }

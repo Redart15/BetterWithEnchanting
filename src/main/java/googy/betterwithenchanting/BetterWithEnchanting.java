@@ -2,7 +2,9 @@ package googy.betterwithenchanting;
 
 import googy.betterwithenchanting.block.BlockEnchantmentTable;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
+import googy.betterwithenchanting.item.ItemEnchantmentBottle;
 import googy.betterwithenchanting.particle.ParticleGlyph;
+import googy.betterwithenchanting.render.ItemScoreBottleModel;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.entity.particle.ParticleDispatcher;
@@ -12,12 +14,14 @@ import net.minecraft.client.render.block.color.BlockColorDispatcher;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
 import net.minecraft.client.render.block.model.BlockModelStandard;
 import net.minecraft.client.render.item.model.ItemModelDispatcher;
+import net.minecraft.client.render.item.model.ItemModelStandard;
 import net.minecraft.client.render.texture.stitcher.AtlasStitcher;
 import net.minecraft.client.render.texture.stitcher.TextureRegistry;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.block.tag.BlockTags;
+import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.sound.BlockSound;
@@ -49,6 +53,7 @@ public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, Re
 		prop.setProperty("enchantment_window_type_id", "24");
 		prop.setProperty("packet_enchant_id", "190");
 		prop.setProperty("enchantment_table_id", "116");
+		prop.setProperty("bottled_score_id", "18444");
 		prop.setProperty("expensive_crafting", "true");
 		prop.setProperty("default_item_enchantability", "15");
 		prop.setProperty("use_illager_font", "true");
@@ -66,9 +71,16 @@ public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, Re
 		.setTags(BlockTags.MINEABLE_BY_PICKAXE)
 		.build("enchantment.table", "enchantment_table", config.getInt("enchantment_table_id"), (b) -> new BlockEnchantmentTable(b));
 
+	public static final Item SCORE_BOTTLE = new ItemBuilder(MOD_ID).build(new ItemEnchantmentBottle("bottle.score", MOD_ID + ":item/bottle_score", config.getInt("bottled_score_id")));
+
 	@Override
 	public void onInitialize() {
 		LOG.info("BetterWithEnchanting initialized!");
+	}
+
+	@Override
+	public void beforeGameStart() {
+		EntityHelper.createTileEntity(TileEntityEnchantmentTable.class, NamespaceID.getPermanent(MOD_ID, "enchantment_table"));
 	}
 
 	@Override
@@ -78,6 +90,11 @@ public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, Re
 			.addInput('C', Blocks.OBSIDIAN)
 			.addInput('D', config.getBoolean("expensive_crafting") ? Blocks.BLOCK_DIAMOND : Items.DIAMOND)
 			.create("enchantingtable", new ItemStack(ENCHANTMENT_TABLE));
+
+		RecipeBuilder.Shaped(MOD_ID, " D ", "C C", " C ")
+			.addInput('D', Items.LEATHER)
+			.addInput('C', Blocks.GLASS)
+			.create("score_bottle", new ItemStack(ENCHANTMENT_TABLE));
 	}
 
 	@Override
@@ -89,9 +106,8 @@ public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, Re
 		);
 	}
 
-	@Override
-	public void beforeGameStart() {
-		EntityHelper.createTileEntity(TileEntityEnchantmentTable.class, NamespaceID.getPermanent(MOD_ID, "enchantment_table"));
+	@Override public void initItemModels(ItemModelDispatcher dispatcher) {
+		dispatcher.addDispatch(new ItemScoreBottleModel(SCORE_BOTTLE, null).setIcon(MOD_ID + ":item/score_bottle"));
 	}
 
 	@Override public void initTileEntityModels(TileEntityRenderDispatcher dispatcher) {
@@ -116,7 +132,6 @@ public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, Re
 
 	public BetterWithEnchanting() {/*	PacketMixin.callAddIdClassMapping(Global.config.getInt("packet_enchant_id"), false, true, PacketEnchantItem.class); */}
 	@Override public void initNamespaces() {/* no need */}
-	@Override public void initItemModels(ItemModelDispatcher dispatcher) {/* no need */}
 	@Override public void initEntityModels(EntityRenderDispatcher dispatcher) {/* no need */}
 	@Override public void initBlockColors(BlockColorDispatcher dispatcher) {/* no need */}
 	@Override public void afterGameStart() {/* no need */}
