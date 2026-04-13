@@ -11,23 +11,20 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = Player.class, remap = false)
-public class PlayerMixin
-{
+public abstract class PlayerMixin {
 
 	@Inject(method = "attackTargetEntityWithCurrentItem", at = @At("HEAD"))
-	public void attackTargetEntityWithCurrentItem(Entity entity, CallbackInfo info)
-	{
+	public void attackTargetEntityWithCurrentItem(Entity entity, CallbackInfo info) {
 		if (!(entity instanceof Player)) {
 			return;
 		}
 
-		ItemStack stack = ((Player)(Object)this).getCurrentEquippedItem();
+		ItemStack stack = ((Player) (Object) this).getCurrentEquippedItem();
 
 		int flameLevel = EnchantmentUtils.getLevel(stack, Enchantments.flame);
 		int fireTime = flameLevel * 20; // level * second
 
-		if (entity.remainingFireTicks < fireTime)
-		{
+		if (entity.remainingFireTicks < fireTime) {
 			entity.remainingFireTicks = fireTime;
 		}
 	}

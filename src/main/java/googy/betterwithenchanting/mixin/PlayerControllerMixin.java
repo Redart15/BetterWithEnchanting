@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = PlayerController.class, remap = false)
-public class PlayerControllerMixin {
+public abstract class PlayerControllerMixin {
 	@Shadow
 	@Final
 	protected Minecraft mc;

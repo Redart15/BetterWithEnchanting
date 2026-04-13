@@ -38,6 +38,6 @@ public class ItemEnchantmentBottle extends Item {
 		if(EnchantmentUtils.containsEnchantment(itemstack, Enchantments.bottledScore)){
 			return I18n.getInstance().translateKey(itemstack.getItemKey() + ".enchanted.desc");
 		}
-		return super.getTranslatedName(itemstack);
+		return super.getTranslatedDescription(itemstack);
 	}
 }

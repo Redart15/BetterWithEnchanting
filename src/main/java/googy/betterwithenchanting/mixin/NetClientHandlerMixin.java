@@ -13,21 +13,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value= PacketHandlerClient.class, remap = false)
-public class NetClientHandlerMixin
-{
+@Mixin(value = PacketHandlerClient.class, remap = false)
+public abstract class NetClientHandlerMixin {
 	@Final
 	@Shadow
 	private Minecraft mc;
 
 	@Inject(method = "handleOpenWindow", at = @At("TAIL"))
-	public void handleOpenWindow(PacketContainerOpen packet, CallbackInfo info)
-	{
+	public void handleOpenWindow(PacketContainerOpen packet, CallbackInfo info) {
 		if (packet.inventoryType != BetterWithEnchanting.config.getInt("enchantment_window_type_id")) return;
 		if (!packet.windowTitle.equals(BetterWithEnchanting.ENCHANTMENT_TABLE_NAME)) return;
 
 		TileEntityEnchantmentTable tile = new TileEntityEnchantmentTable();
-		((IEntityPlayer)mc.thePlayer).displayGUIEnchantmentTable(tile);
+		((IEntityPlayer) mc.thePlayer).displayGUIEnchantmentTable(tile);
 		this.mc.thePlayer.craftingInventory.containerId = packet.windowId;
 
 	}

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(value = ItemStack.class, remap = false)
-public class ItemStackMixin {
+public abstract class ItemStackMixin {
 	@ModifyVariable(method = "damageItem", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	int damageItem(int damage) {
 		if (damage <= 0) {

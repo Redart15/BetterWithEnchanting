@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = ItemTool.class, remap = false)
-public class ItemToolMixin {
+public abstract class ItemToolMixin {
 
 	@Inject(method = "getStrVsBlock", at = @At("RETURN"), cancellable = true)
 	void getStrVsBlock(ItemStack stack, Block block, CallbackInfoReturnable<Float> info) {

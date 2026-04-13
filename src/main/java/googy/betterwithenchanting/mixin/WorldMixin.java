@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = World.class, remap = false)
-public class WorldMixin {
+public abstract class WorldMixin {
 
 	@Inject(method = "entityJoinedWorld", at = @At("HEAD"))
 	void entityJoinedWorld(Entity entity, CallbackInfoReturnable<Boolean> info) {

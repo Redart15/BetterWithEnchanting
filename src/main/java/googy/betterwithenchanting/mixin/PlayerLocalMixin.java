@@ -9,15 +9,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(value = PlayerLocal.class, remap = false)
-public class PlayerLocalMixin implements IEntityPlayer
-{
+public abstract class PlayerLocalMixin implements IEntityPlayer {
 
 	@Shadow
 	protected Minecraft mc;
 
 	@Override
-	public void displayGUIEnchantmentTable(TileEntityEnchantmentTable enchantmentTable)
-	{
+	public void displayGUIEnchantmentTable(TileEntityEnchantmentTable enchantmentTable) {
 		mc.displayScreen(new GuiEnchantmentTable(this.mc.thePlayer.inventory, enchantmentTable));
 	}
 }

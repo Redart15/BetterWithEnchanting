@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(value = PacketHandlerServer.class, remap = false)
-public class NetServerHandlerMixin implements INetServerHandler {
+public abstract class NetServerHandlerMixin implements INetServerHandler {
 	@Shadow
 	private PlayerServer playerEntity;
 
