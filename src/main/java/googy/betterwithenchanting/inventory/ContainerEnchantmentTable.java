@@ -158,7 +158,7 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 		boolean enoughScore = player.score >= enchantCost[option];
 		boolean enoughFuel = this.getFuelAmount() > option;
 		boolean isCreative = player.gamemode == Gamemode.creative;
-		return (hasItem && hasEnchantments && enoughScore && enoughFuel) || isCreative;
+		return hasItem && hasEnchantments && ((enoughScore && enoughFuel) || isCreative);
 	}
 
 	public int getFuelAmount() {

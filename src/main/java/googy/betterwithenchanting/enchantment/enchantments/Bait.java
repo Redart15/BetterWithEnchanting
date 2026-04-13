@@ -5,8 +5,8 @@ import googy.betterwithenchanting.enchantment.EnchantmentTarget;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.lang.I18n;
 
-public class BaitEnchantment extends Enchantment {
-	public BaitEnchantment(String name, int id, Rarity weight, EnchantmentTarget target) {
+public class Bait extends Enchantment {
+	public Bait(String name, int id, Rarity weight, EnchantmentTarget target) {
 		super(name, id, weight, target);
 	}
 

@@ -1,7 +1,7 @@
 package googy.betterwithenchanting.mixin;
 
 import googy.betterwithenchanting.enchantment.Enchantments;
-import googy.betterwithenchanting.enchantment.enchantments.UnbreakingEnchantment;
+import googy.betterwithenchanting.enchantment.enchantments.Unbreaking;
 import googy.betterwithenchanting.utils.EnchantmentUtils;
 import net.minecraft.core.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,7 +18,7 @@ public class ItemStackMixin {
 		int unbreakingLevel = EnchantmentUtils.getLevel((ItemStack) (Object) this, Enchantments.unbreaking);
 		if (unbreakingLevel <= 0) return damage;
 		for (int i = 0; i < damage; i++) {
-			if (UnbreakingEnchantment.shouldNegateDamage((ItemStack) (Object) this, unbreakingLevel)) {
+			if (Unbreaking.shouldNegateDamage((ItemStack) (Object) this, unbreakingLevel)) {
 				damage--;
 			}
 		}

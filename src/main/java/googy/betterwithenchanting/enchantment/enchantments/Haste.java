@@ -3,9 +3,16 @@ package googy.betterwithenchanting.enchantment.enchantments;
 import googy.betterwithenchanting.enchantment.Enchantment;
 import googy.betterwithenchanting.enchantment.EnchantmentTarget;
 
-public class QuickstrikeEnchantment extends Enchantment {
-	public QuickstrikeEnchantment(String name, int id, Rarity weight, EnchantmentTarget target) {
+public class Haste extends Enchantment {
+
+
+	public Haste(String name, int id, Rarity weight, EnchantmentTarget target) {
 		super(name, id, weight, target);
+	}
+
+	@Override
+	public int getMaxLevel() {
+		return 3;
 	}
 
 	@Override

@@ -7,10 +7,10 @@ import net.minecraft.core.item.ItemStack;
 
 import java.util.Random;
 
-public class UnbreakingEnchantment extends Enchantment {
+public class Unbreaking extends Enchantment {
 	static Random random = new Random();
 
-	public UnbreakingEnchantment(String name, int id, Rarity weight, EnchantmentTarget target) {
+	public Unbreaking(String name, int id, Rarity weight, EnchantmentTarget target) {
 		super(name, id, weight, target);
 	}
 
