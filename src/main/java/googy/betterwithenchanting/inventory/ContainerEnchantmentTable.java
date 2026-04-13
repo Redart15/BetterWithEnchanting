@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Random;
 
 public class ContainerEnchantmentTable extends MenuAbstract {
-	public TileEntityEnchantmentTable enchantmentTable;
-	public int[] enchantCost = new int[3];
+	public final TileEntityEnchantmentTable enchantmentTable;
+	public final int[] enchantCost = new int[3];
 	protected int bookLevel;
 
 	private final Random random = new Random();
@@ -53,7 +53,7 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 				this.getSlot(1).getItemStack().stackSize -= enchantOption + 1;
 			}
 		}
-		ItemStack stack = getSlot(0).getItemStack();
+		ItemStack stack = this.getSlot(0).getItemStack();
 		List<EnchantmentData> enchantments = EnchantmentUtils.generateEnchantmentsList(random, stack, cost);
 		if (enchantments == null) return false;
 		EnchantmentUtils.addEnchantments(stack, enchantments);
@@ -70,7 +70,7 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 
 	void updateEnchantmentsCosts() {
 		World world = enchantmentTable.worldObj;
-		ItemStack stack = getSlot(0).getItemStack();
+		ItemStack stack = this.getSlot(0).getItemStack();
 		if (world == null || stack == null) {
 			return;
 		}
@@ -153,17 +153,19 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 	}
 
 	public boolean playerCanEnchant(Player player, int option) {
-		return getSlot(0).hasItem() &&
-			EnchantmentUtils.getEnchantments(getSlot(0).getItemStack()).isEmpty() &&
-			(player.score >= enchantCost[option] || player.gamemode == Gamemode.creative) &&
-			(getFuelAmount() > option || player.gamemode == Gamemode.creative);
+		boolean hasItem = this.getSlot(0).hasItem();
+		boolean hasEnchantments = EnchantmentUtils.getEnchantments(this.getSlot(0).getItemStack()).isEmpty();
+		boolean enoughScore = player.score >= enchantCost[option];
+		boolean enoughFuel = this.getFuelAmount() > option;
+		boolean isCreative = player.gamemode == Gamemode.creative;
+		return (hasItem && hasEnchantments && enoughScore && enoughFuel) || isCreative;
 	}
 
 	public int getFuelAmount() {
-		if (!getSlot(1).hasItem()) {
+		if (!this.getSlot(1).hasItem()) {
 			return 0;
 		}
-		return getSlot(1).getItemStack().stackSize;
+		return this.getSlot(1).getItemStack().stackSize;
 	}
 
 	@Override
@@ -171,7 +173,6 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 		return enchantmentTable.stillValid(player);
 	}
 
-	/// TODO: Impelement the functions
 	@Override
 	public List<Integer> getMoveSlots(InventoryAction action, Slot slot, int target, Player entityPlayer) {
 		if (slot.index >= 0 && slot.index <= 3) {
