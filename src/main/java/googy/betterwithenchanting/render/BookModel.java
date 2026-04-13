@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.block;
+package googy.betterwithenchanting.render;
 
 import net.minecraft.client.render.model.Cube;
 import net.minecraft.client.render.model.ModelBase;

@@ -1,8 +1,11 @@
 package googy.betterwithenchanting.block;
 
 import googy.betterwithenchanting.interfaces.mixins.IEntityPlayer;
+import googy.betterwithenchanting.particle.ParticleGlyph;
+import net.minecraft.core.Global;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogicRotatable;
+import net.minecraft.core.block.Blocks;
 import net.minecraft.core.block.material.Material;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.util.helper.Side;
@@ -33,19 +36,42 @@ public class BlockEnchantmentTable extends BlockLogicRotatable {
 	}
 
 	@Override
-	public void animationTick(World world, int x, int y, int z, Random rand) {
-
-
-
-
-
-		double poxX = (double) x + (double) 0.5F;
-		double posY = (double) y + (double) 2.0F + (double) (rand.nextFloat() * 6.0F / 16.0F);
-		double posZ = (double) z + (double) 0.5F;
-		double f3 = 0.52F;
-		double f4 = rand.nextFloat() * 0.6F - 0.3F;
-		for(int i = 0; i < 3; i++){
-			world.spawnParticle("enchant", poxX - f3, posY, posZ + f4, 0.04F, 0.04F, 0.04F, 0, 256);
+	public void animationTick(World world, int x, int y, int z, Random random) {
+		for (int ix = -1; ix <= 1; ix++) {
+			for (int iz = -1; iz <= 1; iz++) {
+				if ((x == 0 && z == 0)
+					|| !world.isAirBlock(x + ix, y, z + iz)
+					|| !world.isAirBlock(x + ix, y + 1, z + iz)
+				) {
+					continue; // something obstructing the bookshelf
+				}
+				this.spawnParticle(world, random, x + ix * 2, y, z + iz * 2, x, y, z);
+				this.spawnParticle(world, random, x + ix * 2, y + 1, z + iz * 2, x, y, z);
+				this.spawnParticle(world, random, x + ix * 2, y, z + iz, x, y, z);
+				this.spawnParticle(world, random, x + ix * 2, y + 1, z + iz, x, y, z);
+				this.spawnParticle(world, random, x + ix, y, z + iz * 2, x, y, z);
+				this.spawnParticle(world, random, x + ix, y + 1, z + iz * 2, x, y, z);
+			}
 		}
+	}
+
+	public void spawnParticle(World world, Random random, int bx, int by, int bz, int tx, int ty, int tz) {
+		boolean pass = random.nextInt(Global.TICKS_PER_SECOND * 4) != 0;
+		if (world.getBlockId(bx, by, bz) != Blocks.BOOKSHELF_PLANKS_OAK.id() || pass) {
+			return;
+		}
+		double dx = (double)tx - bx;
+		double dy = (double)ty - by + 0.75f;
+		double dz = (double)tz - bz;
+		double vx = dx / ParticleGlyph.TIME;
+		double vz = dz / ParticleGlyph.TIME;
+		double vy = dy / ParticleGlyph.TIME + 0.06f;
+		world.spawnParticle(
+			"enchant",
+			bx + 0.5f + (random.nextFloat() - 0.5f) * 2f * vx,
+			by + 0.5f + (random.nextFloat() - 0.5f) * 2f * vy,
+			bz + 0.5f + (random.nextFloat() - 0.5f) * 2f * vz,
+			vx, vy, vz, 0, 30.0f
+		);
 	}
 }
