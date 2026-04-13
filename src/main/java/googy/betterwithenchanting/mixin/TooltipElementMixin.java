@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 
 @Mixin(value = TooltipElement.class, remap = false)
-public class GuiTooltipMixin {
+public class TooltipElementMixin {
 	@Inject(at = @At("TAIL"), method = "getTooltipText(Lnet/minecraft/core/item/ItemStack;ZLnet/minecraft/core/player/inventory/slot/Slot;)Ljava/lang/String;", cancellable = true)
 	public void onGetTooltipText(ItemStack stack, boolean showDescription, Slot slot, CallbackInfoReturnable<String> info) {
 		String toolTip = info.getReturnValue();

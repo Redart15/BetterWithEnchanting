@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(value = PlayerLocal.class, remap = false)
-public class EntityPlayerSPMixin implements IEntityPlayer
+public class PlayerLocalMixin implements IEntityPlayer
 {
 
 	@Shadow

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = Player.class, remap = false)
-public class EntityPlayerMixin
+public class PlayerMixin
 {
 
 	@Inject(method = "attackTargetEntityWithCurrentItem", at = @At("HEAD"))

@@ -30,7 +30,7 @@ import turniplabs.halplibe.util.*;
 
 import java.util.Properties;
 
-import googy.betterwithenchanting.model.EnchantmentTableRenderer;
+import googy.betterwithenchanting.render.EnchantmentTableRenderer;
 
 
 public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, RecipeEntrypoint, GameStartEntrypoint, ClientModInitializer, ClientStartEntrypoint {

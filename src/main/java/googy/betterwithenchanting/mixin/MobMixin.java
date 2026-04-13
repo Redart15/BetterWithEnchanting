@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = Mob.class, remap = false)
-public class EntityLivingMixin {
+public class MobMixin {
 	@Inject(method = "hurt", at = @At(value = "RETURN"))
 	public void getHeartsFlashTime(Entity attacker, int damage, DamageType type, CallbackInfoReturnable<Boolean> info) {
 		if (!(attacker instanceof Player)) return;

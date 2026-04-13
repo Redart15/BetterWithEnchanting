@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(value = PlayerServer.class, remap = false)
-public abstract class EntityPlayerMPMixin extends Player implements IEntityPlayer, ContainerListener {
+public abstract class PlayerServerMixin extends Player implements IEntityPlayer, ContainerListener {
 	@Shadow
 	protected abstract void getNextWindowId();
 
@@ -24,7 +24,7 @@ public abstract class EntityPlayerMPMixin extends Player implements IEntityPlaye
 	@Shadow
 	public PacketHandlerServer playerNetServerHandler;
 
-	public EntityPlayerMPMixin(World world) {
+	public PlayerServerMixin(World world) {
 		super(world);
 	}
 
