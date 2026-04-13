@@ -1,8 +1,6 @@
 package googy.betterwithenchanting.enchantment;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
-import net.minecraft.core.entity.Entity;
-import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.lang.I18n;
@@ -39,7 +37,6 @@ public class Enchantment {
 
 	public boolean canEnchant(ItemStack stack) {
 		if (stack == null || stack.getItem() == null) return false;
-
 		return canEnchant(stack.getItem());
 	}
 
@@ -58,14 +55,6 @@ public class Enchantment {
 
 	public int getMaxEnchantability(int level) {
 		return this.getMinEnchantability(level) + 5;
-	}
-
-	public void onTargetDamaged(Player user, Entity target, int level) {
-
-	}
-
-	public void onUserDamaged(Player user, Entity attacker, int level) {
-
 	}
 
 	public static enum Rarity {
