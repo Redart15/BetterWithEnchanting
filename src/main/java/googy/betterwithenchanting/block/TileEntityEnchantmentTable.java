@@ -15,20 +15,20 @@ import java.util.Random;
 public class TileEntityEnchantmentTable extends TileEntity implements Container {
 	protected ItemStack[] items = new ItemStack[2];
 	protected Random random = new Random();
+	private int ticks;
+	private float bookRot;
+	private float prevBookRot;
+	private float prevPageFlip;
+	private float pageFlip;
+	private float bookSpread;
+	private float prevBookSpread;
+	private float itemRot;
 
-	protected int ticks;
-	protected float pageFlip;
-	protected float prevPageFlip;
-	protected float flipT;
-	protected float flipA;
-	protected float bookSpread;
-	protected float prevBookSpread;
-	protected float bookRot;
-	protected float prevBookRot;
-	protected float tRot;
-	protected float itemRot;
+	private float flipT;
+	private float flipA;
+	private float tRot;
 
-	public static String[] labels = new String[]{
+	private static final String[] LABELS = new String[]{
 		"powerful", "strong", "loyal", "vital", "enduring", "focused", "potent", "swift", "agile",
 		"unbreaking", "fortunate", "wise", "keen", "resilient", "tireless", "durable", "fierce",
 		"lethal", "dominant", "pure", "exalted", "blessed", "enchanced", "elevated",
@@ -48,11 +48,11 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 	}
 
 	public int 	getNewLabel() {
-		return random.nextInt(labels.length);
+		return random.nextInt(LABELS.length);
 	}
 
 	public String getAtIndex(int i) {
-		return labels[labelIndexes[i % 3] % labels.length];
+		return LABELS[labelIndexes[i % 3] % LABELS.length];
 	}
 
 	public boolean getType(int i) {
@@ -61,53 +61,70 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 
 	@Override
 	public void tick() {
-		ticks++;
-		prevBookSpread = bookSpread;
-		prevBookRot = bookRot;
+		this.ticks++;
+		this.prevBookSpread = bookSpread;
+		this.prevBookRot = bookRot;
 
-		Player player = worldObj.getClosestPlayer((float) this.x + 0.5F, (float) this.y + 0.5F, (float) this.z + 0.5F, 3.0D);
-		boolean cRot = false;
+		Player player = this.worldObj.getClosestPlayer((float) this.x + 0.5F, (float) this.y + 0.5F, (float) this.z + 0.5F, 3.0D);
+		boolean cRot = this.adjustRotation(player);
+		this.tRot += !cRot ? 0.0F : 0.02F;
+		this.itemRot += 0.03F;
+		this.setUpBookSpread(player);
+		this.adjustments();
+		this.bookRot += adjustRotationAngleBook() * 0.4F;
+		this.bookSpread = MathHelper.clamp(this.bookSpread, 0.0F, 1.0F);
+		this.prevPageFlip = this.pageFlip;
+		this.setUpPageFlip();
+	}
 
-		if (player != null) {
-			double x = player.x - (double) ((float) this.x + 0.5F);
-			double z = player.z - (double) ((float) this.z + 0.5F);
-			tRot = (float) Math.atan2(z, x);
-			cRot = true;
-		}
+	private void setUpPageFlip() {
+		float f2 = (this.flipT - this.pageFlip) * 0.4F;
+		f2 = MathHelper.clamp(f2, -0.2F, 0.2F);
+		this.flipA += (f2 - this.flipA) * 0.9F;
+		this.pageFlip += this.flipA;
+	}
 
-		if (!cRot) tRot += 0.02F;
-		itemRot += 0.03F;
+	private float adjustRotationAngleBook() {
+		float f = this.tRot - this.bookRot;
+		for (;f >= (float) Math.PI; f -= (float) Math.PI * 2.0F);
+		while (f < -(float) Math.PI) f += ((float) Math.PI * 2.0F);
+		return f;
+	}
 
-		if (player != null || items[0] != null) {
-			bookSpread += 0.1F;
-			if (bookSpread < 0.5F || worldObj.rand.nextInt(40) == 0) {
-				float f = flipT;
+	private void setUpBookSpread(Player player) {
+		if (player != null || this.items[0] != null) {
+			this.bookSpread += 0.1F;
+			if (this.bookSpread < 0.5F || this.worldObj.rand.nextInt(40) == 0) {
+				float f = this.flipT;
 				while (true) {
-					flipT += (float) (worldObj.rand.nextInt(4) - worldObj.rand.nextInt(4));
-					if (f != flipT) break;
+					this.flipT += (float) (this.worldObj.rand.nextInt(4) - this.worldObj.rand.nextInt(4));
+					if (f != this.flipT) {
+						break;
+					}
 				}
 			}
-		} else bookSpread -= 0.1F;
+		} else {
+			this.bookSpread -= 0.1F;
+		}
+	}
 
-		while (bookRot >= (float) Math.PI) bookRot -= ((float) Math.PI * 2.0F);
-		while (bookRot < -(float) Math.PI) bookRot += ((float) Math.PI * 2.0F);
-		while (tRot >= (float) Math.PI) tRot -= ((float) Math.PI * 2.0F);
-		while (tRot < -(float) Math.PI) tRot += ((float) Math.PI * 2.0F);
-		while (itemRot >= (float) Math.PI) itemRot -= ((float) Math.PI * 2.0F);
-		while (itemRot < -(float) Math.PI) itemRot += ((float) Math.PI * 2.0F);
+	private boolean adjustRotation(Player player) {
+		if (player != null) {
+			double x = player.x - (this.x + 0.5F);
+			double z = player.z - (this.z + 0.5F);
+			this.tRot = (float) Math.atan2(z, x);
+			return true;
+		}
+		return false;
+	}
 
-		float f;
-
-		for (f = tRot - bookRot; f >= (float) Math.PI; f -= (float) Math.PI * 2.0F) ;
-		while (f < -(float) Math.PI) f += ((float) Math.PI * 2.0F);
-
-		bookRot += f * 0.4F;
-		bookSpread = MathHelper.clamp(bookSpread, 0.0F, 1.0F);
-		prevPageFlip = pageFlip;
-		float f2 = (flipT - pageFlip) * 0.4F;
-		f2 = MathHelper.clamp(f2, -0.2F, 0.2F);
-		flipA += (f2 - flipA) * 0.9F;
-		pageFlip += flipA;
+	private void adjustments() {
+		while (this.bookRot >= (float) Math.PI) this.bookRot -= ((float) Math.PI * 2.0F);
+		while (this.bookRot < -(float) Math.PI) this.bookRot += ((float) Math.PI * 2.0F);
+		while (this.tRot >= (float) Math.PI) this.tRot -= ((float) Math.PI * 2.0F);
+		while (this.tRot < -(float) Math.PI) this.tRot += ((float) Math.PI * 2.0F);
+		while (this.itemRot >= (float) Math.PI) itemRot -= ((float) Math.PI * 2.0F);
+		while (this.itemRot < -(float) Math.PI) this.itemRot += ((float) Math.PI * 2.0F);
 	}
 
 	@Override
@@ -173,7 +190,7 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 			for (int i = 0; i < labelIndexes.length; i++) {
 				if (i < labelTag.tagCount()) {
 					CompoundTag label = (CompoundTag) labelTag.tagAt(i);
-					this.labelIndexes[i] = label.getInteger("Index") % labels.length;
+					this.labelIndexes[i] = label.getInteger("Index") % LABELS.length;
 				} else {
 					this.labelIndexes[i] = this.getNewLabel();
 				}
@@ -201,7 +218,7 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 		ListTag labelTagList = new ListTag();
 		for (int i = 0; i < this.labelIndexes.length; i++) {
 			int label = labelIndexes[i];
-			if (label > labels.length || label < 0) {
+			if (label > LABELS.length || label < 0) {
 				label = this.getNewLabel();
 			}
 			CompoundTag labelTag = new CompoundTag();
@@ -222,4 +239,13 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 			return false;
 		}
 	}
+	///  getter for EnchantmentTableRenderer (tileentity renderer)
+	public int ticks() {return ticks;}
+	public float bookRot() {return bookRot;}
+	public float prevBookRot() {return prevBookRot;}
+	public float prevPageFlip() {return prevPageFlip;}
+	public float pageFlip() {return pageFlip;}
+	public float bookSpread() {return bookSpread;}
+	public float prevBookSpread() {return prevBookSpread;}
+	public float itemRot() {return itemRot;}
 }

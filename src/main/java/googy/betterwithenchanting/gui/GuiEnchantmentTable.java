@@ -1,7 +1,7 @@
 package googy.betterwithenchanting.gui;
 
+import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
-import googy.betterwithenchanting.helper.EnchantmentFont;
 import googy.betterwithenchanting.network.packet.PacketEnchantItem;
 import googy.betterwithenchanting.inventory.ContainerEnchantmentTable;
 import googy.betterwithenchanting.utils.EnchantmentUtils;
@@ -27,6 +27,15 @@ public class GuiEnchantmentTable extends ScreenFix {
 	private static final int ACTIVE_LEVEL_OFFSET = 223;
 	private static final int DEACTIVATED_LEVEL_OFFSET = 239;
 	public static final int MAX_STRING_LENGTH = 77;
+
+	public static final int UV_SIZE = 16;
+	public static final int ROW_COLUMN_SIZE = 16;
+	public static final int GALACTIC_INDEX = 0;
+	public static final int GALACTIC_INDEX_NUMBERS = GALACTIC_INDEX + 3 * ROW_COLUMN_SIZE;
+	public static final int ILLAGER_INDEX = GALACTIC_INDEX_NUMBERS + ROW_COLUMN_SIZE;
+	public static final int ILLAGER_INDEX_NUMBERS = ILLAGER_INDEX + 3 * ROW_COLUMN_SIZE;
+	public static final Texture TEXTURE = Minecraft.getMinecraft().textureManager.loadTexture("/assets/" + MOD_ID + "/gui/enchantment_letters.png");
+
 
 	TileEntityEnchantmentTable enchantmentTable;
 	ContainerEnchantmentTable enchantmentTableContainer;
@@ -194,26 +203,26 @@ public class GuiEnchantmentTable extends ScreenFix {
 		GL11.glColor4f(red, blue, green, alpha);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		Tessellator t = Tessellator.instance;
-		Minecraft.getMinecraft().textureManager.bindTexture(EnchantmentFont.TEXTURE);
+		Minecraft.getMinecraft().textureManager.bindTexture(GuiEnchantmentTable.TEXTURE);
 		t.startDrawingQuads();
 		float sy = 7.99F;
 		float ex = (float) x;
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
-			int index = EnchantmentFont.getIndex(c, useIllager);
+			int index = GuiEnchantmentTable.getIndex(c, useIllager);
 			if (c == ' ' || index < 0) {
 				ex += 4.0f;
 				continue;
 			}
 			int iLeft = (charWidth[index] >> 4);
 			int iRight = (charWidth[index] & 15) + 1;
-			int rowIndex = Math.floorDiv(index, EnchantmentFont.ROW_SIZE);
-			int columnIndex = index - rowIndex * EnchantmentFont.ROW_SIZE;
-			double len = ((double) iRight - (double) iLeft - 0.02F) / (double) EnchantmentFont.USIZE * sy;
-			double uMin = ((double) columnIndex * EnchantmentFont.COLUMN_SIZE + (double) iLeft) / (EnchantmentFont.COLUMN_SIZE * EnchantmentFont.USIZE);
-			double uMax = ((double) columnIndex * EnchantmentFont.COLUMN_SIZE + (double) iRight) / (EnchantmentFont.COLUMN_SIZE * EnchantmentFont.USIZE);
-			double vMin = (double) rowIndex / EnchantmentFont.ROW_SIZE;
-			double vMax = vMin + 1.0f / EnchantmentFont.ROW_SIZE;
+			int rowIndex = Math.floorDiv(index, GuiEnchantmentTable.ROW_COLUMN_SIZE);
+			int columnIndex = index - rowIndex * GuiEnchantmentTable.ROW_COLUMN_SIZE;
+			double len = ((double) iRight - (double) iLeft - 0.02F) / (double) GuiEnchantmentTable.UV_SIZE * sy;
+			double uMin = ((double) columnIndex * GuiEnchantmentTable.ROW_COLUMN_SIZE + (double) iLeft) / (GuiEnchantmentTable.ROW_COLUMN_SIZE * GuiEnchantmentTable.UV_SIZE);
+			double uMax = ((double) columnIndex * GuiEnchantmentTable.ROW_COLUMN_SIZE + (double) iRight) / (GuiEnchantmentTable.ROW_COLUMN_SIZE * GuiEnchantmentTable.UV_SIZE);
+			double vMin = (double) rowIndex / GuiEnchantmentTable.ROW_COLUMN_SIZE;
+			double vMax = vMin + 1.0f / GuiEnchantmentTable.ROW_COLUMN_SIZE;
 			t.addVertexWithUV(ex, y, 0, uMin, vMin);
 			t.addVertexWithUV(ex, y + sy, 0, uMin, vMax);
 			t.addVertexWithUV(ex + len, y + sy, 0, uMax, vMax);
@@ -227,6 +236,18 @@ public class GuiEnchantmentTable extends ScreenFix {
 		t.draw();
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		return (int) ex;
+	}
+
+	public static int getIndex(char c, boolean useIllager) {
+		boolean illager = useIllager && BetterWithEnchanting.illagerFont;
+		int fontIndex = illager ? ILLAGER_INDEX : GALACTIC_INDEX;
+		if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+			return fontIndex + Character.toUpperCase(c) - 'A';
+		} else if ((c >= '0' && c <= '9')) {
+			fontIndex = illager ? ILLAGER_INDEX_NUMBERS : GALACTIC_INDEX_NUMBERS;
+			return fontIndex + c - '0';
+		}
+		return -1;
 	}
 
 	@Override
