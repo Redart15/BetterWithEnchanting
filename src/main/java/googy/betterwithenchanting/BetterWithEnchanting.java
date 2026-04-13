@@ -107,7 +107,7 @@ public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, Re
 	}
 
 	@Override public void initItemModels(ItemModelDispatcher dispatcher) {
-		dispatcher.addDispatch(new ItemScoreBottleModel(SCORE_BOTTLE, null).setIcon(MOD_ID + ":item/score_bottle"));
+		dispatcher.addDispatch(new ItemScoreBottleModel(SCORE_BOTTLE, null).setIcon(MOD_ID + ":item/score_bottle1"));
 	}
 
 	@Override public void initTileEntityModels(TileEntityRenderDispatcher dispatcher) {
