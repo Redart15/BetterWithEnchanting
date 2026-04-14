@@ -8,11 +8,10 @@ item.betterwithenchanting.bottle.score.name = Bottle
 item.betterwithenchanting.bottle.score.desc = Enchanting, is it not?
 
 
-enchantment.betterwithenchanting.haste.name = Haste
-enchantment.betterwithenchanting.unbreaking.name = Unbreaking
-enchantment.betterwithenchanting.quickswing.name = Quickswing
-enchantment.betterwithenchanting.flame.name = Flame
-enchantment.betterwithenchanting.bait.name = Bait
-enchantment.betterwithenchanting.score.name = Score
-
-disabled = Glitchcraft
+enchantment.betterwithenchanting.haste.name         = Haste
+enchantment.betterwithenchanting.unbreaking.name    = Unbreaking
+enchantment.betterwithenchanting.quickswing.name    = Quickswing
+enchantment.betterwithenchanting.flame.name         = Flame
+enchantment.betterwithenchanting.bait.name          = Bait
+enchantment.betterwithenchanting.score.name         = Score
+disabled                                            = Glitchcraft

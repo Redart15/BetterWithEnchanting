@@ -1,7 +1,6 @@
-package googy.betterwithenchanting.particle;
+package googy.betterwithenchanting;
 
-import googy.betterwithenchanting.BetterWithEnchanting;
-import googy.betterwithenchanting.mixin.accessor.ParticleAccessor;
+import googy.betterwithenchanting.mixins.mixin.accessor.ParticleAccessor;
 import net.minecraft.client.entity.particle.Particle;
 import net.minecraft.client.render.texture.stitcher.IconCoordinate;
 import net.minecraft.client.render.texture.stitcher.TextureRegistry;
@@ -31,7 +30,7 @@ public class ParticleGlyph extends Particle {
 		this.yd = ya;
 		this.tex = this.setTex();
 		this.noPhysics = true;
-		if(BetterWithEnchanting.coloredParticle){
+		if(BetterWithEnchanting.COLORED_PARTICLE){
 			((ParticleAccessor)this).setRCol(this.random.nextFloat());
 			((ParticleAccessor)this).setGCol(this.random.nextFloat());
 			((ParticleAccessor)this).setBCol(this.random.nextFloat());
@@ -41,7 +40,7 @@ public class ParticleGlyph extends Particle {
 	private IconCoordinate setTex() {
 		String path = new StringBuilder(MOD_ID)
 			.append(":particle/")
-			.append(this.random.nextBoolean() && BetterWithEnchanting.illagerFont ? "ill_" : "svg_")
+			.append(this.random.nextBoolean() && BetterWithEnchanting.ILLAGER_FONT ? "ill_" : "svg_")
 			.append(LETTERS.charAt(this.random.nextInt(LETTERS.length())))
 			.toString();
 		return TextureRegistry.getTexture(path);

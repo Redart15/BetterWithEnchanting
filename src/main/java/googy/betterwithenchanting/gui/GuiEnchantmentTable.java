@@ -4,7 +4,7 @@ import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.network.packet.PacketEnchantItem;
 import googy.betterwithenchanting.inventory.ContainerEnchantmentTable;
-import googy.betterwithenchanting.utils.EnchantmentUtils;
+import googy.betterwithenchanting.api.EnchantmentContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.PlayerLocalMultiplayer;
 import net.minecraft.client.render.tessellator.Tessellator;
@@ -41,8 +41,7 @@ public class GuiEnchantmentTable extends ScreenFix {
 	ContainerEnchantmentTable enchantmentTableContainer;
 	int mouseX = 0;
 	int mouseY = 0;
-
-	private static byte[] charWidth = new byte[65536];
+	private static byte[] charWidth = new byte[256];
 
 	static {
 		InputStream stream = Texture.class.getResourceAsStream("/assets/" + MOD_ID + "/gui/enchant.bin");
@@ -239,7 +238,7 @@ public class GuiEnchantmentTable extends ScreenFix {
 	}
 
 	public static int getIndex(char c, boolean useIllager) {
-		boolean illager = useIllager && BetterWithEnchanting.illagerFont;
+		boolean illager = useIllager && BetterWithEnchanting.ILLAGER_FONT;
 		int fontIndex = illager ? ILLAGER_INDEX : GALACTIC_INDEX;
 		if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
 			return fontIndex + Character.toUpperCase(c) - 'A';
@@ -254,7 +253,7 @@ public class GuiEnchantmentTable extends ScreenFix {
 	public int getTargetSlot(ItemStack stackInSlot, int clickedItemId) {
 		if (stackInSlot != null && stackInSlot.getItem().id == Items.DYE.id && stackInSlot.getMetadata() == 4) {
 			return 2;
-		} else if (EnchantmentUtils.getEnchantments(stackInSlot).isEmpty()) {
+		} else if (EnchantmentContainer.getEnchantments(stackInSlot).isEmpty()) {
 			return 1;
 		}
 		return 0;

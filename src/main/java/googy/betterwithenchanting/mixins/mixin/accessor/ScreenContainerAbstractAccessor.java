@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.mixin.accessor;
+package googy.betterwithenchanting.mixins.mixin.accessor;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

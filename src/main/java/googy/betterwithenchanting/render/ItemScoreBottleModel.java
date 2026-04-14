@@ -1,7 +1,7 @@
 package googy.betterwithenchanting.render;
 
-import googy.betterwithenchanting.enchantment.Enchantments;
-import googy.betterwithenchanting.utils.EnchantmentUtils;
+import googy.betterwithenchanting.api.Enchantments;
+import googy.betterwithenchanting.api.EnchantmentContainer;
 import net.minecraft.client.render.item.model.ItemModelStandard;
 import net.minecraft.client.render.texture.stitcher.IconCoordinate;
 import net.minecraft.client.render.texture.stitcher.TextureRegistry;
@@ -20,7 +20,7 @@ public class ItemScoreBottleModel extends ItemModelStandard {
 
 	@Override
 	public @NotNull IconCoordinate getIcon(@Nullable Entity entity, ItemStack itemStack) {
-		if(EnchantmentUtils.containsEnchantment(itemStack, Enchantments.bottledScore)) {
+		if(EnchantmentContainer.contains(itemStack, Enchantments.BOTTLED_SCORE)) {
 			return super.getIcon(entity, itemStack);
 		}
 		return TextureRegistry.getTexture(MOD_ID + ":item/empty_bottle");

@@ -1,7 +1,8 @@
-package googy.betterwithenchanting.mixin.accessor;
+package googy.betterwithenchanting.mixins.mixin.accessor;
 
 import net.minecraft.core.net.packet.Packet;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(value = Packet.class, remap = false)
 public interface PacketMixin

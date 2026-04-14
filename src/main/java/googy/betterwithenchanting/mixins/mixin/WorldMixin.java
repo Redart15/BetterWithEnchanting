@@ -1,7 +1,7 @@
-package googy.betterwithenchanting.mixin;
+package googy.betterwithenchanting.mixins.mixin;
 
-import googy.betterwithenchanting.enchantment.Enchantments;
-import googy.betterwithenchanting.utils.EnchantmentUtils;
+import googy.betterwithenchanting.api.Enchantments;
+import googy.betterwithenchanting.api.EnchantmentContainer;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.projectile.ProjectileArrow;
 import net.minecraft.core.world.World;
@@ -19,7 +19,7 @@ public abstract class WorldMixin {
 			ProjectileArrow arrow = (ProjectileArrow) entity;
 			if (arrow.owner == null) return;
 
-			int flameLevel = EnchantmentUtils.getLevel(arrow.owner.getHeldItem(), Enchantments.flame);
+			int flameLevel = EnchantmentContainer.getLevel(arrow.owner.getHeldItem(), Enchantments.FLAME);
 			int fireTime = flameLevel * 20; // level * second
 
 			if (entity.remainingFireTicks < fireTime) {

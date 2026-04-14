@@ -1,7 +1,7 @@
-package googy.betterwithenchanting.mixin;
+package googy.betterwithenchanting.mixins.mixin;
 
-import googy.betterwithenchanting.enchantment.Enchantments;
-import googy.betterwithenchanting.utils.EnchantmentUtils;
+import googy.betterwithenchanting.api.Enchantments;
+import googy.betterwithenchanting.api.EnchantmentContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.controller.PlayerController;
 import org.objectweb.asm.Opcodes;
@@ -21,7 +21,7 @@ public abstract class PlayerControllerMixin {
 
 	@Redirect(method = "continueDestroyBlock", at = @At(value = "FIELD", target = "Lnet/minecraft/client/player/controller/PlayerController;blockHitDelay:I", opcode = Opcodes.GETFIELD))
 	public int getBlockHitDelay(PlayerController instance) {
-		int quickstrikeLevel = EnchantmentUtils.getLevel(mc.thePlayer.getHeldItem(), Enchantments.quickstrike);
+		int quickstrikeLevel = EnchantmentContainer.getLevel(mc.thePlayer.getHeldItem(), Enchantments.QUICKSTRIKE);
 		if (quickstrikeLevel > 0) {
 			return 0;
 		}

@@ -1,6 +1,6 @@
 package googy.betterwithenchanting.network.packet;
 
-import googy.betterwithenchanting.interfaces.mixins.INetServerHandler;
+import googy.betterwithenchanting.mixins.interfaces.INetServerHandler;
 import net.minecraft.core.net.handler.PacketHandler;
 import net.minecraft.core.net.packet.Packet;
 

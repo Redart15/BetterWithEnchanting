@@ -1,8 +1,8 @@
-package googy.betterwithenchanting.mixin;
+package googy.betterwithenchanting.mixins.mixin;
 
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.gui.GuiEnchantmentTable;
-import googy.betterwithenchanting.interfaces.mixins.IEntityPlayer;
+import googy.betterwithenchanting.mixins.interfaces.IEntityPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.PlayerLocal;
 import org.spongepowered.asm.mixin.Mixin;

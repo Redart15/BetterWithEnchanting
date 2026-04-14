@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.interfaces.mixins;
+package googy.betterwithenchanting.mixins.interfaces;
 
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 

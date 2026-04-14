@@ -1,8 +1,8 @@
 package googy.betterwithenchanting.item;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
-import googy.betterwithenchanting.enchantment.Enchantments;
-import googy.betterwithenchanting.utils.EnchantmentUtils;
+import googy.betterwithenchanting.api.Enchantments;
+import googy.betterwithenchanting.api.EnchantmentContainer;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
@@ -17,8 +17,8 @@ public class ItemEnchantmentBottle extends Item {
 
 	@Override
 	public ItemStack onUseItem(ItemStack itemstack, World world, Player player) {
-		if(EnchantmentUtils.containsEnchantment(itemstack, Enchantments.bottledScore)){
-			int level = EnchantmentUtils.getLevel(itemstack, Enchantments.bottledScore);
+		if(EnchantmentContainer.contains(itemstack, Enchantments.BOTTLED_SCORE)){
+			int level = EnchantmentContainer.getLevel(itemstack, Enchantments.BOTTLED_SCORE);
 			player.score += level * 3500;
 			return new ItemStack(BetterWithEnchanting.SCORE_BOTTLE.getDefaultStack());
 		}
@@ -27,7 +27,7 @@ public class ItemEnchantmentBottle extends Item {
 
 	@Override
 	public String getTranslatedName(ItemStack itemstack) {
-		if(EnchantmentUtils.containsEnchantment(itemstack, Enchantments.bottledScore)){
+		if(EnchantmentContainer.contains(itemstack, Enchantments.BOTTLED_SCORE)){
 			return I18n.getInstance().translateKey(itemstack.getItemKey() + ".enchanted.name");
 		}
 		return super.getTranslatedName(itemstack);
@@ -35,7 +35,7 @@ public class ItemEnchantmentBottle extends Item {
 
 	@Override
 	public String getTranslatedDescription(ItemStack itemstack) {
-		if(EnchantmentUtils.containsEnchantment(itemstack, Enchantments.bottledScore)){
+		if(EnchantmentContainer.contains(itemstack, Enchantments.BOTTLED_SCORE)){
 			return I18n.getInstance().translateKey(itemstack.getItemKey() + ".enchanted.desc");
 		}
 		return super.getTranslatedDescription(itemstack);

@@ -1,6 +1,6 @@
-package googy.betterwithenchanting.mixin;
+package googy.betterwithenchanting.mixins.mixin;
 
-import googy.betterwithenchanting.interfaces.mixins.INetServerHandler;
+import googy.betterwithenchanting.mixins.interfaces.INetServerHandler;
 import googy.betterwithenchanting.network.packet.PacketEnchantItem;
 import googy.betterwithenchanting.inventory.ContainerEnchantmentTable;
 import net.minecraft.core.player.inventory.menu.MenuAbstract;

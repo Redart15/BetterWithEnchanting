@@ -1,8 +1,7 @@
-package googy.betterwithenchanting.mixin;
+package googy.betterwithenchanting.mixins.mixin;
 
-import googy.betterwithenchanting.BetterWithEnchanting;
-import googy.betterwithenchanting.enchantment.Enchantments;
-import googy.betterwithenchanting.utils.EnchantmentUtils;
+import googy.betterwithenchanting.api.Enchantments;
+import googy.betterwithenchanting.api.EnchantmentContainer;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.tool.ItemTool;
@@ -20,7 +19,7 @@ public abstract class ItemToolMixin {
 		if (ret <= 1.0) {
 			return;
 		}
-		int hasteLevel = EnchantmentUtils.getLevel(stack, Enchantments.haste);
+		int hasteLevel = EnchantmentContainer.getLevel(stack, Enchantments.HASTE);
 		if (hasteLevel <= 0) {
 			return;
 		}

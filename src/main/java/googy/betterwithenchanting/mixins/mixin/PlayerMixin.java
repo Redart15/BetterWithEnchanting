@@ -1,7 +1,7 @@
-package googy.betterwithenchanting.mixin;
+package googy.betterwithenchanting.mixins.mixin;
 
-import googy.betterwithenchanting.enchantment.Enchantments;
-import googy.betterwithenchanting.utils.EnchantmentUtils;
+import googy.betterwithenchanting.api.Enchantments;
+import googy.betterwithenchanting.api.EnchantmentContainer;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
@@ -21,7 +21,7 @@ public abstract class PlayerMixin {
 
 		ItemStack stack = ((Player) (Object) this).getCurrentEquippedItem();
 
-		int flameLevel = EnchantmentUtils.getLevel(stack, Enchantments.flame);
+		int flameLevel = EnchantmentContainer.getLevel(stack, Enchantments.FLAME);
 		int fireTime = flameLevel * 20; // level * second
 
 		if (entity.remainingFireTicks < fireTime) {

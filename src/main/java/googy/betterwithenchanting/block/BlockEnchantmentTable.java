@@ -1,7 +1,7 @@
 package googy.betterwithenchanting.block;
 
-import googy.betterwithenchanting.interfaces.mixins.IEntityPlayer;
-import googy.betterwithenchanting.particle.ParticleGlyph;
+import googy.betterwithenchanting.mixins.interfaces.IEntityPlayer;
+import googy.betterwithenchanting.ParticleGlyph;
 import net.minecraft.core.Global;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogicRotatable;
@@ -61,7 +61,7 @@ public class BlockEnchantmentTable extends BlockLogicRotatable {
 			return;
 		}
 		double dx = (double)tx - bx;
-		double dy = (double)ty - by + 0.75f;
+		double dy = (double)ty - by + 0.5f;
 		double dz = (double)tz - bz;
 		double vx = dx / ParticleGlyph.TIME;
 		double vz = dz / ParticleGlyph.TIME;

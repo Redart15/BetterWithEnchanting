@@ -1,8 +1,8 @@
-package googy.betterwithenchanting.mixin;
+package googy.betterwithenchanting.mixins.mixin;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
-import googy.betterwithenchanting.interfaces.mixins.IEntityPlayer;
+import googy.betterwithenchanting.mixins.interfaces.IEntityPlayer;
 import googy.betterwithenchanting.inventory.ContainerEnchantmentTable;
 import net.minecraft.core.crafting.ContainerListener;
 import net.minecraft.core.entity.player.Player;
@@ -35,7 +35,7 @@ public abstract class PlayerServerMixin extends Player implements IEntityPlayer,
 		this.playerNetServerHandler.sendPacket(
 			new PacketContainerOpen(
 				this.currentWindowId,
-				BetterWithEnchanting.config.getInt("enchantment_window_type_id"),
+				BetterWithEnchanting.CONFIG_HANDLER.getInt("enchantment_window_type_id"),
 				enchantmentTable.getNameTranslationKey(),
 				enchantmentTable.getContainerSize()
 			));

@@ -1,6 +1,6 @@
 package googy.betterwithenchanting.gui;
 
-import googy.betterwithenchanting.mixin.accessor.ScreenContainerAbstractAccessor;
+import googy.betterwithenchanting.mixins.mixin.accessor.ScreenContainerAbstractAccessor;
 import net.minecraft.client.gui.container.ScreenContainerAbstract;
 import net.minecraft.core.InventoryAction;
 import net.minecraft.core.block.entity.TileEntityFurnaceBlast;

@@ -1,8 +1,8 @@
-package googy.betterwithenchanting.mixin;
+package googy.betterwithenchanting.mixins.mixin;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
-import googy.betterwithenchanting.enchantment.Enchantments;
-import googy.betterwithenchanting.utils.EnchantmentUtils;
+import googy.betterwithenchanting.api.Enchantments;
+import googy.betterwithenchanting.api.EnchantmentContainer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.Mob;
@@ -25,7 +25,7 @@ public class MobMixin {
 			BetterWithEnchanting.LOG.info("Victims timer:{}", thisLiving.heartsFlashTime);
 		}
 
-		int quickstrikeLevel = EnchantmentUtils.getLevel(player.getHeldItem(), Enchantments.quickstrike);
+		int quickstrikeLevel = EnchantmentContainer.getLevel(player.getHeldItem(), Enchantments.QUICKSTRIKE);
 		if (quickstrikeLevel <= 0) return;
 		if (thisLiving.heartsFlashTime == thisLiving.heartsHalvesLife) {
 			thisLiving.heartsFlashTime = (int) (thisLiving.heartsHalvesLife * 0.75);

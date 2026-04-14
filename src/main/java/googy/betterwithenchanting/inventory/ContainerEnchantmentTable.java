@@ -1,10 +1,7 @@
 package googy.betterwithenchanting.inventory;
 
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
-import googy.betterwithenchanting.enchantment.Enchantment;
-import googy.betterwithenchanting.enchantment.EnchantmentData;
-import googy.betterwithenchanting.enchantment.Enchantments;
-import googy.betterwithenchanting.utils.EnchantmentUtils;
+import googy.betterwithenchanting.api.EnchantmentContainer;
 import net.minecraft.core.InventoryAction;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.crafting.ContainerListener;
@@ -45,7 +42,9 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 
 
 	public boolean enchantItem(Player player, int enchantOption) {
-		if (!playerCanEnchant(player, enchantOption)) return false;
+		if (!playerCanEnchant(player, enchantOption)) {
+			return false;
+		}
 		int cost = enchantCost[enchantOption];
 		if (player.gamemode != Gamemode.creative) {
 			player.score -= cost;
@@ -54,9 +53,11 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 			}
 		}
 		ItemStack stack = this.getSlot(0).getItemStack();
-		List<EnchantmentData> enchantments = EnchantmentUtils.generateEnchantmentsList(random, stack, cost);
-		if (enchantments == null) return false;
-		EnchantmentUtils.addEnchantments(stack, enchantments);
+		List<EnchantmentContainer.EnchantmentData> enchantments = EnchantmentContainer.generateEnchantmentsList(random, stack, cost);
+		if (enchantments.isEmpty()) {
+			return false;
+		}
+		EnchantmentContainer.addEnchantments(stack, enchantments);
 		forceUpdateInventory();
 		return true;
 	}
@@ -75,10 +76,10 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 			return;
 		}
 
-		List<Enchantment> pool = Enchantments.getPossible(stack.getItem());
-		if (pool.isEmpty()) {
-			return;
-		}
+//		List<Enchantment> pool = Enchantments.getPossible(stack.getItem());
+//		if (pool.isEmpty()) {
+//			return;
+//		}
 
 		int posX = this.enchantmentTable.x;
 		int posY = this.enchantmentTable.y;
@@ -108,7 +109,7 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 		}
 		this.bookLevel =  Math.min(this.bookLevel, 15);
 		for (int i = 0; i < 3; i++) {
-			this.enchantCost[i] = EnchantmentUtils.calcEnchantmentCost(i, this.bookLevel);
+			this.enchantCost[i] = EnchantmentContainer.calcEnchantCost(i, this.bookLevel);
 		}
 	}
 
@@ -154,7 +155,7 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 
 	public boolean playerCanEnchant(Player player, int option) {
 		boolean hasItem = this.getSlot(0).hasItem();
-		boolean hasEnchantments = EnchantmentUtils.getEnchantments(this.getSlot(0).getItemStack()).isEmpty();
+		boolean hasEnchantments = EnchantmentContainer.getEnchantments(this.getSlot(0).getItemStack()).isEmpty();
 		boolean enoughScore = player.score >= enchantCost[option];
 		boolean enoughFuel = this.getFuelAmount() > option;
 		boolean isCreative = player.gamemode == Gamemode.creative;

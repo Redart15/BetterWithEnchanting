@@ -1,7 +1,7 @@
 package googy.betterwithenchanting.compat.stardew.mixin;
 
-import googy.betterwithenchanting.enchantment.Enchantments;
-import googy.betterwithenchanting.utils.EnchantmentUtils;
+import googy.betterwithenchanting.api.Enchantments;
+import googy.betterwithenchanting.api.EnchantmentContainer;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityFishingBobber;
@@ -24,7 +24,7 @@ public abstract class EntityBobberMixin extends Entity {
 		EntityFishingBobber thisBobber = (EntityFishingBobber) (Object) this;
 
 		ItemStack stack = thisBobber.owner.getCurrentEquippedItem();
-		int baitLevel = EnchantmentUtils.getLevel(stack, Enchantments.bait);
+		int baitLevel = EnchantmentContainer.getLevel(stack, Enchantments.BAIT);
 
 		int rate = catchRate - (baitLevel * 100);
 

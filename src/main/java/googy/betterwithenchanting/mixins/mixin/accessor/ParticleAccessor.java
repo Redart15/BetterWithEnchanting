@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.mixin.accessor;
+package googy.betterwithenchanting.mixins.mixin.accessor;
 
 import net.minecraft.client.entity.particle.Particle;
 import org.spongepowered.asm.mixin.Mixin;

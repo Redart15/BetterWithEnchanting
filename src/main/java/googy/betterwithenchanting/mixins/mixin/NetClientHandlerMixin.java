@@ -1,8 +1,8 @@
-package googy.betterwithenchanting.mixin;
+package googy.betterwithenchanting.mixins.mixin;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
-import googy.betterwithenchanting.interfaces.mixins.IEntityPlayer;
+import googy.betterwithenchanting.mixins.interfaces.IEntityPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.net.handler.PacketHandlerClient;
 import net.minecraft.core.net.packet.PacketContainerOpen;
@@ -21,7 +21,7 @@ public abstract class NetClientHandlerMixin {
 
 	@Inject(method = "handleOpenWindow", at = @At("TAIL"))
 	public void handleOpenWindow(PacketContainerOpen packet, CallbackInfo info) {
-		if (packet.inventoryType != BetterWithEnchanting.config.getInt("enchantment_window_type_id")) return;
+		if (packet.inventoryType != BetterWithEnchanting.CONFIG_HANDLER.getInt("enchantment_window_type_id")) return;
 		if (!packet.windowTitle.equals(BetterWithEnchanting.ENCHANTMENT_TABLE_NAME)) return;
 
 		TileEntityEnchantmentTable tile = new TileEntityEnchantmentTable();
