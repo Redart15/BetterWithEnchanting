@@ -1,9 +1,9 @@
 package googy.betterwithenchanting;
 
+import googy.betterwithenchanting.api.Enchantments;
 import googy.betterwithenchanting.block.BlockEnchantmentTable;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.item.ItemEnchantmentBottle;
-import googy.betterwithenchanting.particle.ParticleGlyph;
 import googy.betterwithenchanting.render.ItemScoreBottleModel;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
@@ -14,13 +14,13 @@ import net.minecraft.client.render.block.color.BlockColorDispatcher;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
 import net.minecraft.client.render.block.model.BlockModelStandard;
 import net.minecraft.client.render.item.model.ItemModelDispatcher;
-import net.minecraft.client.render.item.model.ItemModelStandard;
 import net.minecraft.client.render.texture.stitcher.AtlasStitcher;
 import net.minecraft.client.render.texture.stitcher.TextureRegistry;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.block.tag.BlockTags;
+import net.minecraft.core.data.registry.Registries;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
@@ -40,11 +40,14 @@ import googy.betterwithenchanting.render.EnchantmentTableRenderer;
 public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, RecipeEntrypoint, GameStartEntrypoint, ClientModInitializer, ClientStartEntrypoint {
 	public static final String MOD_ID = "betterwithenchanting";
 	public static final Logger LOG = LoggerFactory.getLogger(MOD_ID);
-	public static final ConfigHandler config;
-	public static int START_COST_OFFSET = 5;
+	public static final ConfigHandler CONFIG_HANDLER;
+	public static final int START_COST_OFFSET = 5;
+	public static final boolean COLORED_PARTICLE;
+	public static final boolean ILLAGER_FONT;
+	public static final int MAX_ENCHANTMENT_COST;
+	public static final int DEFAULT_ITEM_ENCHANTABILITY;
+
 	public static String ENCHANTMENT_TABLE_NAME = "Enchantment Table";
-	public static final boolean coloredParticle;
-	public static final boolean illagerFont;
 
 
 	static {
@@ -58,10 +61,12 @@ public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, Re
 		prop.setProperty("default_item_enchantability", "15");
 		prop.setProperty("use_illager_font", "true");
 		prop.setProperty("colored_particle", "false");
-		config = new ConfigHandler(MOD_ID, prop);
+		CONFIG_HANDLER = new ConfigHandler(MOD_ID, prop);
 
-		illagerFont = config.getBoolean("use_illager_font");
-		coloredParticle = config.getBoolean("colored_particle");
+		ILLAGER_FONT = CONFIG_HANDLER.getBoolean("use_illager_font");
+		COLORED_PARTICLE = CONFIG_HANDLER.getBoolean("colored_particle");
+		MAX_ENCHANTMENT_COST = CONFIG_HANDLER.getInt("max_enchantment_cost");
+		DEFAULT_ITEM_ENCHANTABILITY = CONFIG_HANDLER.getInt("default_item_enchantability");
 	}
 	public static final Block ENCHANTMENT_TABLE = new BlockBuilder(MOD_ID)
 		.setBlockSound(new BlockSound("step.stone", "step.stone", 1.0f, 1.0f))
@@ -69,9 +74,9 @@ public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, Re
 		.setResistance(1200)
 		.setLuminance(7)
 		.setTags(BlockTags.MINEABLE_BY_PICKAXE)
-		.build("enchantment.table", "enchantment_table", config.getInt("enchantment_table_id"), (b) -> new BlockEnchantmentTable(b));
+		.build("enchantment.table", "enchantment_table", CONFIG_HANDLER.getInt("enchantment_table_id"), (b) -> new BlockEnchantmentTable(b));
 
-	public static final Item SCORE_BOTTLE = new ItemBuilder(MOD_ID).build(new ItemEnchantmentBottle("bottle.score", MOD_ID + ":item/bottle_score", config.getInt("bottled_score_id")));
+	public static final Item SCORE_BOTTLE = new ItemBuilder(MOD_ID).build(new ItemEnchantmentBottle("bottle.score", MOD_ID + ":item/bottle_score", CONFIG_HANDLER.getInt("bottled_score_id")));
 
 	@Override
 	public void onInitialize() {
@@ -83,12 +88,18 @@ public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, Re
 		EntityHelper.createTileEntity(TileEntityEnchantmentTable.class, NamespaceID.getPermanent(MOD_ID, "enchantment_table"));
 	}
 
+	@Override public void afterGameStart() {
+		Registries.getInstance().register(MOD_ID + ":enchantments", Enchantments.getInstance());
+		LOG.info(String.format("%d enchantments registered.", Enchantments.getInstance().size()));
+		LOG.info("Enchantments initialized.");
+	}
+
 	@Override
 	public void onRecipesReady() {
 		RecipeBuilder.Shaped(MOD_ID, " B ", "DCD", "CCC")
 			.addInput('B', Items.BOOK)
 			.addInput('C', Blocks.OBSIDIAN)
-			.addInput('D', config.getBoolean("expensive_crafting") ? Blocks.BLOCK_DIAMOND : Items.DIAMOND)
+			.addInput('D', CONFIG_HANDLER.getBoolean("expensive_crafting") ? Blocks.BLOCK_DIAMOND : Items.DIAMOND)
 			.create("enchantingtable", new ItemStack(ENCHANTMENT_TABLE));
 
 		RecipeBuilder.Shaped(MOD_ID, " D ", "C C", " C ")
@@ -134,7 +145,6 @@ public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, Re
 	@Override public void initNamespaces() {/* no need */}
 	@Override public void initEntityModels(EntityRenderDispatcher dispatcher) {/* no need */}
 	@Override public void initBlockColors(BlockColorDispatcher dispatcher) {/* no need */}
-	@Override public void afterGameStart() {/* no need */}
 	@Override public void onInitializeClient() {/* no need */}
 	@Override public void afterClientStart() {/* no need */}
 }
