@@ -1,5 +1,6 @@
 package googy.betterwithenchanting.api;
 
+import googy.betterwithenchanting.item.EnchantingTags;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 
@@ -8,14 +9,18 @@ import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
 
 public class Enchantment {
-	private String id;
-	private String translationKey;
-	private double weight = 1.0f;
+	private final String id;
+	private final String translationKey;
+	private double weight = 10.0f;
 	private int maxLevel = 1;
 	private int minLevel = 1;
 	private Predicate<Item> target = (item -> true);
-	private IntUnaryOperator minEnchantability = (level) -> 1 + (level - 1) + 10;
-	private IntUnaryOperator maxEnchatability = (level) -> this.minEnchantability.applyAsInt(level) + 50;
+	private IntUnaryOperator minEnchantability = (level) -> (level - 1) * 12;
+	private IntUnaryOperator maxEnchatability = (level) -> this.minEnchantability.applyAsInt(level) + 12;
+	private boolean hidden = false; // prevents the enchantment from appearing in table
+
+	@Deprecated
+	private int intID = -1;
 
 	public Enchantment(String modID, String id) {
 		this(modID, id, id.replace('_', '.'));
@@ -24,6 +29,10 @@ public class Enchantment {
 	public Enchantment(String modID, String id, String translationKey) {
 		this.id = String.format("%s:%s", modID, id);
 		this.translationKey = String.format("enchantment.%s.%s", modID, translationKey);
+	}
+
+	public EnchantmentStack getDefaultStack(){
+		return new EnchantmentStack(this,this.maxLevel);
 	}
 
 	public boolean canApply(Item item) {
@@ -42,6 +51,10 @@ public class Enchantment {
 		return weight;
 	}
 
+	public double getWeight(int level){
+		return weight / Math.pow(1.25, Math.max(level - 1, 1));
+	}
+
 	public int maxLevel() {
 		return maxLevel;
 	}
@@ -58,40 +71,49 @@ public class Enchantment {
 		return this.maxEnchatability.applyAsInt(level);
 	}
 
+	public boolean hidden(){
+		return this.hidden;
+	}
+
 	public final boolean canEnchant(ItemStack itemStack) {
-		if (itemStack == null || itemStack.getMaxStackSize() > 1) {
+		if (itemStack == null || itemStack.getMaxStackSize() > 1 || itemStack.getItem().hasTag(EnchantingTags.UNECHANT)) {
 			return false;
 		}
 		return this.canApply(itemStack.getItem());
 	}
 
-	public Enchantment setWeight(double chance) {
+	Enchantment setWeight(double chance) {
 		this.weight = chance;
 		return this;
 	}
 
-	public Enchantment setMaxLevel(int maxLevel) {
+	Enchantment setMaxLevel(int maxLevel) {
 		this.maxLevel = maxLevel;
 		return this;
 	}
 
-	public Enchantment setMinLevel(int minLevel) {
+	Enchantment setMinLevel(int minLevel) {
 		this.minLevel = minLevel;
 		return this;
 	}
 
-	public Enchantment setTarget(Predicate<Item> target) {
+	Enchantment setTarget(Predicate<Item> target) {
 		this.target = target;
 		return this;
 	}
 
-	public Enchantment setMinEnchantability(IntUnaryOperator minEnchantability) {
+	Enchantment setMinEnchantability(IntUnaryOperator minEnchantability) {
 		this.minEnchantability = minEnchantability;
 		return this;
 	}
 
-	public Enchantment setMaxEnchatability(IntUnaryOperator maxEnchatability) {
+	Enchantment setMaxEnchatability(IntUnaryOperator maxEnchatability) {
 		this.maxEnchatability = maxEnchatability;
+		return this;
+	}
+
+	Enchantment setHidden(boolean hidden) {
+		this.hidden = hidden;
 		return this;
 	}
 
@@ -105,6 +127,16 @@ public class Enchantment {
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(id);
+	}
+
+
+	Enchantment setIntID(int intID) {
+		this.intID = intID;
+		return this;
+	}
+
+	public int getIntID(){
+		return this.intID;
 	}
 }
 
