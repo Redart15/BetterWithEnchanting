@@ -19,7 +19,7 @@ public class ItemEnchantmentBottle extends Item {
 	public ItemStack onUseItem(ItemStack itemstack, World world, Player player) {
 		if(EnchantmentContainer.contains(itemstack, Enchantments.BOTTLED_SCORE)){
 			int level = EnchantmentContainer.getLevel(itemstack, Enchantments.BOTTLED_SCORE);
-			player.score += level * 3500;
+			player.score += level * 4000;
 			return new ItemStack(BetterWithEnchanting.SCORE_BOTTLE.getDefaultStack());
 		}
 		return itemstack;

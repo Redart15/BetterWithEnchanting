@@ -12,6 +12,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
+import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
+
 public class TileEntityEnchantmentTable extends TileEntity implements Container {
 	protected ItemStack[] items = new ItemStack[2];
 	protected Random random = new Random();
@@ -31,9 +33,9 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 	private static final String[] LABELS = new String[]{
 		"powerful", "strong", "loyal", "vital", "enduring", "focused", "potent", "swift", "agile",
 		"unbreaking", "fortunate", "wise", "keen", "resilient", "tireless", "durable", "fierce",
-		"lethal", "dominant", "pure", "exalted", "blessed", "enchanced", "elevated",
+		"lethal", "dominant", "pure", "exalted", "blessed", "enhanced", "elevated",
 
-		"frail", "feeble", "briddle", "cursed", "blighted", "tainted", "rotten", "vulnerable", "exposed",
+		"frail", "feeble", "brittle", "cursed", "blighted", "tainted", "rotten", "vulnerable", "exposed",
 		"broken", "ruined", "fractured", "crippled", "confused", "dazed", "unstable", "deranged", "delirious",
 		"drained", "exhausted", "sinister", "suppressed", "profane", "forsaken"
 	};
@@ -160,7 +162,7 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 
 	@Override
 	public String getNameTranslationKey() {
-		return BetterWithEnchanting.ENCHANTMENT_TABLE_NAME;
+		return MOD_ID +  "contianer.enchantment.table.name";
 	}
 
 	@Override
@@ -228,8 +230,7 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 	}
 
 	@Override
-	public void sortContainer() {
-	}
+	public void sortContainer() { /* no need */}
 
 	@Override
 	public boolean stillValid(Player entityplayer) {

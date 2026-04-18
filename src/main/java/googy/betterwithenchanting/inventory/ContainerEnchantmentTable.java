@@ -1,5 +1,6 @@
 package googy.betterwithenchanting.inventory;
 
+import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import net.minecraft.core.InventoryAction;
@@ -53,7 +54,7 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 			}
 		}
 		ItemStack stack = this.getSlot(0).getItemStack();
-		List<EnchantmentContainer.EnchantmentData> enchantments = EnchantmentContainer.generateEnchantmentsList(random, stack, cost);
+		List<EnchantmentStack> enchantments = EnchantmentContainer.generateEnchantmentsList(random, stack, cost);
 		if (enchantments.isEmpty()) {
 			return false;
 		}
