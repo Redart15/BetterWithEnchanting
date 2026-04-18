@@ -1,9 +1,14 @@
 package googy.betterwithenchanting.mixins.mixin.enchantment;
 
+import com.llamalad7.mixinextras.expression.Definition;
+import com.llamalad7.mixinextras.expression.Expression;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import googy.betterwithenchanting.api.Enchantments;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import googy.betterwithenchanting.api.EnchantmentContainer;
+import googy.betterwithenchanting.api.Enchantments;
 import googy.betterwithenchanting.mixins.EnchantmentMixins;
 import googy.betterwithenchanting.mixins.mixin.accessor.ItemAccessor;
 import net.minecraft.core.entity.Entity;
@@ -14,6 +19,7 @@ import net.minecraft.core.util.helper.DamageType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = Mob.class, remap = false)
@@ -36,13 +42,13 @@ public class MobMixinEnchantments {
 	}
 
 	@WrapOperation(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/entity/Mob;dropDeathItems()V"))
-	private void enchanting$applyLooting(Mob instance, Operation<Void> original, Entity killer){
-		if(killer instanceof Player && !(instance instanceof Player)){
+	private void enchanting$applyLooting(Mob instance, Operation<Void> original, Entity killer) {
+		if (killer instanceof Player && !(instance instanceof Player)) {
 			Player player = (Player) killer;
 			ItemStack itemStack = player.getCurrentEquippedItem();
 			int level = EnchantmentContainer.getLevel(itemStack, Enchantments.LOOTING);
-			if(level > 0){
-				for(int i = 0; i < level; i++){
+			if (level > 0) {
+				for (int i = 0; i < level; i++) {
 					if (ItemAccessor.getItemRand().nextInt(4) == 0) {
 						original.call(instance);
 					}
@@ -50,5 +56,48 @@ public class MobMixinEnchantments {
 			}
 		}
 		original.call(instance);
+	}
+
+	@Inject(method = "knockBack", at = @At("HEAD"))
+	private void enchanting$doesKnockbackApply(
+		Entity entity, int i, double d, double d1,
+		CallbackInfo ci,
+		@Share("level")LocalIntRef knockBackLevel
+	){
+		if(entity instanceof Player){
+			Player player = (Player) entity;
+			ItemStack itemStack = player.getCurrentEquippedItem();
+			int level = EnchantmentContainer.getLevel(itemStack, Enchantments.KNOCKBACK);
+			if(level > 0){
+				knockBackLevel.set(level);
+			}
+		}
+		knockBackLevel.set(0);
+	}
+
+
+	@ModifyExpressionValue(method = "knockBack", at = @At(value = "CONSTANT", args = "floatValue=0.4F", ordinal = 0))
+	private float enchanting$applyHorizontalKnockbackBonus(float original, @Share("level")LocalIntRef knockBackLevel) {
+		float returnValue = 0.4f;
+		returnValue += 0.1f * knockBackLevel.get();
+		return returnValue;
+	}
+
+	@ModifyExpressionValue(method = "knockBack", at = @At(value = "CONSTANT", args = "doubleValue=0.4000000059604645", ordinal = 1))
+	private double enchanting$applyVerticalKnockbackBonus(double original, @Share("level")LocalIntRef knockBackLevel) {
+		float returnValue = 0.4f;
+		returnValue += 0.2f * knockBackLevel.get();
+		return returnValue;
+	}
+
+
+	@Definition(id = "yd", field = "Lnet/minecraft/core/entity/Mob;yd:D")
+	@Expression("this.yd > 0.4000000059604645")
+	@ModifyExpressionValue(method = "knockBack", at = @At("MIXINEXTRAS:EXPRESSION"))
+	private boolean enchanting$spoofVerticalCheck(boolean original, @Share("level")LocalIntRef knockBackLevel){
+		if(knockBackLevel.get() > 0){
+			return false;
+		}
+		return original;
 	}
 }

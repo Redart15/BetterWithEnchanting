@@ -3,12 +3,10 @@ package googy.betterwithenchanting.mixins;
 import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
-import googy.betterwithenchanting.mixins.mixin.accessor.ItemAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.render.TextureManager;
 import net.minecraft.client.render.item.model.ItemModelStandard;
 import net.minecraft.client.render.tessellator.Tessellator;
-import net.minecraft.core.item.ItemArmor;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.net.command.TextFormatting;
@@ -16,7 +14,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 
 import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
 
