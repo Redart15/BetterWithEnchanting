@@ -8,23 +8,22 @@
   "compatibilityLevel": "JAVA_${java}",
   "mixins": [
     "accessor.ItemAccessor",
-    "ItemStackMixin",
-    "ItemToolMixin",
-    "MobMixin",
-    "NetClientHandlerMixin",
-    "NetServerHandlerMixin",
-    "PlayerLocalMixin",
-    "PlayerMixin",
-    "PlayerServerMixin",
-    "WorldMixin",
-    "accessor.PacketMixin",
-    "accessor.ParticleAccessor"
+    "accessor.ParticleAccessor",
+    "enchantment.ItemStackMixinUnbreaking",
+    "enchantment.ItemToolMixinHaste",
+    "enchantment.MobMixinEnchantments",
+    "enchantment.PlayerMixinEnchantments",
+    "enchantment.WorldMixinFlame",
+    "net.NetClientHandlerMixin",
+    "net.NetServerHandlerMixin",
+    "net.PlayerLocalMixin",
+    "net.PlayerServerMixin"
   ],
   "client": [
-    "ItemModelStandardMixin",
-    "PlayerControllerMixin",
-    "TooltipElementMixin",
-    "accessor.ScreenContainerAbstractAccessor"
+    "accessor.ScreenContainerAbstractAccessor",
+    "enchantment.PlayerControllerMixinQuickStrike",
+    "render.ItemModelStandardMixin",
+    "render.TooltipElementMixin"
   ],
   "injectors": {
     "defaultRequire": 1

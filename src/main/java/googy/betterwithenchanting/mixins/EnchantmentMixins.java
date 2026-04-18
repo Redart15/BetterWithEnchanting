@@ -1,19 +1,27 @@
 package googy.betterwithenchanting.mixins;
 
+import googy.betterwithenchanting.BetterWithEnchanting;
+import googy.betterwithenchanting.api.EnchantmentContainer;
+import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.mixins.mixin.accessor.ItemAccessor;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.render.TextureManager;
 import net.minecraft.client.render.item.model.ItemModelStandard;
 import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.core.item.ItemArmor;
 import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.lang.I18n;
+import net.minecraft.core.net.command.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 
 import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
 
-public class EnchantMixins {
-	private EnchantMixins(){}
+public class EnchantmentMixins {
+	private EnchantmentMixins(){}
 
 	public static void renderGlint(ItemModelStandard asThis, Tessellator tessellator, TextureManager textureManager, ItemStack itemStack, int x, int y, float brightness, float alpha) {
 		GL11.glEnable(GL11.GL_BLEND);
@@ -40,11 +48,23 @@ public class EnchantMixins {
 		GL11.glDisable(GL11.GL_BLEND);
 	}
 
-    public static boolean shouldNegateDamage(ItemStack stack, int level) {
-		Random random = ItemAccessor.getItemRand();
-		if (stack.getItem() instanceof ItemArmor && random.nextFloat() < 0.6f) {
-            return true;
+	public static void devLog(String message){
+		if(FabricLoader.getInstance().isDevelopmentEnvironment()){
+			BetterWithEnchanting.LOG.info(message);
+		}
+	}
+
+    public static void getEnchantmentText(ItemStack itemStack, StringBuilder toolTip) {
+        List<EnchantmentStack> enchantmentsData = EnchantmentContainer.getEnchantments(itemStack);
+        enchantmentsData.sort(Comparator.comparing(e ->e.getEnchantment().id()));
+        for (EnchantmentStack enchantmentStack : enchantmentsData) {
+            boolean isNull = enchantmentStack.getEnchantment() == null;
+            boolean noLevel = isNull || enchantmentStack.minLevel() == enchantmentStack.maxLevel();
+            String key = isNull ? "disabled" : enchantmentStack.getTranslationKey() + ".name";
+            String enchantLevel = noLevel ? "" : String.valueOf(enchantmentStack.getLevel());
+            String enchantName = TextFormatting.formatted(I18n.getInstance().translateKey(key), TextFormatting.CYAN);
+            enchantLevel = TextFormatting.formatted(enchantLevel, TextFormatting.CYAN);
+            toolTip.append(enchantName).append(" ").append(enchantLevel).append("\n");
         }
-        return random.nextInt(level) > 0;
     }
 }

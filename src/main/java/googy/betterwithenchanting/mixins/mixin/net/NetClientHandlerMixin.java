@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.mixins.mixin;
+package googy.betterwithenchanting.mixins.mixin.net;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
@@ -21,9 +21,12 @@ public abstract class NetClientHandlerMixin {
 
 	@Inject(method = "handleOpenWindow", at = @At("TAIL"))
 	public void handleOpenWindow(PacketContainerOpen packet, CallbackInfo info) {
-		if (packet.inventoryType != BetterWithEnchanting.CONFIG_HANDLER.getInt("enchantment_window_type_id")) return;
-		if (!packet.windowTitle.equals(BetterWithEnchanting.ENCHANTMENT_TABLE_NAME)) return;
-
+		if (packet.inventoryType != BetterWithEnchanting.CONFIG_HANDLER.getInt("enchantment_window_type_id")) {
+			return;
+		}
+		if (packet.windowId != BetterWithEnchanting.WINDOW_ID) {
+			return;
+		}
 		TileEntityEnchantmentTable tile = new TileEntityEnchantmentTable();
 		((IEntityPlayer) mc.thePlayer).displayGUIEnchantmentTable(tile);
 		this.mc.thePlayer.craftingInventory.containerId = packet.windowId;

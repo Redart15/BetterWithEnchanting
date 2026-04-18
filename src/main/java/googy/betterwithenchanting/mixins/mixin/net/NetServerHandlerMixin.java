@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.mixins.mixin;
+package googy.betterwithenchanting.mixins.mixin.net;
 
 import googy.betterwithenchanting.mixins.interfaces.INetServerHandler;
 import googy.betterwithenchanting.network.packet.PacketEnchantItem;

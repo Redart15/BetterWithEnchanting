@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.mixins.mixin;
+package googy.betterwithenchanting.mixins.mixin.render;
 
 import net.minecraft.client.render.Font;
 import net.minecraft.client.render.TextureManager;
