@@ -130,8 +130,6 @@ public class Enchantments extends Registry<Enchantment> {
 			.setEnchantability(0, 50, 0.5f, 4)
 			.build();
 
-		/// up here need to be implemented
-
 		KNOCKBACK = new EnchantmentBuilder(new Enchantment(MOD_ID, "knockback"))
 			.setWeight(2.0f)
 			.setMaxLevel(1)
@@ -161,6 +159,7 @@ public class Enchantments extends Registry<Enchantment> {
 			.setEnchantability(10, 50, 0.25f)
 			.build();
 
+		/// up here need to be implemented
 
 		FORTUNE = new EnchantmentBuilder(new Enchantment(MOD_ID, "fortune"))
 			.setWeight(1.0f)

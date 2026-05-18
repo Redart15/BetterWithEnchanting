@@ -64,4 +64,9 @@ public class EnchantmentMixins {
             toolTip.append(enchantName).append(" ").append(enchantLevel).append("\n");
         }
     }
+
+	public static double log(double value, double base) {
+		return Math.log(value)/Math.log(base);
+	}
+
 }
