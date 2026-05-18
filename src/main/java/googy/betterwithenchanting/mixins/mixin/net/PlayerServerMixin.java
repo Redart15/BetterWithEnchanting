@@ -35,7 +35,7 @@ public abstract class PlayerServerMixin extends Player implements IEntityPlayer,
 		this.playerNetServerHandler.sendPacket(
 			new PacketContainerOpen(
 				this.currentWindowId,
-				BetterWithEnchanting.CONFIG_HANDLER.getInt("enchantment_window_type_id"),
+				BetterWithEnchanting.WINDOW_ID,
 				enchantmentTable.getNameTranslationKey(),
 				enchantmentTable.getContainerSize()
 			));
