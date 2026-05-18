@@ -4,6 +4,8 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.Enchantments;
+import googy.betterwithenchanting.mixins.EnchantmentMixins;
+import googy.betterwithenchanting.mixins.mixin.accessor.EntityAccessor;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.monster.Enemy;
 import net.minecraft.core.entity.player.Player;
@@ -20,17 +22,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class PlayerMixinEnchantments {
 
 	@WrapOperation(method = "attackTargetEntityWithCurrentItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/player/inventory/container/ContainerInventory;getDamageVsEntity(Lnet/minecraft/core/entity/Entity;)I"))
-	private int enchanting$$applyCrit(ContainerInventory instance, Entity entity, Operation<Integer> original){
+	private int applyCrit(ContainerInventory instance, Entity entity, Operation<Integer> original){
 		int damage = original.call(instance, entity);
-		int level = EnchantmentContainer.getLevel(((Player)entity).getCurrentEquippedItem(), Enchantments.CRIT);
-		if(entity.yd < 0.0F && level > 0){
-			damage = (int) Math.ceil(level * 0.1 * damage);
+		int level = EnchantmentContainer.getLevel(instance.player.getCurrentEquippedItem(), Enchantments.CRIT);
+		if(entity.yd < 0.0F && level > 0 && entity.fallDistance > 1.0f){
+			damage = (int) Math.ceil(level * 0.1 * damage) + (int)EnchantmentMixins.log(entity.fallDistance, 7.0f - level);
 		}
 		return damage;
 	}
 
 	@WrapOperation(method = "attackTargetEntityWithCurrentItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/entity/Entity;hurt(Lnet/minecraft/core/entity/Entity;ILnet/minecraft/core/util/helper/DamageType;)Z"))
-	private boolean enchanting$$applyLifeStealAndSharpness(Entity instance, Entity attacker, int baseDamage, DamageType type, Operation<Boolean> original){
+	private boolean applyLifeStealAndSharpness(Entity instance, Entity attacker, int baseDamage, DamageType type, Operation<Boolean> original){
 		ItemStack itemstack = ((Player) attacker).getCurrentEquippedItem();
 		int bonusDamage = 0;
 		if( instance instanceof Enemy){
@@ -44,12 +46,13 @@ public class PlayerMixinEnchantments {
 	}
 
 	@Inject(method = "attackTargetEntityWithCurrentItem", at = @At("HEAD"))
-	private void enchanting$applyFlame(Entity entity, CallbackInfo info) {
+	private void applyFlame(Entity entity, CallbackInfo info) {
 		ItemStack stack = ((Player) (Object) this).getCurrentEquippedItem();
 		int flameLevel = EnchantmentContainer.getLevel(stack, Enchantments.FLAME);
 		int fireTime = Math.max(flameLevel * 20, 0);  // level * second
-		if (entity.remainingFireTicks < fireTime) {
-			entity.remainingFireTicks = fireTime;
+		if (flameLevel > 0 && !((EntityAccessor) entity).isFireImmune() && fireTime > entity.remainingFireTicks) {
+			entity.remainingFireTicks = Math.max(flameLevel * 20, 0);
+			entity.maxFireTicks = entity.remainingFireTicks;
 		}
 	}
 }

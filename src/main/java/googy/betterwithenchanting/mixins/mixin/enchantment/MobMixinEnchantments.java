@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = Mob.class, remap = false)
 public class MobMixinEnchantments {
 	@Inject(method = "hurt", at = @At(value = "RETURN"))
-	private void enchanting$applyQuickStrike(Entity attacker, int damage, DamageType type, CallbackInfoReturnable<Boolean> info) {
+	private void applyQuickStrike(Entity attacker, int damage, DamageType type, CallbackInfoReturnable<Boolean> info) {
 		if (!(attacker instanceof Player)) {
 			return;
 		}
@@ -42,7 +42,7 @@ public class MobMixinEnchantments {
 	}
 
 	@WrapOperation(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/entity/Mob;dropDeathItems()V"))
-	private void enchanting$applyLooting(Mob instance, Operation<Void> original, Entity killer) {
+	private void applyLooting(Mob instance, Operation<Void> original, Entity killer) {
 		if (killer instanceof Player && !(instance instanceof Player)) {
 			Player player = (Player) killer;
 			ItemStack itemStack = player.getCurrentEquippedItem();
@@ -59,7 +59,7 @@ public class MobMixinEnchantments {
 	}
 
 	@Inject(method = "knockBack", at = @At("HEAD"))
-	private void enchanting$doesKnockbackApply(
+	private void doesKnockbackApply(
 		Entity entity, int i, double d, double d1,
 		CallbackInfo ci,
 		@Share("level")LocalIntRef knockBackLevel
@@ -77,14 +77,14 @@ public class MobMixinEnchantments {
 
 
 	@ModifyExpressionValue(method = "knockBack", at = @At(value = "CONSTANT", args = "floatValue=0.4F", ordinal = 0))
-	private float enchanting$applyHorizontalKnockbackBonus(float original, @Share("level")LocalIntRef knockBackLevel) {
+	private float applyHorizontalKnockbackBonus(float original, @Share("level")LocalIntRef knockBackLevel) {
 		float returnValue = 0.4f;
 		returnValue += 0.1f * knockBackLevel.get();
 		return returnValue;
 	}
 
 	@ModifyExpressionValue(method = "knockBack", at = @At(value = "CONSTANT", args = "doubleValue=0.4000000059604645", ordinal = 1))
-	private double enchanting$applyVerticalKnockbackBonus(double original, @Share("level")LocalIntRef knockBackLevel) {
+	private double applyVerticalKnockbackBonus(double original, @Share("level")LocalIntRef knockBackLevel) {
 		float returnValue = 0.4f;
 		returnValue += 0.2f * knockBackLevel.get();
 		return returnValue;
@@ -94,7 +94,7 @@ public class MobMixinEnchantments {
 	@Definition(id = "yd", field = "Lnet/minecraft/core/entity/Mob;yd:D")
 	@Expression("this.yd > 0.4000000059604645")
 	@ModifyExpressionValue(method = "knockBack", at = @At("MIXINEXTRAS:EXPRESSION"))
-	private boolean enchanting$spoofVerticalCheck(boolean original, @Share("level")LocalIntRef knockBackLevel){
+	private boolean spoofVerticalCheck(boolean original, @Share("level")LocalIntRef knockBackLevel){
 		if(knockBackLevel.get() > 0){
 			return false;
 		}

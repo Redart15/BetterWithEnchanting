@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class ItemToolMixinHaste {
 
 	@WrapOperation(method = "getStrVsBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/item/material/ToolMaterial;getEfficiency(Z)F"))
-	private float enchanting$applyHaste(ToolMaterial instance, boolean haste, Operation<Float> original, ItemStack itemStack){
+	private float applyHaste(ToolMaterial instance, boolean haste, Operation<Float> original, ItemStack itemStack){
 		float ret = original.call(instance, haste);
 		int hasteLevel = EnchantmentContainer.getLevel(itemStack, Enchantments.HASTE);
 		if(haste){

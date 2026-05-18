@@ -14,7 +14,7 @@ import java.util.Random;
 @Mixin(value = ItemStack.class, remap = false)
 public abstract class ItemStackMixinUnbreaking {
 	@ModifyVariable(method = "damageItem", at = @At("HEAD"), ordinal = 0, argsOnly = true)
-	private int enchanting$applyUnbreaking(int damage) {
+	private int applyUnbreaking(int damage) {
 		int unbreakingLevel = EnchantmentContainer.getLevel((ItemStack) (Object) this, Enchantments.UNBREAKING);
 		if (damage <= 0 || unbreakingLevel <= 0) {
 			return damage;
