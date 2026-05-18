@@ -5,20 +5,8 @@ import googy.betterwithenchanting.block.BlockEnchantmentTable;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.item.EnchantingTags;
 import googy.betterwithenchanting.item.ItemEnchantmentBottle;
-import googy.betterwithenchanting.render.ItemScoreBottleModel;
-import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.client.entity.particle.ParticleDispatcher;
-import net.minecraft.client.render.EntityRenderDispatcher;
-import net.minecraft.client.render.TileEntityRenderDispatcher;
-import net.minecraft.client.render.block.color.BlockColorDispatcher;
-import net.minecraft.client.render.block.model.BlockModelDispatcher;
-import net.minecraft.client.render.block.model.BlockModelStandard;
-import net.minecraft.client.render.item.model.ItemModelDispatcher;
-import net.minecraft.client.render.texture.stitcher.AtlasStitcher;
-import net.minecraft.client.render.texture.stitcher.TextureRegistry;
 import net.minecraft.core.block.Block;
-import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.block.tag.BlockTags;
 import net.minecraft.core.data.registry.Registries;
@@ -27,7 +15,6 @@ import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.sound.BlockSound;
 import net.minecraft.core.util.collection.NamespaceID;
-import net.minecraft.core.util.helper.Side;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.helper.*;
@@ -35,10 +22,8 @@ import turniplabs.halplibe.util.*;
 
 import java.util.Properties;
 
-import googy.betterwithenchanting.render.EnchantmentTableRenderer;
 
-
-public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, RecipeEntrypoint, GameStartEntrypoint, ClientModInitializer, ClientStartEntrypoint {
+public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, GameStartEntrypoint{
 	public static final String MOD_ID = "betterwithenchanting";
 	public static final Logger LOG = LoggerFactory.getLogger(MOD_ID);
 	public static final ConfigHandler CONFIG_HANDLER;
@@ -110,45 +95,11 @@ public class BetterWithEnchanting implements ModInitializer, ModelEntrypoint, Re
 			.create("score_bottle", new ItemStack(ENCHANTMENT_TABLE));
 	}
 
-	@Override
-	public void initBlockModels(BlockModelDispatcher dispatcher) {
-		dispatcher.addDispatch(new BlockModelStandard<BlockLogic>(ENCHANTMENT_TABLE)
-			.setTex(BlockModelStandard.BLOCK_TEXTURES, MOD_ID + ":block/top", Side.TOP)
-			.setTex(BlockModelStandard.BLOCK_TEXTURES, MOD_ID + ":block/bottom", Side.BOTTOM)
-			.setTex(BlockModelStandard.BLOCK_TEXTURES, MOD_ID + ":block/side", Side.WEST, Side.NORTH, Side.SOUTH, Side.EAST)
-		);
-	}
-
-	@Override public void initItemModels(ItemModelDispatcher dispatcher) {
-		dispatcher.addDispatch(new ItemScoreBottleModel(SCORE_BOTTLE, null).setIcon(MOD_ID + ":item/score_bottle1"));
-	}
-
-	@Override public void initTileEntityModels(TileEntityRenderDispatcher dispatcher) {
-		ModelHelper.setTileEntityModel(TileEntityEnchantmentTable.class, EnchantmentTableRenderer::new);
-	}
-
-	@Override
-	public void beforeClientStart() {
-		ParticleDispatcher.getInstance().addDispatch("enchant", (world, x, y, z, xa, ya, za, id) -> new ParticleGlyph(world, x, y, z, xa, ya, za));
-		BetterWithEnchanting.registerTextures();
-	}
-
-	public static void registerTextures() {
-		for (final AtlasStitcher stitcher : TextureRegistry.stitcherMap.values()) {
-			try {
-				TextureHelper.initializeAllFiles(MOD_ID, stitcher, Integer.MAX_VALUE);
-			} catch (Exception e) {
-				LOG.error("Failed to initialize texture files!", e);
-			}
-		}
-	}
-
 	public BetterWithEnchanting() {
 //		PacketEnchantItem.addMapping(CONFIG_HANDLER.getInt("packet_enchant_id"), false, true, PacketEnchantItem.class);
 	}
-	@Override public void initNamespaces() {/* no need */}
-	@Override public void initEntityModels(EntityRenderDispatcher dispatcher) {/* no need */}
-	@Override public void initBlockColors(BlockColorDispatcher dispatcher) {/* no need */}
-	@Override public void onInitializeClient() {/* no need */}
-	@Override public void afterClientStart() {/* no need */}
+	@Override public void initNamespaces() {
+		RecipeBuilder.initNameSpace(MOD_ID);
+	}
+
 }

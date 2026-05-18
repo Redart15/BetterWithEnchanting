@@ -70,7 +70,7 @@ public class EnchantmentContainer {
 		return false;
 	}
 
-	public static @Nullable EnchantmentStack getEnchantmentData(@NotNull ItemStack stack, Enchantment enchantment) {
+	public static @Nullable EnchantmentStack getEnchantmentStack(@NotNull ItemStack stack, Enchantment enchantment) {
 		CompoundTag enchantData = stack.getData().getCompound(ENCHANTMENT_DATA_KEY);
 		ListTag enchantList =  enchantData.getList(ENCHANTMENT_LIST_KEY);
 		for (int i = 0; i < enchantList.tagCount(); i++) {
@@ -87,7 +87,7 @@ public class EnchantmentContainer {
 		if (stack == null || stack.stackSize <= 0) {
 			return 0;
 		}
-		EnchantmentStack data = getEnchantmentData(stack, enchantment);
+		EnchantmentStack data = getEnchantmentStack(stack, enchantment);
 		return data == null ? 0 : Math.max(data.getLevel(), 0);
 	}
 
@@ -121,7 +121,9 @@ public class EnchantmentContainer {
 
 		int maxEnchantmentsCycles = 5;
 		int current = enchantability;
-		while (maxEnchantmentsCycles-- > 0 && random.nextInt(50) <= current) {
+		while (maxEnchantmentsCycles-- > 0
+			&& random.nextInt(50) <= current
+		) {
 			addStack = enchantmentPool.getRandom(random);
 			boolean decrement = true;
 			boolean add = true;
@@ -141,7 +143,7 @@ public class EnchantmentContainer {
 				result.add(addStack);
 			}
 			if(decrement){
-				current >>= 1;
+//				current >>= 1;
 			}
 		}
 		return new ArrayList<>(result);

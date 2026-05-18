@@ -22,11 +22,11 @@
     "main": 							["googy.betterwithenchanting.BetterWithEnchanting"],
 		"beforeGameStart": 		["googy.betterwithenchanting.BetterWithEnchanting"],
 		"afterGameStart": 		["googy.betterwithenchanting.BetterWithEnchanting"],
-		"initModels": 				["googy.betterwithenchanting.BetterWithEnchanting"],
+		"initModels": 				["googy.betterwithenchanting.BetterWithEnchantingModel"],
 		"recipesReady": 			["googy.betterwithenchanting.BetterWithEnchanting"],
-		"client": 						["googy.betterwithenchanting.BetterWithEnchanting"],
-		"beforeClientStart": 	["googy.betterwithenchanting.BetterWithEnchanting"],
-		"afterClientStart":		["googy.betterwithenchanting.BetterWithEnchanting"]
+		"client": 						["googy.betterwithenchanting.BetterWithEnchantingClient"],
+		"beforeClientStart": 	["googy.betterwithenchanting.BetterWithEnchantingClient"],
+		"afterClientStart":		["googy.betterwithenchanting.BetterWithEnchantingClient"]
 	},
   "mixins": ["betterwithenchanting.mixins.json"],
 
