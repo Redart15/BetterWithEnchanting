@@ -2,15 +2,21 @@ package googy.betterwithenchanting.mixins.mixin.enchantment;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.nbt.tags.CompoundTag;
 import googy.betterwithenchanting.mixins.mixin.accessor.MobAccessor;
 import googy.betterwithenchanting.mixins.mixin.accessor.EntityAccessor;
 import googy.betterwithenchanting.mixins.interfaces.IEnchantment;
 import net.minecraft.core.Global;
+import net.minecraft.core.block.Block;
+import net.minecraft.core.block.Blocks;
+import net.minecraft.core.block.material.Material;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.Mob;
 import net.minecraft.core.entity.projectile.ProjectileArrow;
 import net.minecraft.core.util.helper.DamageType;
+import net.minecraft.core.util.helper.Side;
+import net.minecraft.core.util.phys.HitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -84,4 +90,21 @@ public class ProjectileArrowMixin implements IEnchantment {
         }
         return original.call(instance, attacker, baseDamage, type);
     }
+
+	@Inject(method = "onHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/entity/projectile/ProjectileArrow;inGroundAction()V", shift = At.Shift.AFTER))
+	private void setTileOnFire(CallbackInfo ci, @Local HitResult hitResult){
+		if (this.isAFlame <= 0) {
+			return;
+		}
+		ProjectileArrow arrow = (ProjectileArrow) (Object) this;
+		Side side = hitResult.side;
+		int blockX = hitResult.x + side.getOffsetX();
+		int blockY = hitResult.y + side.getOffsetY();
+		int blockZ = hitResult.z + side.getOffsetZ();
+		Block<?> block = arrow.world.getBlock(blockX, blockY, blockZ);
+		Material material = block.getMaterial();
+		if(block == null || block.id() == 0 ||material.isReplaceable()){
+			arrow.world.setBlockWithNotify(blockX, blockY, blockZ, Blocks.FIRE.id());
+		}
+	}
 }
