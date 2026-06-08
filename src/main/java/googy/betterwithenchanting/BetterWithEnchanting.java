@@ -5,6 +5,7 @@ import googy.betterwithenchanting.block.BlockEnchantmentTable;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.item.EnchantingTags;
 import googy.betterwithenchanting.item.ItemEnchantmentBottle;
+import googy.betterwithenchanting.network.MessageEnchantItem;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.Blocks;
@@ -18,6 +19,7 @@ import net.minecraft.core.util.collection.NamespaceID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.helper.*;
+import turniplabs.halplibe.helper.network.NetworkHandler;
 import turniplabs.halplibe.util.*;
 
 import java.util.Properties;
@@ -33,6 +35,16 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 	public static final int MAX_ENCHANTMENT_COST;
 	public static final int DEFAULT_ITEM_ENCHANTABILITY;
 	public static final int WINDOW_ID;
+
+	public static final String[] LABELS = new String[]{
+		"powerful", "strong", "loyal", "vital", "enduring", "focused", "potent", "swift", "agile",
+		"unbreaking", "fortunate", "wise", "keen", "resilient", "tireless", "durable", "fierce",
+		"lethal", "dominant", "pure", "exalted", "blessed", "enhanced", "elevated",
+
+		"frail", "feeble", "brittle", "cursed", "blighted", "tainted", "rotten", "vulnerable", "exposed",
+		"broken", "ruined", "fractured", "crippled", "confused", "dazed", "unstable", "deranged", "delirious",
+		"drained", "exhausted", "sinister", "suppressed", "profane", "forsaken"
+	};
 
 	static {
 		Properties prop = new Properties();
@@ -66,6 +78,7 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 	@Override
 	public void onInitialize() {
 		LOG.info("BetterWithEnchanting initialized!");
+		NetworkHandler.registerNetworkMessage(MessageEnchantItem::new);
 	}
 
 	@Override

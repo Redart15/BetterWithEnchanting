@@ -2,7 +2,6 @@ package googy.betterwithenchanting.block;
 
 import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
-import googy.betterwithenchanting.BetterWithEnchanting;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
@@ -12,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
+import static googy.betterwithenchanting.BetterWithEnchanting.LABELS;
 import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
 
 public class TileEntityEnchantmentTable extends TileEntity implements Container {
@@ -30,35 +30,19 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 	private float flipA;
 	private float tRot;
 
-	private static final String[] LABELS = new String[]{
-		"powerful", "strong", "loyal", "vital", "enduring", "focused", "potent", "swift", "agile",
-		"unbreaking", "fortunate", "wise", "keen", "resilient", "tireless", "durable", "fierce",
-		"lethal", "dominant", "pure", "exalted", "blessed", "enhanced", "elevated",
-
-		"frail", "feeble", "brittle", "cursed", "blighted", "tainted", "rotten", "vulnerable", "exposed",
-		"broken", "ruined", "fractured", "crippled", "confused", "dazed", "unstable", "deranged", "delirious",
-		"drained", "exhausted", "sinister", "suppressed", "profane", "forsaken"
-	};
-	private final int[] labelIndexes = new int[3];
-	private byte type = 0;
+	public final int[] labelIndexes = new int[3];
+	public byte type = 0;
 
 	public void setRandomLabel() {
 		for (int i = 0; i < labelIndexes.length; i++) {
 			labelIndexes[i] = this.getNewLabel();
 		}
 		this.type = (byte) this.random.nextInt(8);
+		this.setChanged();
 	}
 
 	public int 	getNewLabel() {
 		return random.nextInt(LABELS.length);
-	}
-
-	public String getAtIndex(int i) {
-		return LABELS[labelIndexes[i % 3] % LABELS.length];
-	}
-
-	public boolean getType(int i) {
-		return ((this.type >> (i % 3)) & 1) == 1;
 	}
 
 	@Override

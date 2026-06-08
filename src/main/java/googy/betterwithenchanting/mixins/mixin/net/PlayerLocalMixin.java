@@ -1,7 +1,7 @@
 package googy.betterwithenchanting.mixins.mixin.net;
 
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
-import googy.betterwithenchanting.gui.GuiEnchantmentTable;
+import googy.betterwithenchanting.gui.ScreenEnchantmentTable;
 import googy.betterwithenchanting.mixins.interfaces.IEntityPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.PlayerLocal;
@@ -16,6 +16,6 @@ public abstract class PlayerLocalMixin implements IEntityPlayer {
 
 	@Override
 	public void displayGUIEnchantmentTable(TileEntityEnchantmentTable enchantmentTable) {
-		mc.displayScreen(new GuiEnchantmentTable(this.mc.thePlayer.inventory, enchantmentTable));
+		mc.displayScreen(new ScreenEnchantmentTable(this.mc.thePlayer.inventory, enchantmentTable));
 	}
 }

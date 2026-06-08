@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.inventory;
+package googy.betterwithenchanting.gui;
 
 import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
@@ -19,14 +19,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class ContainerEnchantmentTable extends MenuAbstract {
+public class MenuEnchantmentTable extends MenuAbstract {
 	public final TileEntityEnchantmentTable enchantmentTable;
-	public final int[] enchantCost = new int[3];
+	protected final int[] enchantCost = new int[3];
+	protected final int[] labelIndexes = new int[3];
+	protected byte type = 0;
 	protected int bookLevel;
 
 	private final Random random = new Random();
 
-	public ContainerEnchantmentTable(ContainerInventory inventoryplayer, TileEntityEnchantmentTable enchantmentTable) {
+	public MenuEnchantmentTable(ContainerInventory inventoryplayer, TileEntityEnchantmentTable enchantmentTable) {
 		this.enchantmentTable = enchantmentTable;
 		addSlot(new Slot(enchantmentTable, 0, 15, 47));
 		addSlot(new EnchantFuelSlot(enchantmentTable, 1, 35, 47));
@@ -39,8 +41,20 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 			this.addSlot(new Slot(inventoryplayer, i, 8 + i * 18, 142));
 		}
 		updateEnchantmentsCosts();
+		this.broadcastChanges();
 	}
 
+	public int getCostAtIndex(int i){
+		return this.enchantCost[i % enchantCost.length];
+	}
+
+	public int getLabelIndexAtIndex(int i){
+		return this.labelIndexes[i % labelIndexes.length];
+	}
+
+	public boolean getType(int i) {
+		return ((this.type >> (i % 3)) & 1) == 1;
+	}
 
 	public boolean enchantItem(Player player, int enchantOption) {
 		if (!playerCanEnchant(player, enchantOption)) {
@@ -49,7 +63,7 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 		int cost = enchantCost[enchantOption];
 		if (player.gamemode != Gamemode.creative) {
 			player.score -= cost;
-			if (this.getSlot(1).hasItem()) {
+			if (this.getSlot(1).hasItem() && this.getSlot(1).getItemStack() != null) {
 				this.getSlot(1).getItemStack().stackSize -= enchantOption + 1;
 			}
 		}
@@ -65,9 +79,9 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 
 
 	@Override
-	public void slotsChanged(Container iinventory) {
+	public void slotsChanged(Container container) {
 		this.updateEnchantmentsCosts();
-		super.slotsChanged(iinventory);
+		super.slotsChanged(container);
 	}
 
 	void updateEnchantmentsCosts() {
@@ -77,11 +91,6 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 			return;
 		}
 
-//		List<Enchantment> pool = Enchantments.getPossible(stack.getItem());
-//		if (pool.isEmpty()) {
-//			return;
-//		}
-
 		int posX = this.enchantmentTable.x;
 		int posY = this.enchantmentTable.y;
 		int posZ = this.enchantmentTable.z;
@@ -90,13 +99,9 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 
 		for (int x = -1; x <= 1; x++) {
 			for (int z = -1; z <= 1; z++) {
-				if ((x == 0 && z == 0)
-					|| !world.isAirBlock(posX + x, posY, posZ + z)
-					|| !world.isAirBlock(posX + x, posY + 1, posZ + z)
-				) {
-					continue; // something obstructing the bookshelf
+				if ((x == 0 && z == 0) || !world.isAirBlock(posX + x, posY, posZ + z) || !world.isAirBlock(posX + x, posY + 1, posZ + z)) {
+					continue;
 				}
-
 				this.checkForBookShelf(world, posX + x * 2, posY, posZ + z * 2);
 				this.checkForBookShelf(world, posX + x * 2, posY + 1, posZ + z * 2);
 				if (x == 0 || z == 0) {
@@ -108,7 +113,7 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 				this.checkForBookShelf(world, posX + x, posY + 1, posZ + z * 2);
 			}
 		}
-		this.bookLevel =  Math.min(this.bookLevel, 15);
+		this.bookLevel = Math.min(this.bookLevel, 15);
 		for (int i = 0; i < 3; i++) {
 			this.enchantCost[i] = EnchantmentContainer.calcEnchantCost(i, this.bookLevel);
 		}
@@ -120,18 +125,20 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 		}
 	}
 
-	public int getBookLevel(){
-		return this.bookLevel;
-	}
-
 	@Override
 	public void broadcastChanges() {
 		super.broadcastChanges();
 		for (ContainerListener crafting : this.containerListeners) {
 			for (int i = 0; i < enchantCost.length; i++) {
 				crafting.updateCraftingInventoryInfo(this, i, enchantCost[i]);
+				crafting.updateCraftingInventoryInfo(this, i + 4, this.enchantmentTable.labelIndexes[i]);
+			}
+			if (this.type != this.enchantmentTable.type) {
+				crafting.updateCraftingInventoryInfo(this, 3, this.enchantmentTable.type);
 			}
 		}
+		this.type = this.enchantmentTable.type;
+		System.arraycopy(this.enchantmentTable.labelIndexes, 0, this.labelIndexes, 0, labelIndexes.length);
 	}
 
 	public void forceUpdateInventory() {
@@ -150,8 +157,15 @@ public class ContainerEnchantmentTable extends MenuAbstract {
 
 	@Override
 	public void setData(int id, int value) {
-		if (id >= 0 && id < enchantCost.length)
+		if (id >= 0 && id < enchantCost.length) {
 			enchantCost[id] = value;
+		}
+		if(id == 3){
+			this.type = (byte) value;
+		}
+		if(id >= 3 && id <= 3 + labelIndexes.length){
+			this.labelIndexes[id - 4] = value;
+		}
 	}
 
 	public boolean playerCanEnchant(Player player, int option) {

@@ -17,16 +17,17 @@
     "enchantment.MobMixinEnchantments",
     "enchantment.PlayerMixinEnchantments",
     "enchantment.ProjectileArrowMixin",
-    "net.NetClientHandlerMixin",
-    "net.NetServerHandlerMixin",
-    "net.PlayerLocalMixin",
-    "net.PlayerServerMixin"
+    "net.PlayerLocalMixin"
   ],
   "client": [
     "accessor.ScreenContainerAbstractAccessor",
     "enchantment.PlayerControllerMixinQuickStrike",
     "render.ItemModelStandardMixin",
-    "render.TooltipElementMixin"
+    "render.TooltipElementMixin",
+    "net.NetClientHandlerMixin"
+  ],
+  "server": [
+    "net.PlayerServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

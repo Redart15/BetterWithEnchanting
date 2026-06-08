@@ -3,7 +3,7 @@ package googy.betterwithenchanting.mixins.mixin.net;
 import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.mixins.interfaces.IEntityPlayer;
-import googy.betterwithenchanting.inventory.ContainerEnchantmentTable;
+import googy.betterwithenchanting.gui.MenuEnchantmentTable;
 import net.minecraft.core.crafting.ContainerListener;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.packet.PacketContainerOpen;
@@ -40,7 +40,7 @@ public abstract class PlayerServerMixin extends Player implements IEntityPlayer,
 				enchantmentTable.getContainerSize()
 			));
 
-		this.craftingInventory = new ContainerEnchantmentTable(this.inventory, enchantmentTable);
+		this.craftingInventory = new MenuEnchantmentTable(this.inventory, enchantmentTable);
 		this.craftingInventory.onCraftGuiClosed(this);
 		this.craftingInventory.containerId = this.currentWindowId;
 		this.craftingInventory.addSlotListener(this);

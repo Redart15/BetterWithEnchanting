@@ -5,6 +5,7 @@ import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.mixins.interfaces.IEntityPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.net.handler.PacketHandlerClient;
+import net.minecraft.client.world.WorldClientMP;
 import net.minecraft.core.net.packet.PacketContainerOpen;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

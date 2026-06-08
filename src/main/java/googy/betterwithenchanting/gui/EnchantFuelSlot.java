@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.inventory;
+package googy.betterwithenchanting.gui;
 
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;

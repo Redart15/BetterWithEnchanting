@@ -2,8 +2,7 @@ package googy.betterwithenchanting.gui;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
-import googy.betterwithenchanting.network.packet.PacketEnchantItem;
-import googy.betterwithenchanting.inventory.ContainerEnchantmentTable;
+import googy.betterwithenchanting.network.MessageEnchantItem;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.PlayerLocalMultiplayer;
@@ -14,13 +13,15 @@ import net.minecraft.core.item.Items;
 import net.minecraft.core.player.inventory.container.ContainerInventory;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
+import turniplabs.halplibe.helper.network.NetworkHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+import static googy.betterwithenchanting.BetterWithEnchanting.LABELS;
 import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
 
-public class GuiEnchantmentTable extends ScreenFix {
+public class ScreenEnchantmentTable extends ScreenFix {
 	private static final int ACTIVE_BUTTON_OFFSET = 166;
 	private static final int DEACTIVATED_BUTTON_OFFSET = 185;
 	private static final int MOUSEOVER_BUTTON_OFFSET = 204;
@@ -36,9 +37,8 @@ public class GuiEnchantmentTable extends ScreenFix {
 	public static final int ILLAGER_INDEX_NUMBERS = ILLAGER_INDEX + 3 * ROW_COLUMN_SIZE;
 	public static final Texture TEXTURE = Minecraft.getMinecraft().textureManager.loadTexture("/assets/" + MOD_ID + "/gui/enchantment_letters.png");
 
-
 	TileEntityEnchantmentTable enchantmentTable;
-	ContainerEnchantmentTable enchantmentTableContainer;
+	MenuEnchantmentTable enchantmentTableContainer;
 	int mouseX = 0;
 	int mouseY = 0;
 	private static byte[] charWidth = new byte[256];
@@ -57,10 +57,10 @@ public class GuiEnchantmentTable extends ScreenFix {
 		}
 	}
 
-	public GuiEnchantmentTable(ContainerInventory inventory, TileEntityEnchantmentTable tileEntity) {
-		super(new ContainerEnchantmentTable(inventory, tileEntity));
+	public ScreenEnchantmentTable(ContainerInventory inventory, TileEntityEnchantmentTable tileEntity) {
+		super(new MenuEnchantmentTable(inventory, tileEntity));
 		enchantmentTable = tileEntity;
-		enchantmentTableContainer = (ContainerEnchantmentTable) inventorySlots;
+		enchantmentTableContainer = (MenuEnchantmentTable) inventorySlots;
 	}
 
 	@Override
@@ -91,13 +91,14 @@ public class GuiEnchantmentTable extends ScreenFix {
 			boolean canEnchant = enchantmentTableContainer.playerCanEnchant(mc.thePlayer, i);
 			if (canEnchant) {
 				if (mc.thePlayer instanceof PlayerLocalMultiplayer) {
-					mc.getSendQueue().addToSendQueue(new PacketEnchantItem(enchantmentTableContainer.containerId, i));
+					NetworkHandler.sendToServer(new MessageEnchantItem(enchantmentTableContainer.containerId, i));
 				} else {
 					enchantmentTableContainer.enchantItem(mc.thePlayer, i);
 				}
 				this.enchantmentTable.setRandomLabel();
 			}
 		}
+		this.enchantmentTableContainer.broadcastChanges();
 	}
 
 	@Override
@@ -151,12 +152,12 @@ public class GuiEnchantmentTable extends ScreenFix {
 		}
 		// draw enchant cost
 		for (int i = 0; i < 3; i++) {
-			boolean canEnchant = enchantmentTableContainer.playerCanEnchant(mc.thePlayer, i) && enchantmentTableContainer.enchantCost[i] > 0;
+			boolean canEnchant = enchantmentTableContainer.playerCanEnchant(mc.thePlayer, i) && enchantmentTableContainer.getCostAtIndex(i) > 0;
 			int color = canEnchant ? 16777088 : 6839882;
-			String costText = String.valueOf(enchantmentTableContainer.enchantCost[i]);
+			String costText = String.valueOf(enchantmentTableContainer.getCostAtIndex(i));
 			int costWidth = mc.font.getStringWidth(costText);
 			mc.font.drawString(costText, x + 166 - costWidth, y + 23 + buttonHeight * i, color, canEnchant);
-			this.drawString(this.enchantmentTable.getAtIndex(i), x + 80, y + 18 + buttonHeight * i, color, this.enchantmentTable.getType(i), canEnchant);
+			this.drawString(LABELS[this.enchantmentTableContainer.getLabelIndexAtIndex(i) % LABELS.length], x + 80, y + 18 + buttonHeight * i, color, this.enchantmentTableContainer.getType(i), canEnchant);
 		}
 	}
 
@@ -202,26 +203,26 @@ public class GuiEnchantmentTable extends ScreenFix {
 		GL11.glColor4f(red, blue, green, alpha);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		Tessellator t = Tessellator.instance;
-		Minecraft.getMinecraft().textureManager.bindTexture(GuiEnchantmentTable.TEXTURE);
+		Minecraft.getMinecraft().textureManager.bindTexture(ScreenEnchantmentTable.TEXTURE);
 		t.startDrawingQuads();
 		float sy = 7.99F;
 		float ex = (float) x;
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
-			int index = GuiEnchantmentTable.getIndex(c, useIllager);
+			int index = ScreenEnchantmentTable.getIndex(c, useIllager);
 			if (c == ' ' || index < 0) {
 				ex += 4.0f;
 				continue;
 			}
 			int iLeft = (charWidth[index] >> 4);
 			int iRight = (charWidth[index] & 15) + 1;
-			int rowIndex = Math.floorDiv(index, GuiEnchantmentTable.ROW_COLUMN_SIZE);
-			int columnIndex = index - rowIndex * GuiEnchantmentTable.ROW_COLUMN_SIZE;
-			double len = ((double) iRight - (double) iLeft - 0.02F) / (double) GuiEnchantmentTable.UV_SIZE * sy;
-			double uMin = ((double) columnIndex * GuiEnchantmentTable.ROW_COLUMN_SIZE + (double) iLeft) / (GuiEnchantmentTable.ROW_COLUMN_SIZE * GuiEnchantmentTable.UV_SIZE);
-			double uMax = ((double) columnIndex * GuiEnchantmentTable.ROW_COLUMN_SIZE + (double) iRight) / (GuiEnchantmentTable.ROW_COLUMN_SIZE * GuiEnchantmentTable.UV_SIZE);
-			double vMin = (double) rowIndex / GuiEnchantmentTable.ROW_COLUMN_SIZE;
-			double vMax = vMin + 1.0f / GuiEnchantmentTable.ROW_COLUMN_SIZE;
+			int rowIndex = Math.floorDiv(index, ScreenEnchantmentTable.ROW_COLUMN_SIZE);
+			int columnIndex = index - rowIndex * ScreenEnchantmentTable.ROW_COLUMN_SIZE;
+			double len = ((double) iRight - (double) iLeft - 0.02F) / (double) ScreenEnchantmentTable.UV_SIZE * sy;
+			double uMin = ((double) columnIndex * ScreenEnchantmentTable.ROW_COLUMN_SIZE + (double) iLeft) / (ScreenEnchantmentTable.ROW_COLUMN_SIZE * ScreenEnchantmentTable.UV_SIZE);
+			double uMax = ((double) columnIndex * ScreenEnchantmentTable.ROW_COLUMN_SIZE + (double) iRight) / (ScreenEnchantmentTable.ROW_COLUMN_SIZE * ScreenEnchantmentTable.UV_SIZE);
+			double vMin = (double) rowIndex / ScreenEnchantmentTable.ROW_COLUMN_SIZE;
+			double vMax = vMin + 1.0f / ScreenEnchantmentTable.ROW_COLUMN_SIZE;
 			t.addVertexWithUV(ex, y, 0, uMin, vMin);
 			t.addVertexWithUV(ex, y + sy, 0, uMin, vMax);
 			t.addVertexWithUV(ex + len, y + sy, 0, uMax, vMax);
