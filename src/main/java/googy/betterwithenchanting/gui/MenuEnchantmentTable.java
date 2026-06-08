@@ -227,7 +227,7 @@ public class MenuEnchantmentTable extends MenuAbstract {
 			}
 		}
 		if (slot.index >= 0 && slot.index <= 2) {
-			return slot.index == 2 ? this.getSlots(3, 36, true) : this.getSlots(3, 36, false);
+			return slot.index == 2 ? this.getSlots(2, 36, true) : this.getSlots(2, 36, false);
 		} else {
 			return Collections.emptyList();
 		}
