@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.Enchantments;
+import googy.betterwithenchanting.mixins.mixin.accessor.PlayerControllerAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.controller.PlayerController;
 import org.spongepowered.asm.mixin.Final;
@@ -21,10 +22,8 @@ public abstract class PlayerControllerMixinQuickStrike {
 	@Definition(id = "blockHitDelay", field = "Lnet/minecraft/client/player/controller/PlayerController;blockHitDelay:I")
 	@Expression("this.blockHitDelay > 0")
 	@ModifyExpressionValue(method = "continueDestroyBlock", at = @At("MIXINEXTRAS:EXPRESSION"))
-	private boolean applyQuickStrike(boolean original, int blockHitDelay){
+	private boolean applyQuickStrike(boolean original){
 		int quickstrikeLevel = EnchantmentContainer.getLevel(mc.thePlayer.getHeldItem(), Enchantments.QUICKSTRIKE);
-		return quickstrikeLevel > 0 ? blockHitDelay > 1 : original;
+		return quickstrikeLevel > 0 ? ((PlayerControllerAccessor)this).getBlockHitDelay() > 1 : original;
 	}
-
-
 }

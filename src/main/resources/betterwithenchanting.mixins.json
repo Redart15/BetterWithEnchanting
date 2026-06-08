@@ -7,24 +7,27 @@
   "package": "googy.betterwithenchanting.mixins.mixin",
   "compatibilityLevel": "JAVA_${java}",
   "mixins": [
+    "accessor.PlayerControllerAccessor",
     "accessor.EntityAccessor",
     "accessor.ItemAccessor",
     "accessor.MobAccessor",
     "accessor.ParticleAccessor",
+    "enchantment.BlockLogicMixinAlterationAndAdditions",
     "enchantment.ItemBowMixin",
     "enchantment.ItemStackMixinUnbreaking",
     "enchantment.ItemToolMixinHaste",
     "enchantment.MobMixinEnchantments",
     "enchantment.PlayerMixinEnchantments",
     "enchantment.ProjectileArrowMixin",
+    "enchantment.TreecapitatorMixinMoltenAxeFix",
     "net.PlayerLocalMixin"
   ],
   "client": [
     "accessor.ScreenContainerAbstractAccessor",
     "enchantment.PlayerControllerMixinQuickStrike",
+    "net.NetClientHandlerMixin",
     "render.ItemModelStandardMixin",
-    "render.TooltipElementMixin",
-    "net.NetClientHandlerMixin"
+    "render.TooltipElementMixin"
   ],
   "server": [
     "net.PlayerServerMixin"

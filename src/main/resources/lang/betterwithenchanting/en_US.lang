@@ -23,9 +23,14 @@ enchantment.betterwithenchanting.multishot.name     = Multishot
 enchantment.betterwithenchanting.buckhot.name       = Buckshot
 enchantment.betterwithenchanting.fortune.name       = Fortune
 enchantment.betterwithenchanting.scavange.name      = Scavange
+enchantment.betterwithenchanting.lifesteal.name     = Lifesteal
+enchantment.betterwithenchanting.molten.name        = Molten
+enchantment.betterwithenchanting.insight.name       = Insight
+enchantment.betterwithenchanting.discovery.name     = Discovery
+
 enchantment.betterwithenchanting.thorn.name         = Thorns
 enchantment.betterwithenchanting.speed.name         = Speed
 enchantment.betterwithenchanting.vault.name         = Vault
 enchantment.betterwithenchanting.gills.name         = Gills
-enchantment.betterwithenchanting.lifesteal.name     = Lifesteal
+
 disabled                                            = Glitchcraft

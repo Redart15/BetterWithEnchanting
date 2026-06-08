@@ -1,9 +1,9 @@
 package googy.betterwithenchanting.api;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
+import net.minecraft.client.gui.guidebook.mobs.MobInfoRegistry;
 import net.minecraft.core.data.registry.Registry;
 import net.minecraft.core.item.Item;
-import net.minecraft.core.item.ItemArmor;
 import net.minecraft.core.item.ItemBow;
 import net.minecraft.core.item.ItemFishingRod;
 import net.minecraft.core.item.tool.*;
@@ -25,19 +25,23 @@ public class Enchantments extends Registry<Enchantment> {
 	public static final Enchantment POWER; // projtile speed
 	public static final Enchantment MULTI_SHOT; // increase proj(main)
 	public static final Enchantment BUCK_SHOT; // increase proj(extra)
-	// TOOLS
+	// ANGLE
 	public static final Enchantment HASTE; // haste
-	public static final Enchantment BAIT;
-	public static final Enchantment FORTUNE;  // increase ore gain/fishing
+	public static final Enchantment BAIT;// increase ore gain/fishing
+	// TOOLS
 	public static final Enchantment SCAVANGE; // find random extra loot from mining
+	public static final Enchantment DISCOVERY;
+	public static final Enchantment MOLTEN;
+	public static final Enchantment FORTUNE;
+	public static final Enchantment INSIGHT;
 	// SPECIAL
 	public static final Enchantment UNBREAKING;
 	public static final Enchantment BOTTLED_SCORE;
 	// ARMOR
-	public static final Enchantment THORN;
-	public static final Enchantment SPEED; // increases the movementspeed
-	public static final Enchantment VAULT; // increases the stepping hight
-	public static final Enchantment GILLS;
+//	public static final Enchantment THORN;
+//	public static final Enchantment SPEED; // increases the movementspeed
+//	public static final Enchantment VAULT; // increases the stepping hight
+//	public static final Enchantment GILLS;
 
 	/**
 	 Rarities:
@@ -159,17 +163,8 @@ public class Enchantments extends Registry<Enchantment> {
 			.setEnchantability(10, 50, 0.25f)
 			.build();
 
-		/// up here need to be implemented
-
-		FORTUNE = new EnchantmentBuilder(new Enchantment(MOD_ID, "fortune"))
-			.setWeight(1.0f)
-			.setMaxLevel(3)
-			.setTarget(item -> item instanceof ItemToolPickaxe || item.hasTag(ENCHANT_PICKAXE))
-			.setEnchantability(20, 50, 0.5f, 2)
-			.build();
-
-		SCAVANGE = new EnchantmentBuilder(new Enchantment(MOD_ID, "scavange"))
-			.setWeight(5.0f)
+		INSIGHT = new EnchantmentBuilder(new Enchantment(MOD_ID, "insight"))
+			.setWeight(10.0f)
 			.setMaxLevel(5)
 			.setTarget(item ->
 				item instanceof ItemToolPickaxe
@@ -177,36 +172,50 @@ public class Enchantments extends Registry<Enchantment> {
 					|| item instanceof ItemToolShovel
 					|| item.hasTag(ENCHANT_DIGGER)
 			)
-			.setEnchantability(0, 50, 0.75f, 4)
+			.setEnchantability(0, 50, 0.2f, 4)
 			.build();
 
-		THORN = new EnchantmentBuilder(new Enchantment(MOD_ID, "thorn"))
+		/// trommel
+		SCAVANGE = new EnchantmentBuilder(new Enchantment(MOD_ID, "scavange"))
 			.setWeight(5.0f)
 			.setMaxLevel(1)
-			.setTarget(item -> item instanceof ItemArmor || item.hasTag(ENCHANT_ARMOR))
-			.setMinEnchantability(level -> 20)
+			.setTarget(item -> item instanceof ItemToolShovel || item.hasTag(ENCHANT_DIGGER))
+			.setMinEnchantability(level -> 10)
 			.setMaxEnchatability(level -> 60)
 			.build();
 
-		SPEED = new EnchantmentBuilder(new Enchantment(MOD_ID, "swiftness"))
-			.setWeight(5.0f)
-			.setMaxLevel(3)
-			.setTarget(item -> item instanceof ItemArmor || item.hasTag(ENCHANT_ARMOR))
-			.setEnchantability(0, 50, 0.6f, 2)
+		DISCOVERY = new EnchantmentBuilder(new Enchantment(MOD_ID, "discovery"))
+			.setWeight(2.0f)
+			.setMaxLevel(5)
+			.setTarget(item ->
+				item instanceof ItemToolPickaxe
+					|| item instanceof ItemToolAxe
+					|| item instanceof ItemToolShovel
+					|| item.hasTag(ENCHANT_DIGGER)
+			)
+			.setEnchantability(0, 50, 0.5f, 4)
 			.build();
 
-		VAULT = new EnchantmentBuilder(new Enchantment(MOD_ID, "vault"))
-			.setWeight(5.0f)
-			.setMaxLevel(3)
-			.setTarget(item -> item instanceof ItemArmor || item.hasTag(ENCHANT_ARMOR))
-			.setEnchantability(0, 50, 0.6f, 2)
+		FORTUNE = new EnchantmentBuilder(new Enchantment(MOD_ID, "fortune"))
+			.setWeight(2.0f)
+			.setMaxLevel(5)
+			.setTarget(item ->
+				item instanceof ItemToolPickaxe
+					|| item instanceof ItemToolAxe
+					|| item instanceof ItemToolShovel
+					|| item.hasTag(ENCHANT_DIGGER)
+			)
+			.setEnchantability(10, 50, 0.75f, 4)
 			.build();
 
-		GILLS = new EnchantmentBuilder(new Enchantment(MOD_ID, "gills"))
+		MOLTEN = new EnchantmentBuilder(new Enchantment(MOD_ID, "molten"))
 			.setWeight(1.0f)
 			.setMaxLevel(1)
-			.setTarget(item -> item instanceof ItemArmor || item.hasTag(ENCHANT_ARMOR))
-			.setMinEnchantability(level -> 30)
+			.setTarget(item -> item instanceof ItemToolPickaxe
+				|| item instanceof ItemToolAxe
+				|| item instanceof ItemToolShovel
+				|| item.hasTag(ENCHANT_DIGGER))
+			.setMinEnchantability(level -> 10)
 			.setMaxEnchatability(level -> 60)
 			.build();
 	}
