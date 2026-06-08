@@ -98,7 +98,7 @@ public class Enchantments extends Registry<Enchantment> {
 			.setWeight(10.0f)
 			.setMaxLevel(4)
 			.setTarget(item -> item.id == BetterWithEnchanting.SCORE_BOTTLE.id)
-			.setEnchantability(0, 50, 0.75, 3)
+			.setEnchantability(0, 50, 0.75, 2)
 			.build();
 
 		CRIT = new EnchantmentBuilder(new Enchantment(MOD_ID, "crit"))
