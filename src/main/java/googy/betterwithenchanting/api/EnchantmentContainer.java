@@ -43,6 +43,15 @@ public class EnchantmentContainer {
 		}
 	}
 
+	public static boolean hasEnchantments(ItemStack stack){
+		if (stack == null) {
+			return false;
+		}
+		CompoundTag enchantData = stack.getData().getCompound(ENCHANTMENT_DATA_KEY);
+		ListTag enchantList =  enchantData.getList(ENCHANTMENT_LIST_KEY);
+		return enchantList.tagCount() > 0;
+	}
+
 	public static List<EnchantmentStack> getEnchantments(ItemStack stack) {
 		List<EnchantmentStack> enchantments = new ArrayList<>();
 		if (stack == null) {

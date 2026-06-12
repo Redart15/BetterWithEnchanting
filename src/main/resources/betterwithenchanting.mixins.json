@@ -7,11 +7,11 @@
   "package": "googy.betterwithenchanting.mixins.mixin",
   "compatibilityLevel": "JAVA_${java}",
   "mixins": [
-    "accessor.PlayerControllerAccessor",
     "accessor.EntityAccessor",
     "accessor.ItemAccessor",
     "accessor.MobAccessor",
     "accessor.ParticleAccessor",
+    "accessor.PlayerControllerAccessor",
     "enchantment.BlockLogicMixinAlterationAndAdditions",
     "enchantment.ItemBowMixin",
     "enchantment.ItemStackMixinUnbreaking",
