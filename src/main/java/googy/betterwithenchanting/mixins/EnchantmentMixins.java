@@ -28,10 +28,7 @@ import java.util.function.UnaryOperator;
 import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
 
 public class EnchantmentMixins {
-	public static final String TEXTURE = "/assets/" + MOD_ID + "/textures/misc/glintA.png";
-	protected static Random random = new Random();
 	protected static WeightedRandomBag<WeightedRandomLootObject> fortuneBag = new WeightedRandomBag<>();
-
 	static {
 		/// fortune bag and its filling
 		// trash
@@ -75,7 +72,8 @@ public class EnchantmentMixins {
 		return Math.log(value) / Math.log(base);
 	}
 
-	// something is wack!
+	protected static Random random = new Random();
+
 	public static void applyDiscovery(World world, int x, int y, int z, ItemStack stack) {
 		int level = EnchantmentContainer.getLevel(stack, Enchantments.DISCOVERY);
 		if (level <= 0 || random.nextInt(128) > 1) {
@@ -97,9 +95,10 @@ public class EnchantmentMixins {
 	public static void applyInsight(Player player, ItemStack stack) {
 		int level = EnchantmentContainer.getLevel(stack, Enchantments.INSIGHT);
 		if (level <= 0) {
-			return;
+			player.score += 3;// to give more excess to xp
+		}else{
+			player.score += (int) Math.floor(10 * Math.pow(level, 0.85));
 		}
-		player.score += (int) Math.floor(10 * Math.pow(level, 0.85));
 	}
 
 	public static ItemStack[] applyMolten(EnumDropCause dropCause, Player player, ItemStack[] drops) {
@@ -109,7 +108,7 @@ public class EnchantmentMixins {
 		ItemStack heldItem = player.getHeldItem();
 		int molten = EnchantmentContainer.getLevel(heldItem, Enchantments.MOLTEN);
 		int scavange = EnchantmentContainer.getLevel(heldItem, Enchantments.SCAVANGE);
-		if (dropCause == EnumDropCause.PROPER_TOOL) {
+		if (dropCause == EnumDropCause.PROPER_TOOL && (molten > 0 || scavange > 0)) {
 			List<ItemStack> results = new ArrayList<>();
 			if (molten > 0) {
 				results.addAll(Arrays.asList(processItem(player, drops, EnchantmentMixins::matchSmeltingRecipes)));
@@ -167,122 +166,21 @@ public class EnchantmentMixins {
 		return currentDrop;
 	}
 
-    public static void renderEffect2D(Tessellator tessellator, TextureManager textureManager, ItemStack itemStack) {
-        if (!EnchantmentContainer.hasEnchantments(itemStack)) {
-            return;
-        }
-        GL11.glDepthFunc(GL11.GL_EQUAL);
-        GL11.glDisable(GL11.GL_LIGHTING);
-		textureManager.bindTexture(textureManager.loadTexture(EnchantmentMixins.TEXTURE));
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
-		renderGlint2D(tessellator);
-		GL11.glDisable(GL11.GL_BLEND);
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glDepthFunc(GL11.GL_LEQUAL);
-    }
+	/// Period 3000, offset 1873
+	public static final int PERIOD = 3000;
+	public static final int OFF_SET = 1873;
 
-	private static void renderGlint2D(Tessellator tessellator) {
-		float var13 = 0.76F;
-		GL11.glColor4f(0.5F * var13, 0.25F * var13, 0.8F * var13, 1.0F);
-		GL11.glMatrixMode(GL11.GL_TEXTURE);
-		GL11.glPushMatrix();
-		float var14 = 2.0F / 16.0F;
-		GL11.glScalef(var14, var14, var14);
-		float var15 = getOffset(0, 8.0f);
-		GL11.glTranslatef(var15, 0.0F, 0.0F);
-		GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
-		renderItemIn2D(tessellator, 0.0f, 1.0f, 0.0f, 1.0f, 256, 256, 0.0625F);
-		GL11.glPopMatrix();
-		GL11.glPushMatrix();
-		GL11.glScalef(var14, var14, var14);
-		var15 = getOffset(1, 8.0f);
-		GL11.glTranslatef(-var15, 0.0F, 0.0F);
-		GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
-		renderItemIn2D(tessellator, 0.0f, 1.0f, 0.0f, 1.0f, 256, 256, 0.0625F);
-		GL11.glPopMatrix();
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-	}
+	/// RGBA (0.5, 0.25, 0.8, 1.0)
+	private static final float R = 0.4F;
+	private static final float G = 0.4F;
+	private static final float B = 0.4F;
+	private static final float A = 1.0F;
+	public static final String TEXTURE = "/assets/" + MOD_ID + "/textures/misc/glintA.png";
 
 	private static float getOffset(int i, float factor) {
-		return (System.currentTimeMillis() % (3000 + i * 1873)) / (3000.0F + (i * 1873)) * factor;
+		int samplingTime = PERIOD + i * OFF_SET;
+		return (System.currentTimeMillis() % samplingTime) / ((float)samplingTime) * factor;
 	}
-
-	private static void renderItemIn2D(Tessellator tessellator, float uMin, float uMax, float vMin, float vMax, int tileWidth, int tileHeight, float thickness) {
-        float foon = 0.5F / tileHeight;
-        float goon = thickness * (16.0F / (float) tileWidth);
-        float pixelWidth = 1.0F / (float) tileWidth;
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, 0.0F, 1.0F);
-        tessellator.addVertexWithUV(0.0F, 0.0F, 0.0F, uMax, vMax);
-        tessellator.addVertexWithUV(1.0F, 0.0F, 0.0F, uMin, vMax);
-        tessellator.addVertexWithUV(1.0F, 1.0F, 0.0F, uMin, vMin);
-        tessellator.addVertexWithUV(0.0F, 1.0F, 0.0F, uMax, vMin);
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, 0.0F, -1.0F);
-        tessellator.addVertexWithUV(0.0F, 1.0F, -thickness, uMax, vMin);
-        tessellator.addVertexWithUV(1.0F, 1.0F, -thickness, uMin, vMin);
-        tessellator.addVertexWithUV(1.0F, 0.0F, -thickness, uMin, vMax);
-        tessellator.addVertexWithUV(0.0F, 0.0F, -thickness, uMax, vMax);
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-
-        float uDiff = uMin - uMax;
-        float vDiff = vMin - vMax;
-        for (int i = 0; i < tileWidth; ++i) {
-            float texProgress = i * pixelWidth;
-            float u = uMax + uDiff * texProgress - foon;
-            tessellator.addVertexWithUV(texProgress, 0.0F, -thickness, u, vMax);
-            tessellator.addVertexWithUV(texProgress, 0.0F, 0.0F, u, vMax);
-            tessellator.addVertexWithUV(texProgress, 1.0F, 0.0F, u, vMin);
-            tessellator.addVertexWithUV(texProgress, 1.0F, -thickness, u, vMin);
-        }
-
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(1.0F, 0.0F, 0.0F);
-
-        for (int i = 0; i < tileWidth; ++i) {
-            float texProgress = i * pixelWidth;
-            float u = uMax + uDiff * texProgress - foon;
-            float x = texProgress + goon;
-            tessellator.addVertexWithUV(x, 1.0F, -thickness, u, vMin);
-            tessellator.addVertexWithUV(x, 1.0F, 0.0F, u, vMin);
-            tessellator.addVertexWithUV(x, 0.0F, 0.0F, u, vMax);
-            tessellator.addVertexWithUV(x, 0.0F, -thickness, u, vMax);
-        }
-
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, 1.0F, 0.0F);
-
-        for (int i = 0; i < tileWidth; ++i) {
-            float texProgress = i * pixelWidth;
-            float v = vMax + vDiff * texProgress - foon;
-            float y = texProgress + goon;
-            tessellator.addVertexWithUV(0.0F, y, 0.0F, uMax, v);
-            tessellator.addVertexWithUV(1.0F, y, 0.0F, uMin, v);
-            tessellator.addVertexWithUV(1.0F, y, -thickness, uMin, v);
-            tessellator.addVertexWithUV(0.0F, y, -thickness, uMax, v);
-        }
-
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, -1.0F, 0.0F);
-
-        for (int i = 0; i < tileWidth; ++i) {
-            float texProgress = i * pixelWidth;
-            float v = vMax + vDiff * texProgress - foon;
-            tessellator.addVertexWithUV(1.0F, texProgress, 0.0F, uMin, v);
-            tessellator.addVertexWithUV(0.0F, texProgress, 0.0F, uMax, v);
-            tessellator.addVertexWithUV(0.0F, texProgress, -thickness, uMax, v);
-            tessellator.addVertexWithUV(1.0F, texProgress, -thickness, uMin, v);
-        }
-
-        tessellator.draw();
-    }
 
     public static void renderEffectFlat(Tessellator tessellator, TextureManager textureManager, ItemStack itemStack) {
         if (!EnchantmentContainer.hasEnchantments(itemStack)) {
@@ -294,16 +192,12 @@ public class EnchantmentMixins {
         textureManager.bindTexture(textureManager.loadTexture(TEXTURE));
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_DST_COLOR);
-        GL11.glColor4f(0.5F, 0.25F, 0.8F, 1.0F);
+        GL11.glColor4f(R, G, B, A);
         for (int i = 0; i < 2; ++i) {
             GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
             float c = 0.00390625F;
             float startingOffset = getOffset(i, 256.0F);
-
-            float shiftY = 4.0F;
-            if (i == 1) {
-                shiftY = -1.0F;
-            }
+            float shiftY = i == 1 ? -1.0f : 4.0F;
 
             double u1 = (startingOffset + (double) 20.0f * shiftY) * c;
             double u2 = (startingOffset + (double) 20.0f + (double) 20.0f * shiftY) * c;
@@ -336,14 +230,51 @@ public class EnchantmentMixins {
         textureManager.bindTexture(textureManager.loadTexture(TEXTURE));
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_DST_COLOR);
-        GL11.glColor4f(0.5F, 0.25F, 0.8F, 1.0F);
+        GL11.glColor4f(R, G, B, A);
 		renderGlint(tessellator, x, y, offX, offY);
-		GL11.glColor4f(0.5F, 0.25F, 0.8F, 1.0F);
+		GL11.glColor4f(R, G, B, A);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glDepthMask(true);
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
     }
+
+	private static void renderGlint2D(Tessellator tessellator) {
+		float var13 = 0.76F;
+		GL11.glColor4f(var13 * R, var13 * G, var13 * B, A);
+		GL11.glMatrixMode(GL11.GL_TEXTURE);
+		GL11.glPushMatrix();
+		float var14 = 1.0F / 16.0F;
+		GL11.glScalef(var14, var14, var14);
+		float var15 = getOffset(0, 8.0f);
+		GL11.glTranslatef(var15, 0.0F, 0.0F);
+		GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
+		renderItemIn2D(tessellator, 0.0f, 1.0f, 0.0f, 1.0f, 256, 256, 0.0625F);
+		GL11.glPopMatrix();
+		GL11.glPushMatrix();
+		GL11.glScalef(var14, var14, var14);
+		var15 = getOffset(1, 8.0f);
+		GL11.glTranslatef(-var15, 0.0F, 0.0F);
+		GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
+		renderItemIn2D(tessellator, 0.0f, 1.0f, 0.0f, 1.0f, 256, 256, 0.0625F);
+		GL11.glPopMatrix();
+		GL11.glMatrixMode(GL11.GL_MODELVIEW);
+	}
+
+	public static void renderEffect2D(Tessellator tessellator, TextureManager textureManager, ItemStack itemStack) {
+		if (!EnchantmentContainer.hasEnchantments(itemStack)) {
+			return;
+		}
+		GL11.glDepthFunc(GL11.GL_EQUAL);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		textureManager.bindTexture(textureManager.loadTexture(EnchantmentMixins.TEXTURE));
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+		renderGlint2D(tessellator);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glDepthFunc(GL11.GL_LEQUAL);
+	}
 
 	private static void renderGlint(Tessellator tessellator, int x, int y, int offX, int offY) {
 		for (int i = 0; i < 2; ++i) {
@@ -352,9 +283,9 @@ public class EnchantmentMixins {
 			float var9 = getOffset(i, 256.0F);
 			float var12 = i == 1 ? -1.0f : 4.0F;
 
-			float u1 = (var9 + (float) offY * var12) * adj;
-			float u2 = (var9 + (float) offX + (float) offY * var12) * adj;
-			float u3 = (var9 + (float) offX) * adj;
+			float u1 = (var9 + offY * var12) * adj;
+			float u2 = (var9 + offX + offY * var12) * adj;
+			float u3 = (var9 + offX) * adj;
 			float u4 = (var9 + 0.0F) * adj;
 
 			float v12 = offY * adj;
@@ -362,11 +293,87 @@ public class EnchantmentMixins {
 
 			float z = 1.0f;
 			tessellator.startDrawingQuads();
-			tessellator.addVertexWithUV(x, 			y + offY, 	z, u1, v12);
-			tessellator.addVertexWithUV(x + offX, 	y + offY, 	z, u2, v12);
-			tessellator.addVertexWithUV(x + offX, y, 			z, u3, v34);
+			tessellator.addVertexWithUV(x, 					(double)y + offY, 	z, u1, v12);
+			tessellator.addVertexWithUV((double)x + offX, 	(double)y + offY, 	z, u2, v12);
+			tessellator.addVertexWithUV((double)x + offX, 	y, 					z, u3, v34);
 			tessellator.addVertexWithUV(x, y, 			z, u4, v34);
 			tessellator.draw();
 		}
+	}
+
+	private static void renderItemIn2D(Tessellator tessellator, float uMin, float uMax, float vMin, float vMax, int tileWidth, int tileHeight, float thickness) {
+		float foon = 0.5F / tileHeight;
+		float goon = thickness * (16.0F /  tileWidth);
+		float pixelWidth = 1.0F /  tileWidth;
+		tessellator.startDrawingQuads();
+		tessellator.setNormal(0.0F, 0.0F, 1.0F);
+		tessellator.addVertexWithUV(0.0F, 0.0F, 0.0F, uMax, vMax);
+		tessellator.addVertexWithUV(1.0F, 0.0F, 0.0F, uMin, vMax);
+		tessellator.addVertexWithUV(1.0F, 1.0F, 0.0F, uMin, vMin);
+		tessellator.addVertexWithUV(0.0F, 1.0F, 0.0F, uMax, vMin);
+		tessellator.draw();
+		tessellator.startDrawingQuads();
+		tessellator.setNormal(0.0F, 0.0F, -1.0F);
+		tessellator.addVertexWithUV(0.0F, 1.0F, -thickness, uMax, vMin);
+		tessellator.addVertexWithUV(1.0F, 1.0F, -thickness, uMin, vMin);
+		tessellator.addVertexWithUV(1.0F, 0.0F, -thickness, uMin, vMax);
+		tessellator.addVertexWithUV(0.0F, 0.0F, -thickness, uMax, vMax);
+		tessellator.draw();
+		tessellator.startDrawingQuads();
+		tessellator.setNormal(-1.0F, 0.0F, 0.0F);
+
+		float uDiff = uMin - uMax;
+		float vDiff = vMin - vMax;
+		for (int i = 0; i < tileWidth; ++i) {
+			float texProgress = i * pixelWidth;
+			float u = uMax + uDiff * texProgress - foon;
+			tessellator.addVertexWithUV(texProgress, 0.0F, -thickness, u, vMax);
+			tessellator.addVertexWithUV(texProgress, 0.0F, 0.0F, u, vMax);
+			tessellator.addVertexWithUV(texProgress, 1.0F, 0.0F, u, vMin);
+			tessellator.addVertexWithUV(texProgress, 1.0F, -thickness, u, vMin);
+		}
+
+		tessellator.draw();
+		tessellator.startDrawingQuads();
+		tessellator.setNormal(1.0F, 0.0F, 0.0F);
+
+		for (int i = 0; i < tileWidth; ++i) {
+			float texProgress = i * pixelWidth;
+			float u = uMax + uDiff * texProgress - foon;
+			float x = texProgress + goon;
+			tessellator.addVertexWithUV(x, 1.0F, -thickness, u, vMin);
+			tessellator.addVertexWithUV(x, 1.0F, 0.0F, u, vMin);
+			tessellator.addVertexWithUV(x, 0.0F, 0.0F, u, vMax);
+			tessellator.addVertexWithUV(x, 0.0F, -thickness, u, vMax);
+		}
+
+		tessellator.draw();
+		tessellator.startDrawingQuads();
+		tessellator.setNormal(0.0F, 1.0F, 0.0F);
+
+		for (int i = 0; i < tileWidth; ++i) {
+			float texProgress = i * pixelWidth;
+			float v = vMax + vDiff * texProgress - foon;
+			float y = texProgress + goon;
+			tessellator.addVertexWithUV(0.0F, y, 0.0F, uMax, v);
+			tessellator.addVertexWithUV(1.0F, y, 0.0F, uMin, v);
+			tessellator.addVertexWithUV(1.0F, y, -thickness, uMin, v);
+			tessellator.addVertexWithUV(0.0F, y, -thickness, uMax, v);
+		}
+
+		tessellator.draw();
+		tessellator.startDrawingQuads();
+		tessellator.setNormal(0.0F, -1.0F, 0.0F);
+
+		for (int i = 0; i < tileWidth; ++i) {
+			float texProgress = i * pixelWidth;
+			float v = vMax + vDiff * texProgress - foon;
+			tessellator.addVertexWithUV(1.0F, texProgress, 0.0F, uMin, v);
+			tessellator.addVertexWithUV(0.0F, texProgress, 0.0F, uMax, v);
+			tessellator.addVertexWithUV(0.0F, texProgress, -thickness, uMax, v);
+			tessellator.addVertexWithUV(1.0F, texProgress, -thickness, uMin, v);
+		}
+
+		tessellator.draw();
 	}
 }
