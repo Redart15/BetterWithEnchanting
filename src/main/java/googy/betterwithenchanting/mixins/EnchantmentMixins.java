@@ -171,11 +171,11 @@ public class EnchantmentMixins {
 	public static final int OFF_SET = 1873;
 
 	/// RGBA (0.5, 0.25, 0.8, 1.0)
-	private static final float R = 0.4F;
-	private static final float G = 0.4F;
-	private static final float B = 0.4F;
+	private static final float R = 0.1F;
+	private static final float G = 0.1F;
+	private static final float B = 0.5F;
 	private static final float A = 1.0F;
-	public static final String TEXTURE = "/assets/" + MOD_ID + "/textures/misc/glintA.png";
+	public static final String TEXTURE = "/assets/" + MOD_ID + "/textures/misc/glintB.png";
 
 	private static float getOffset(int i, float factor) {
 		int samplingTime = PERIOD + i * OFF_SET;
@@ -240,21 +240,21 @@ public class EnchantmentMixins {
     }
 
 	private static void renderGlint2D(Tessellator tessellator) {
-		float var13 = 0.76F;
-		GL11.glColor4f(var13 * R, var13 * G, var13 * B, A);
+		float colorDimmer = 0.86F; // original 0.76
+		GL11.glColor4f(colorDimmer * R, colorDimmer * G, colorDimmer * B, A);
 		GL11.glMatrixMode(GL11.GL_TEXTURE);
 		GL11.glPushMatrix();
-		float var14 = 1.0F / 16.0F;
-		GL11.glScalef(var14, var14, var14);
-		float var15 = getOffset(0, 8.0f);
-		GL11.glTranslatef(var15, 0.0F, 0.0F);
+		float scaling = 1.0F / 16.0F;
+		GL11.glScalef(scaling, scaling, scaling);
+		float offset = getOffset(0, 8.0f);
+		GL11.glTranslatef(offset, 0.0F, 0.0F);
 		GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
 		renderItemIn2D(tessellator, 0.0f, 1.0f, 0.0f, 1.0f, 256, 256, 0.0625F);
 		GL11.glPopMatrix();
 		GL11.glPushMatrix();
-		GL11.glScalef(var14, var14, var14);
-		var15 = getOffset(1, 8.0f);
-		GL11.glTranslatef(-var15, 0.0F, 0.0F);
+		GL11.glScalef(scaling, scaling, scaling);
+		offset = getOffset(1, 8.0f);
+		GL11.glTranslatef(-offset, 0.0F, 0.0F);
 		GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
 		renderItemIn2D(tessellator, 0.0f, 1.0f, 0.0f, 1.0f, 256, 256, 0.0625F);
 		GL11.glPopMatrix();
