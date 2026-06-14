@@ -1,10 +1,13 @@
 package googy.betterwithenchanting.api;
 
 import com.mojang.nbt.tags.CompoundTag;
+import net.minecraft.core.item.ItemBow;
 import net.minecraft.core.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+
+import static googy.betterwithenchanting.BetterWithEnchanting.TRANSLATE;
 
 public class EnchantmentStack {
 	private static final String SID_KEY = "sid";
@@ -20,7 +23,7 @@ public class EnchantmentStack {
 
 	public EnchantmentStack(Enchantment enchantment, int level) {
 		this.enchantment = enchantment;
-		this.level = level;
+		this.setLevel(level);
 	}
 
 	@NotNull
@@ -52,7 +55,7 @@ public class EnchantmentStack {
 	}
 
 	public EnchantmentStack setLevel(int level) {
-		this.level = Math.min(Math.max(level, 0), this.maxLevel());
+		this.level = Math.min(Math.max(level, this.minLevel()), this.maxLevel());
 		return this;
 	}
 
@@ -106,5 +109,10 @@ public class EnchantmentStack {
 			"enchant=" + enchantment.id() +
 			", lvl=" + level +
 			'}';
+	}
+
+	public String prettyToString(){
+		String levelString = enchantment.maxLevel() > 1 ? String.format("(%s)", this.getLevel()) : "";
+		return String.format("%s %s", TRANSLATE.translateNameKey(enchantment.translationKey()), levelString);
 	}
 }

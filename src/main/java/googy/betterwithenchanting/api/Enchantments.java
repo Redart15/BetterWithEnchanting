@@ -1,7 +1,6 @@
 package googy.betterwithenchanting.api;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
-import net.minecraft.client.gui.guidebook.mobs.MobInfoRegistry;
 import net.minecraft.core.data.registry.Registry;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemBow;
@@ -29,15 +28,21 @@ public class Enchantments extends Registry<Enchantment> {
 	public static final Enchantment HASTE; // haste
 	public static final Enchantment BAIT;// increase ore gain/fishing
 	// TOOLS
-	public static final Enchantment SCAVANGE; // find random extra loot from mining
-	public static final Enchantment DISCOVERY;
-	public static final Enchantment MOLTEN;
+	public static final Enchantment SCAVENGE; // find random extra loot from mining
+	public static final Enchantment CATALYST;
+	public static final Enchantment SEARING;
 	public static final Enchantment FORTUNE;
 	public static final Enchantment INSIGHT;
+	public static final Enchantment CRUSH;
 	// SPECIAL
 	public static final Enchantment UNBREAKING;
 	public static final Enchantment BOTTLED_SCORE;
-	// ARMOR
+	public static final Enchantment GLITCHCRAFT;
+	// UNIQUE ENCHANTMENT FOR AXE
+	// MORE ENCHANTMENT FOR HOE
+	// MORE ENCHANTMENT FOR SHEAR
+
+	// ARMOR -> not sure what to do with those, also not in the mood of animating armour glint
 //	public static final Enchantment THORN;
 //	public static final Enchantment SPEED; // increases the movementspeed
 //	public static final Enchantment VAULT; // increases the stepping hight
@@ -52,7 +57,8 @@ public class Enchantments extends Registry<Enchantment> {
 	 */
 
 	private Enchantments(){}
-	private static Enchantments INSTANCE = new Enchantments();
+	private static final Enchantments INSTANCE = new Enchantments();
+
 	public static Enchantments getInstance(){
 		return INSTANCE;
 	}
@@ -176,7 +182,7 @@ public class Enchantments extends Registry<Enchantment> {
 			.build();
 
 		/// trommel
-		SCAVANGE = new EnchantmentBuilder(new Enchantment(MOD_ID, "scavange"))
+		SCAVENGE = new EnchantmentBuilder(new Enchantment(MOD_ID, "scavenge"))
 			.setWeight(5.0f)
 			.setMaxLevel(1)
 			.setTarget(item -> item instanceof ItemToolShovel || item.hasTag(ENCHANT_DIGGER))
@@ -184,7 +190,7 @@ public class Enchantments extends Registry<Enchantment> {
 			.setMaxEnchatability(level -> 60)
 			.build();
 
-		DISCOVERY = new EnchantmentBuilder(new Enchantment(MOD_ID, "discovery"))
+		CATALYST = new EnchantmentBuilder(new Enchantment(MOD_ID, "catalyst"))
 			.setWeight(2.0f)
 			.setMaxLevel(5)
 			.setTarget(item ->
@@ -201,14 +207,13 @@ public class Enchantments extends Registry<Enchantment> {
 			.setMaxLevel(5)
 			.setTarget(item ->
 				item instanceof ItemToolPickaxe
-					|| item instanceof ItemToolAxe
 					|| item instanceof ItemToolShovel
 					|| item.hasTag(ENCHANT_DIGGER)
 			)
 			.setEnchantability(10, 50, 0.75f, 4)
 			.build();
 
-		MOLTEN = new EnchantmentBuilder(new Enchantment(MOD_ID, "molten"))
+		SEARING = new EnchantmentBuilder(new Enchantment(MOD_ID, "searing"))
 			.setWeight(1.0f)
 			.setMaxLevel(1)
 			.setTarget(item -> item instanceof ItemToolPickaxe
@@ -218,11 +223,22 @@ public class Enchantments extends Registry<Enchantment> {
 			.setMinEnchantability(level -> 10)
 			.setMaxEnchatability(level -> 60)
 			.build();
+
+		// crushes cobble to gravel
+		CRUSH = new EnchantmentBuilder(new Enchantment(MOD_ID, "crusher"))
+			.setWeight(1.0f)
+			.setMaxLevel(1)
+			.setTarget(item -> item instanceof ItemToolPickaxe || item.hasTag(ENCHANT_PICKAXE))
+			.setMinEnchantability(level -> 10)
+			.setMaxEnchatability(level -> 60)
+			.build();
+
+		// purely for commands
+		GLITCHCRAFT = new EnchantmentBuilder(new Enchantment(MOD_ID, "glitch"))
+			.setTarget(item -> false)
+			.setHidden(true)
+			.build();
 	}
 
-	public static void init(){
-		if(INSTANCE == null){
-			INSTANCE = new Enchantments();
-		}
-	}
+	public static void init() {/* just to load this class*/}
 }

@@ -75,7 +75,7 @@ public class EnchantmentMixins {
 	protected static Random random = new Random();
 
 	public static void applyDiscovery(World world, int x, int y, int z, ItemStack stack) {
-		int level = EnchantmentContainer.getLevel(stack, Enchantments.DISCOVERY);
+		int level = EnchantmentContainer.getLevel(stack, Enchantments.CATALYST);
 		if (level <= 0 || random.nextInt(128) > 1) {
 			return;
 		}
@@ -101,19 +101,20 @@ public class EnchantmentMixins {
 		}
 	}
 
-	public static ItemStack[] applyMolten(EnumDropCause dropCause, Player player, ItemStack[] drops) {
+	public static ItemStack[] applyMoltenAndScevange(EnumDropCause dropCause, Player player, ItemStack[] drops) {
 		if (player == null) {
 			return drops;
 		}
 		ItemStack heldItem = player.getHeldItem();
-		int molten = EnchantmentContainer.getLevel(heldItem, Enchantments.MOLTEN);
-		int scavange = EnchantmentContainer.getLevel(heldItem, Enchantments.SCAVANGE);
-		if (dropCause == EnumDropCause.PROPER_TOOL && (molten > 0 || scavange > 0)) {
+		int molten = EnchantmentContainer.getLevel(heldItem, Enchantments.SEARING);
+		int scavenge = EnchantmentContainer.getLevel(heldItem, Enchantments.SCAVENGE);
+
+		if (dropCause == EnumDropCause.PROPER_TOOL && (molten > 0 || scavenge > 0)) {
 			List<ItemStack> results = new ArrayList<>();
 			if (molten > 0) {
 				results.addAll(Arrays.asList(processItem(player, drops, EnchantmentMixins::matchSmeltingRecipes)));
 			}
-			if (scavange > 0 && random.nextBoolean()) {
+			if (scavenge > 0 && random.nextBoolean()) {
 				results.addAll(Arrays.asList(processItem(player, drops, EnchantmentMixins::matchTrommelRecipes)));
 			}
 			return results.toArray(new ItemStack[]{});

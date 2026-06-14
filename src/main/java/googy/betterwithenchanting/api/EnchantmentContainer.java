@@ -2,6 +2,7 @@ package googy.betterwithenchanting.api;
 
 import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
+import com.mojang.nbt.tags.Tag;
 import net.minecraft.core.WeightedRandomBag;
 import net.minecraft.core.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +25,12 @@ public class EnchantmentContainer {
 		return (int) Math.ceil(MAX_ENCHANTMENT_COST * percentage);
 	}
 
+	public static void addEnchantments(ItemStack stack, List<EnchantmentStack> enchantments) {
+		for (EnchantmentStack enchantment : enchantments) {
+			addEnchantment(stack, enchantment);
+		}
+	}
+
 	public static void addEnchantment(ItemStack stack, EnchantmentStack enchantmentStack) {
 		if (contains(stack, enchantmentStack.getEnchantment())) {
 			return;
@@ -37,9 +44,45 @@ public class EnchantmentContainer {
 		stack.getData().putCompound(ENCHANTMENT_DATA_KEY, enchantmentsTag);
 	}
 
-	public static void addEnchantments(ItemStack stack, List<EnchantmentStack> enchantments) {
-		for (EnchantmentStack enchantment : enchantments) {
-			addEnchantment(stack, enchantment);
+	public static EnchantmentStack removeEnchantment(ItemStack itemStack, Enchantment enchantment) {
+		if (!contains(itemStack, enchantment)) {
+			return null;
+		}
+		CompoundTag enchantData = itemStack.getData().getCompound(ENCHANTMENT_DATA_KEY);
+		ListTag enchantList =  enchantData.getList(ENCHANTMENT_LIST_KEY);
+		Iterator<Tag<?>> it = enchantList.iterator();
+		while(it.hasNext()){
+			CompoundTag enchantTag = (CompoundTag) it.next();
+			EnchantmentStack enchantmentStack = new EnchantmentStack(enchantTag);
+			if(enchantmentStack.getEnchantment().equals(enchantment)){
+				it.remove();
+				return enchantmentStack;
+			}
+		}
+		return null;
+	}
+
+	public static int removeAllEnchantment(ItemStack itemStack) {
+		CompoundTag enchantData = itemStack.getData().getCompound(ENCHANTMENT_DATA_KEY);
+		int count =  enchantData.getList(ENCHANTMENT_LIST_KEY).tagCount();
+		enchantData.getValue().remove(ENCHANTMENT_LIST_KEY);
+		return count;
+	}
+
+	public static void increaseLevel(ItemStack itemStack, Enchantment enchantment, int level) {
+		if (!contains(itemStack, enchantment)) {
+			return;
+		}
+		CompoundTag enchantData = itemStack.getData().getCompound(ENCHANTMENT_DATA_KEY);
+		ListTag enchantList =  enchantData.getList(ENCHANTMENT_LIST_KEY);
+		for (int i = 0; i < enchantList.tagCount(); i++) {
+			CompoundTag enchantTag = (CompoundTag) enchantList.tagAt(i);
+			EnchantmentStack enchantmentStack = new EnchantmentStack(enchantTag);
+			if (enchantment.equals(enchantmentStack.getEnchantment())) {
+				enchantmentStack.setLevel(enchantmentStack.getLevel() + level);
+				enchantmentStack.writeNBT(enchantTag);
+				return;
+			}
 		}
 	}
 
@@ -115,6 +158,15 @@ public class EnchantmentContainer {
 		return bag;
 	}
 
+	public static boolean hasApplicable(ItemStack stack) {
+		for (Enchantment enchantment : Enchantments.getInstance()) {
+			if (enchantment != null && enchantment.canEnchant(stack) && !enchantment.hidden()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static List<EnchantmentStack> generateEnchantmentsList(Random random, ItemStack itemStack, int cost) {
 		int enchantability = calcEnchantability(random, cost);
 		List<EnchantmentStack> enchantmentResults = new ArrayList<>();
@@ -152,7 +204,9 @@ public class EnchantmentContainer {
 				result.add(addStack);
 			}
 			if(decrement){
+				/// the original made it way harder to get multiple enchantments, 1.2 softens it up quite a bit
 //				current >>= 1;
+				current = (int)Math.floor(current / 1.2f);
 			}
 		}
 		return new ArrayList<>(result);
@@ -169,6 +223,10 @@ public class EnchantmentContainer {
 		// Apply random bonus (±15%)
 		float randBonusPercent = 1 + (random.nextFloat() + random.nextFloat() - 1) * 0.15f;
 		return Math.max(1, Math.round(k * randBonusPercent));
+	}
+
+	public static String prettyPrint(ItemStack itemStack) {
+		return "";
 	}
 
 }

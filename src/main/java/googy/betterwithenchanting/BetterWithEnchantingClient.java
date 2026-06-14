@@ -1,9 +1,11 @@
 package googy.betterwithenchanting;
 
+import googy.betterwithenchanting.api.command.CommandEnchantments;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.entity.particle.ParticleDispatcher;
 import net.minecraft.client.render.texture.stitcher.AtlasStitcher;
 import net.minecraft.client.render.texture.stitcher.TextureRegistry;
+import net.minecraft.core.net.command.CommandManager;
 import turniplabs.halplibe.helper.TextureHelper;
 import turniplabs.halplibe.util.ClientStartEntrypoint;
 
@@ -14,6 +16,7 @@ public class BetterWithEnchantingClient implements ClientModInitializer, ClientS
 
 	@Override
 	public void beforeClientStart() {
+		CommandManager.registerCommand(new CommandEnchantments());
 		ParticleDispatcher.getInstance().addDispatch("enchant", (world, x, y, z, xa, ya, za, id) -> new ParticleGlyph(world, x, y, z, xa, ya, za));
 		BetterWithEnchantingClient.registerTextures();
 	}

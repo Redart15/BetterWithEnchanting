@@ -14,6 +14,7 @@ import net.minecraft.core.data.registry.Registries;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
+import net.minecraft.core.lang.I18n;
 import net.minecraft.core.sound.BlockSound;
 import net.minecraft.core.util.collection.NamespaceID;
 import org.slf4j.Logger;
@@ -35,7 +36,9 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 	public static final int MAX_ENCHANTMENT_COST;
 	public static final int DEFAULT_ITEM_ENCHANTABILITY;
 	public static final int WINDOW_ID;
+	public static I18n TRANSLATE;
 
+	/// cant be client side, needs to be core
 	public static final String[] LABELS = new String[]{
 		"powerful", "strong", "loyal", "vital", "enduring", "focused", "potent", "swift", "agile",
 		"unbreaking", "fortunate", "wise", "keen", "resilient", "tireless", "durable", "fierce",
@@ -90,6 +93,7 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 		EnchantingTags.init();
 		Enchantments.init();
 		Registries.getInstance().register(MOD_ID + ":enchantments", Enchantments.getInstance());
+		TRANSLATE = I18n.getInstance();
 		LOG.info("{} enchantments registered.", Enchantments.getInstance().size());
 		LOG.info("Enchantments initialized.");
 	}

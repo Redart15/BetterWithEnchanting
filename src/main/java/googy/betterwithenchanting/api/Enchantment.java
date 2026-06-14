@@ -8,6 +8,8 @@ import java.util.Objects;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
 
+import static googy.betterwithenchanting.BetterWithEnchanting.TRANSLATE;
+
 public class Enchantment {
 	private final String id;
 	private final String translationKey;
@@ -130,11 +132,18 @@ public class Enchantment {
 	}
 
 
+	public String prettyToString() {
+		String level = String.format(" %s", this.maxLevel() <= 1 ? "" : String.format("(%s)", this.maxLevel()));
+		return String.format("%s%s", TRANSLATE.translateNameKey(this.translationKey()), level);
+	}
+
+	@Deprecated
 	Enchantment setIntID(int intID) {
 		this.intID = intID;
 		return this;
 	}
 
+	@Deprecated
 	public int getIntID(){
 		return this.intID;
 	}
