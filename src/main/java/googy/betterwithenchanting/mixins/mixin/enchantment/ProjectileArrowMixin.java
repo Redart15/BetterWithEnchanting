@@ -11,6 +11,7 @@ import net.minecraft.core.Global;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.block.material.Material;
+import net.minecraft.core.block.material.MaterialLiquid;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.Mob;
 import net.minecraft.core.entity.projectile.ProjectileArrow;
@@ -101,9 +102,15 @@ public class ProjectileArrowMixin implements IEnchantment {
 		int blockX = hitResult.x + side.getOffsetX();
 		int blockY = hitResult.y + side.getOffsetY();
 		int blockZ = hitResult.z + side.getOffsetZ();
+		if (arrow.world == null) {
+			return;
+		}
 		Block<?> block = arrow.world.getBlock(blockX, blockY, blockZ);
+		if (block == null) {
+			return;
+		}
 		Material material = block.getMaterial();
-		if(block == null || block.id() == 0 ||material.isReplaceable()){
+		if(block.id() == 0 ||(material.isReplaceable() && !(material instanceof MaterialLiquid))){
 			arrow.world.setBlockWithNotify(blockX, blockY, blockZ, Blocks.FIRE.id());
 		}
 	}
