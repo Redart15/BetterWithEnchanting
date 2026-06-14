@@ -17,10 +17,14 @@ public class Enchantment {
 	private int maxLevel = 1;
 	private int minLevel = 1;
 	private Predicate<Item> target = (item -> true);
-	private IntUnaryOperator minEnchantability = (level) -> (level - 1) * 12;
-	private IntUnaryOperator maxEnchatability = (level) -> this.minEnchantability.applyAsInt(level) + 12;
+	private IntUnaryOperator minEnchantability = level -> (level - 1) * 12;
+	private IntUnaryOperator maxEnchatability = level -> this.minEnchantability.applyAsInt(level) + 12;
 	private boolean hidden = false; // prevents the enchantment from appearing in table
 
+	/**
+	 * @deprecated Old enchantment system used numerical id, that are only here for compatibility reason.
+	 * Do not use them!
+	 */
 	@Deprecated
 	private int intID = -1;
 
@@ -137,12 +141,20 @@ public class Enchantment {
 		return String.format("%s%s", TRANSLATE.translateNameKey(this.translationKey()), level);
 	}
 
+	/**
+	 * @deprecated Old enchantment system used numerical id, that are only here for compatibility reason.
+	 * Do not use them!
+	 */
 	@Deprecated
 	Enchantment setIntID(int intID) {
 		this.intID = intID;
 		return this;
 	}
 
+	/**
+	 * @deprecated Old enchantment system used numerical id, that are only here for compatibility reason.
+	 * Do not use them!
+	 */
 	@Deprecated
 	public int getIntID(){
 		return this.intID;

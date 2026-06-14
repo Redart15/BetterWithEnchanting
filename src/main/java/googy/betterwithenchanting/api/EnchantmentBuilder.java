@@ -11,8 +11,8 @@ public class EnchantmentBuilder {
 	private int maxLevel = 1;
 	private int minLevel = 1;
 	private Predicate<Item> target = (item -> true);
-	private IntUnaryOperator minEnchantability = (level) -> 1 + (level - 1) + 10;
-	private IntUnaryOperator maxEnchatability = (level) -> this.minEnchantability.applyAsInt(level) + 50;
+	private IntUnaryOperator minEnchantability = level -> 1 + (level - 1) + 10;
+	private IntUnaryOperator maxEnchatability = level -> this.minEnchantability.applyAsInt(level) + 50;
 	private boolean hidden = false;
 
 	public EnchantmentBuilder(Enchantment enchantment) {
@@ -98,7 +98,7 @@ public class EnchantmentBuilder {
 	}
 
 	public static int[] getFactorAndAdder(int maxLevel, int start, int end, double overlap){
-		double diff = end - start;
+		double diff = end - (double)start;
 		double len = 1.0f + (1 - overlap) * (maxLevel - 1);
 		double windowSize = diff / len;
 		return new int[]{(int)Math.ceil((1 - overlap) * (windowSize)), (int)Math.ceil(windowSize) };
@@ -106,12 +106,16 @@ public class EnchantmentBuilder {
 
 
 	public static int[] getFactorAndAdder(int maxLevel, int start, int end, double overlap, int lastLevel){
-		double diff = end - start;
+		double diff = end - (double)start;
 		double len = 1.0f + (1 - overlap) * (lastLevel) - 1;
 		double windowSize = diff / len;
 		return new int[]{(int)Math.ceil((1 - overlap) * (windowSize)), (int)Math.ceil(windowSize) };
 	}
 
+	/**
+	 * @deprecated Old enchantment system used numerical id, that are only here for compatibility reason.
+	 * Do not use them!
+	 */
 	@Deprecated
 	public EnchantmentBuilder(Enchantment enchantment, int intID) {
 		this.enchantment = enchantment;

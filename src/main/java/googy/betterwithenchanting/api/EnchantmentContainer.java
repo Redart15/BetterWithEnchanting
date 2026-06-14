@@ -182,6 +182,12 @@ public class EnchantmentContainer {
 
 		int maxEnchantmentsCycles = 5;
 		int current = enchantability;
+		fillEnchantmentList(random, maxEnchantmentsCycles, current, enchantmentPool, result);
+		return new ArrayList<>(result);
+	}
+
+	private static void fillEnchantmentList(Random random, int maxEnchantmentsCycles, int current, WeightedRandomBag<EnchantmentStack> enchantmentPool, Set<EnchantmentStack> result) {
+		EnchantmentStack addStack;
 		while (maxEnchantmentsCycles-- > 0
 			&& random.nextInt(50) <= current
 		) {
@@ -209,7 +215,6 @@ public class EnchantmentContainer {
 				current = (int)Math.floor(current / 1.2f);
 			}
 		}
-		return new ArrayList<>(result);
 	}
 
 	private static int calcEnchantability(Random random, double cost) {
@@ -224,9 +229,4 @@ public class EnchantmentContainer {
 		float randBonusPercent = 1 + (random.nextFloat() + random.nextFloat() - 1) * 0.15f;
 		return Math.max(1, Math.round(k * randBonusPercent));
 	}
-
-	public static String prettyPrint(ItemStack itemStack) {
-		return "";
-	}
-
 }

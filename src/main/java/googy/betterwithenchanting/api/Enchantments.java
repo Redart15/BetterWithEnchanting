@@ -100,7 +100,7 @@ public class Enchantments extends Registry<Enchantment> {
 		BAIT = new EnchantmentBuilder(new Bait(MOD_ID, "bait"), 8)
 			.setWeight(2.0f)
 			.setMaxLevel(3)
-			.setTarget(item -> item instanceof ItemFishingRod)
+			.setTarget(ItemFishingRod.class::isInstance)
 			.setEnchantability(0, 50, 0.5)
 			.build();
 

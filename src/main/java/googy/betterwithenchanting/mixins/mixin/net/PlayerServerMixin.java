@@ -24,7 +24,7 @@ public abstract class PlayerServerMixin extends Player implements IEntityPlayer,
 	@Shadow
 	public PacketHandlerServer playerNetServerHandler;
 
-	public PlayerServerMixin(World world) {
+	private PlayerServerMixin(World world) {
 		super(world);
 	}
 

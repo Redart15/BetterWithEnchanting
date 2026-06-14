@@ -49,8 +49,6 @@ public class CommandEnchantments implements CommandManager.CommandRegistry {
 	@Override
 	public void register(CommandDispatcher<CommandSource> commandDispatcher) {
 		NOT_APPLICABLE = new SimpleCommandExceptionType(new LiteralMessage(TRANSLATE.translateKey("enchantment.command.not.applicable")));
-
-		//TODO: add way to apply the enchantmenttable enchanting
 		commandDispatcher.register(
 			ArgumentBuilderLiteral.<CommandSource>literal("enchant")
 				.then(ArgumentBuilderLiteral.<CommandSource>literal("list")

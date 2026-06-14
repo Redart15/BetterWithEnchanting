@@ -55,6 +55,7 @@ public class BlockEnchantmentTable extends BlockLogicRotatable {
 		}
 	}
 
+	@SuppressWarnings("java:S107")
 	public void spawnParticle(World world, Random random, int bx, int by, int bz, int tx, int ty, int tz) {
 		boolean pass = random.nextInt(Global.TICKS_PER_SECOND * 4) != 0;
 		if (world.getBlockId(bx, by, bz) != Blocks.BOOKSHELF_PLANKS_OAK.id() || pass) {

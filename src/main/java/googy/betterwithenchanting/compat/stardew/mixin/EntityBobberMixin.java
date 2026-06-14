@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(value = EntityFishingBobber.class, remap = false)
 public abstract class EntityBobberMixin extends Entity {
-	public EntityBobberMixin(World world) {
+	private EntityBobberMixin(World world) {
 		super(world);
 	}
 

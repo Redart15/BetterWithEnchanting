@@ -1,7 +1,6 @@
 package googy.betterwithenchanting.api;
 
 import com.mojang.nbt.tags.CompoundTag;
-import net.minecraft.core.item.ItemBow;
 import net.minecraft.core.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 

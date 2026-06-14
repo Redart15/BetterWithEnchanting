@@ -41,7 +41,7 @@ public class ArgumentTypeEnchantment implements ArgumentType<Enchantment>{
 
 	private static void suggestEnchantments(SuggestionsBuilder suggestionsBuilder) {
 		String remaining = suggestionsBuilder.getRemaining().toLowerCase(Locale.ROOT);
-		Enchantments.getInstance().forEach((enchantment) -> transform(suggestionsBuilder, enchantment, remaining));
+		Enchantments.getInstance().forEach(enchantment -> transform(suggestionsBuilder, enchantment, remaining));
 		suggestionsBuilder.buildFuture();
 	}
 

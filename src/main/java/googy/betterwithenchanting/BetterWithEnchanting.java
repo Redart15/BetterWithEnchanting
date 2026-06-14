@@ -36,7 +36,7 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 	public static final int MAX_ENCHANTMENT_COST;
 	public static final int DEFAULT_ITEM_ENCHANTABILITY;
 	public static final int WINDOW_ID;
-	public static I18n TRANSLATE;
+	@SuppressWarnings({"java:S1104", "java:S1444", "java:S3008"}) public static I18n TRANSLATE;
 
 	/// cant be client side, needs to be core
 	public static final String[] LABELS = new String[]{
@@ -68,13 +68,13 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 		MAX_ENCHANTMENT_COST = CONFIG_HANDLER.getInt("max_enchantment_cost");
 		DEFAULT_ITEM_ENCHANTABILITY = CONFIG_HANDLER.getInt("default_item_enchantability");
 	}
-	public static final Block ENCHANTMENT_TABLE = new BlockBuilder(MOD_ID)
+	public static final Block<?> ENCHANTMENT_TABLE = new BlockBuilder(MOD_ID)
 		.setBlockSound(new BlockSound("step.stone", "step.stone", 1.0f, 1.0f))
 		.setHardness(5)
 		.setResistance(1200)
 		.setLuminance(7)
 		.setTags(BlockTags.MINEABLE_BY_PICKAXE)
-		.build("enchantment.table", "enchantment_table", CONFIG_HANDLER.getInt("enchantment_table_id"), (b) ->  new BlockEnchantmentTable(b));
+		.build("enchantment.table", "enchantment_table", CONFIG_HANDLER.getInt("enchantment_table_id"), BlockEnchantmentTable::new);
 
 	public static final Item SCORE_BOTTLE = new ItemBuilder(MOD_ID).build(new ItemEnchantmentBottle("bottle.score", MOD_ID + ":item/bottle_score", CONFIG_HANDLER.getInt("bottled_score_id")));
 
@@ -112,9 +112,6 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 			.create("score_bottle", new ItemStack(ENCHANTMENT_TABLE));
 	}
 
-	public BetterWithEnchanting() {
-//		PacketEnchantItem.addMapping(CONFIG_HANDLER.getInt("packet_enchant_id"), false, true, PacketEnchantItem.class);
-	}
 	@Override public void initNamespaces() {
 		RecipeBuilder.initNameSpace(MOD_ID);
 	}
