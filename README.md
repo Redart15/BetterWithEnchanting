@@ -1,14 +1,19 @@
 # Better With Enchanting
-Adds enchanting to the game    
+Adds enchanting to the game reminiscent of release version of minecraft. 
 **Multiplayer compatible!**
 
+There are now over 20 enchant covering most tools and weapons. One can see a small list of interesting enchantment below:
 ### List of enchantments
 <ul>
-   <li>Haste (1-3) - Increces mining speed</li>
-   <li>Unbreaking (1-3) - Increces durability</li>
-   <li>Quickswing - Removes mining cooldown, decreces mob hit cooldown by 25%</li>
-   <li>Flame (1-2) - Lights mobs on fire when hit, makes bows shoot fire arrows</li>
-   <li>Bait (1-3) - Increces fishing power</li>
+   <li>Buckshot (1-2) - Fires multiple arrow in a cone.</li>
+   <li>Lifesteal (1) - Successful hit restore a small amount of health.</li>
+   <li>Searing () - Mined items are instantly smelted.</li>
+   <li>Scavenge (1) - Mined items are instantly trommeled.</li>
+   <li>Insight (1-5) - Increases the amount of score earned by mining.</li>
+   <li> and many more</li>
 </ul>
+For more information one can now use ingame commands to provide information on every enchantment.
+Additionaly player are now able to enchant and disenchant item using commands as well as set their own score.
+Lastly player now earn some score when mining and fishing can rare find bottled score in dungeons.
 
 ![image](https://github.com/00x1A4/BetterWithEnchanting/assets/125803360/d6c4994d-4622-4e7f-91db-c510be8b6b41)
