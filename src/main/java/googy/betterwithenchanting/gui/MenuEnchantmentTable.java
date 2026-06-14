@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import static googy.betterwithenchanting.item.EnchantingTags.UNECHANT;
+
 public class MenuEnchantmentTable extends MenuAbstract {
 	public final TileEntityEnchantmentTable enchantmentTable;
 	protected final int[] enchantCost = new int[3];
@@ -61,16 +63,16 @@ public class MenuEnchantmentTable extends MenuAbstract {
 			return false;
 		}
 		int cost = enchantCost[enchantOption];
+		ItemStack stack = this.getSlot(0).getItemStack();
+		List<EnchantmentStack> enchantments = EnchantmentContainer.generateEnchantmentsList(random, stack, cost);
+		if (enchantments.isEmpty()) {
+			return false;
+		}
 		if (player.gamemode != Gamemode.creative) {
 			player.score -= cost;
 			if (this.getSlot(1).hasItem() && this.getSlot(1).getItemStack() != null) {
 				this.getSlot(1).getItemStack().stackSize -= enchantOption + 1;
 			}
-		}
-		ItemStack stack = this.getSlot(0).getItemStack();
-		List<EnchantmentStack> enchantments = EnchantmentContainer.generateEnchantmentsList(random, stack, cost);
-		if (enchantments.isEmpty()) {
-			return false;
 		}
 		EnchantmentContainer.addEnchantments(stack, enchantments);
 		forceUpdateInventory();
@@ -169,12 +171,16 @@ public class MenuEnchantmentTable extends MenuAbstract {
 	}
 
 	public boolean playerCanEnchant(Player player, int option) {
-		boolean hasItem = this.getSlot(0).hasItem();
-		boolean hasEnchantments = EnchantmentContainer.getEnchantments(this.getSlot(0).getItemStack()).isEmpty();
+		ItemStack itemStack = this.getSlot(0).getItemStack();
+		if(!this.getSlot(0).hasItem()) 									return false;
+		if(itemStack == null) 											return false;
+		if(!EnchantmentContainer.getEnchantments(itemStack).isEmpty()) 	return false;
+		if(!EnchantmentContainer.hasApplicable(itemStack))				return false;
+		if(itemStack.getItem().hasTag(UNECHANT))						return false;
 		boolean enoughScore = player.score >= enchantCost[option];
 		boolean enoughFuel = this.getFuelAmount() > option;
 		boolean isCreative = player.gamemode == Gamemode.creative;
-		return hasItem && hasEnchantments && ((enoughScore && enoughFuel) || isCreative);
+		return ((enoughScore && enoughFuel) || isCreative);
 	}
 
 	public int getFuelAmount() {
@@ -210,7 +216,7 @@ public class MenuEnchantmentTable extends MenuAbstract {
 
 	@Override
 	public List<Integer> getTargetSlots(InventoryAction action, Slot slot, int target, Player entityPlayer) {
-		if (slot.index >= 3 && slot.index <= 39) {
+		if (slot.index >= 2 && slot.index <= 39) {
 			if (action != InventoryAction.MOVE_ALL) {
 				if (target == 1) {
 					return this.getSlots(0, 1, false);
@@ -226,8 +232,8 @@ public class MenuEnchantmentTable extends MenuAbstract {
 				return this.getSlots(3, 27, false);
 			}
 		}
-		if (slot.index >= 0 && slot.index <= 2) {
-			return slot.index == 2 ? this.getSlots(2, 36, true) : this.getSlots(2, 36, false);
+		if (slot.index >= 0 && slot.index <= 1) {
+			return this.getSlots(2, 36, false);
 		} else {
 			return Collections.emptyList();
 		}

@@ -26,7 +26,8 @@
 		"recipesReady": 			["googy.betterwithenchanting.BetterWithEnchanting"],
 		"client": 						["googy.betterwithenchanting.BetterWithEnchantingClient"],
 		"beforeClientStart": 	["googy.betterwithenchanting.BetterWithEnchantingClient"],
-		"afterClientStart":		["googy.betterwithenchanting.BetterWithEnchantingClient"]
+		"afterClientStart":		["googy.betterwithenchanting.BetterWithEnchantingClient"],
+		"server": 						["googy.betterwithenchanting.BetterWithEnchantingServer"]
 	},
   "mixins": ["betterwithenchanting.mixins.json"],
 

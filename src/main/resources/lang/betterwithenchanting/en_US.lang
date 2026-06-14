@@ -1,36 +1,88 @@
-tile.betterwithenchanting.enchantment.table.name = Enchantment Table
-tile.betterwithenchanting.enchantment.table.desc = Its a kind of magic.
+# block name and description
+tile.betterwithenchanting.enchantment.table.name        = Enchantment Table
+tile.betterwithenchanting.enchantment.table.desc        = It's a kind of magic, magic magic.
 
-item.betterwithenchanting.bottle.score.enchanted.name = Bottled of Score
-item.betterwithenchanting.bottle.score.enchanted.desc = Drink for higher score.
+# item name and description
+item.betterwithenchanting.bottle.score.enchanted.name   = Bottled of Score
+item.betterwithenchanting.bottle.score.enchanted.desc   = Drink for higher score.
 
-item.betterwithenchanting.bottle.score.name = Bottle
-item.betterwithenchanting.bottle.score.desc = Enchanting, is it not?
+# enchantment names
+enchantment.betterwithenchanting.bait.name              = Bait
+enchantment.betterwithenchanting.bait.desc              = Increases the rate of fishing.
+enchantment.betterwithenchanting.buckhot.name           = Buckshot
+enchantment.betterwithenchanting.buckhot.desc           = Fires multiple arrow in a cone.
+enchantment.betterwithenchanting.catalyst.name          = Catalyst
+enchantment.betterwithenchanting.catalyst.desc          = Increases the chance of finding lapiz.
+enchantment.betterwithenchanting.crit.name              = Crit
+enchantment.betterwithenchanting.crit.desc              = Increases damage when falling based on fall distance.
+enchantment.betterwithenchanting.crush.name             = Crush
+enchantment.betterwithenchanting.crush.desc             = Piston crushes mined blocks.
+enchantment.betterwithenchanting.flame.name             = Flame
+enchantment.betterwithenchanting.flame.desc             = Set target on fire, level increase duration.
+enchantment.betterwithenchanting.fortune.name           = Fortune
+enchantment.betterwithenchanting.fortune.desc           = Increases the chance of finding shinies when mining.
+enchantment.betterwithenchanting.haste.name             = Haste
+enchantment.betterwithenchanting.haste.desc             = Increases the mining speed if tools.
+enchantment.betterwithenchanting.insight.name           = Insight
+enchantment.betterwithenchanting.insight.desc           = Increases the amount of score earned by mining.
+enchantment.betterwithenchanting.knockback.name         = Knockback
+enchantment.betterwithenchanting.knockback.desc         = Increases the knockback caused by swords
+enchantment.betterwithenchanting.lifesteal.name         = Lifesteal
+enchantment.betterwithenchanting.lifesteal.desc         = Successful hit restore a small amount of health.
+enchantment.betterwithenchanting.looting.name           = Looting
+enchantment.betterwithenchanting.looting.desc           = Increases the chance of additional drop from mobs.
+enchantment.betterwithenchanting.multishot.name         = Multishot
+enchantment.betterwithenchanting.multishot.desc         = Fires multiple arrow in quick succession.
+enchantment.betterwithenchanting.power.name             = Power
+enchantment.betterwithenchanting.power.desc             = Increases the speed of arrow shot by a bow.
+enchantment.betterwithenchanting.quickswing.name        = Quickswing
+enchantment.betterwithenchanting.quickswing.desc        = Increases the swing speed of tools.
+enchantment.betterwithenchanting.searing.name           = Searing
+enchantment.betterwithenchanting.searing.desc           = Mined items are instantly smelted.
+enchantment.betterwithenchanting.scavenge.name          = Scavenge
+enchantment.betterwithenchanting.scavenge.desc          = Mined items are instantly trommeled.
+enchantment.betterwithenchanting.score.name             = Score
+enchantment.betterwithenchanting.score.desc             = Increases the player score when consumed.
+enchantment.betterwithenchanting.slayer.name            = Slayer
+enchantment.betterwithenchanting.slayer.desc            = Increases the damage against enemies.
+enchantment.betterwithenchanting.unbreaking.name        = Unbreaking
+enchantment.betterwithenchanting.unbreaking.desc        = Tools have a chance to conserve durability.
+
+# currently not sure how this infomation is to be displayed
+enchantment.betterwithenchanting.glitch.name            = Glitchcraft
+enchantment.betterwithenchanting.glitch.desc            = The current enchantment is disabled.
+disabled.name                                           = Glitchcraft
+disabled.desc                                           = The current enchantment is disabled.
+
+# command messasges
+enchantment.command.not.applicable                      = The command is not applicable to this item.
+enchantment.command.invalid                             = Enchantment is invalid.
+enchantment.command.list.all                            = Available Enchantments:
+enchantment.command.list.applicable.single              = Applicable Enchantment:
+enchantment.command.list.applicable.multi               = Applicable Enchantments:
+enchantment.command.none                                = There are no applicable enchantments available.
+enchantment.command.cannot                              = This item cannot be enchanted.
+enchantment.command.not.enchanted                       = This item %s is not enchanted.
+enchantment.command.not.fir                             = This item %1$s was not enchanted with %2$s.
+enchantment.command.remove.single                       = Removed enchantment %s.
+enchantment.command.remove.all                          = Removed %1$d enchantments with a combined level of %$2d.
+enchantment.command.remove.cannot                       = The item is not enchanted with %s.
+enchantment.command.add                                 = Added enchantment %s.
+enchantment.command.max                                 = This enchantment max level is %d.
+enchantment.command.min                                 = This enchantment min level is %d.
+enchantment.command.increased                           = Increased the level of %1$s from %2$d to %3$d
+enchantment.command.decreased                           = Decreased the level of %1$s from %2$d to %3$d.
+enchantment.command.no.change                           = No level were changed.
+enchantment.command.enchant                             = Enchanted %s.
+
+# ------------------------------------- currently not ingame -----------------------------------------------------------
+# enchantment that sounded cool but werent all that great
+enchantment.betterwithenchanting.thorn.name             = Thorns
+enchantment.betterwithenchanting.speed.name             = Speed
+enchantment.betterwithenchanting.vault.name             = Vault
+enchantment.betterwithenchanting.gills.name             = Gills
+# unused asset - bottles cannot be empty anymore
+item.betterwithenchanting.bottle.score.name             = Bottle
+item.betterwithenchanting.bottle.score.desc             = Enchanting, is it not?
 
 
-enchantment.betterwithenchanting.haste.name         = Haste
-enchantment.betterwithenchanting.unbreaking.name    = Unbreaking
-enchantment.betterwithenchanting.quickswing.name    = Quickswing
-enchantment.betterwithenchanting.flame.name         = Flame
-enchantment.betterwithenchanting.bait.name          = Bait
-enchantment.betterwithenchanting.score.name         = Score
-enchantment.betterwithenchanting.knockback.name     = Knockback
-enchantment.betterwithenchanting.looting.name       = Looting
-enchantment.betterwithenchanting.crit.name          = Crit
-enchantment.betterwithenchanting.slayer.name        = Slayer
-enchantment.betterwithenchanting.power.name         = Power
-enchantment.betterwithenchanting.multishot.name     = Multishot
-enchantment.betterwithenchanting.buckhot.name       = Buckshot
-enchantment.betterwithenchanting.fortune.name       = Fortune
-enchantment.betterwithenchanting.scavange.name      = Scavange
-enchantment.betterwithenchanting.lifesteal.name     = Lifesteal
-enchantment.betterwithenchanting.molten.name        = Searing
-enchantment.betterwithenchanting.insight.name       = Insight
-enchantment.betterwithenchanting.discovery.name     = Discovery
-
-enchantment.betterwithenchanting.thorn.name         = Thorns
-enchantment.betterwithenchanting.speed.name         = Speed
-enchantment.betterwithenchanting.vault.name         = Vault
-enchantment.betterwithenchanting.gills.name         = Gills
-
-disabled                                            = Glitchcraft
