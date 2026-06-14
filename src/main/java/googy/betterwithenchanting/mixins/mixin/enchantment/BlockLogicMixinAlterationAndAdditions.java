@@ -33,7 +33,7 @@ public abstract class BlockLogicMixinAlterationAndAdditions {
 		}
 		EnchantmentMixins.applyDiscovery(world, x, y, z, stack);
 		EnchantmentMixins.applyFortune(world, x, y, z, stack);
-		EnchantmentMixins.applyInsight(player, stack);
+		EnchantmentMixins.applyInsight(player, stack, 3);
 	}
 
 	@WrapOperation(method = "dropBlockWithCause", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/block/BlockLogic;getBreakResult(Lnet/minecraft/core/world/World;Lnet/minecraft/core/enums/EnumDropCause;IIIILnet/minecraft/core/block/entity/TileEntity;)[Lnet/minecraft/core/item/ItemStack;"))
@@ -43,10 +43,14 @@ public abstract class BlockLogicMixinAlterationAndAdditions {
 		TileEntity tileEntity, Operation<ItemStack[]> original,
 		@Local(argsOnly = true) Player player
 	) {
+		ItemStack[] drops = original.call(instance, world, dropCause, x, y, z, meta, tileEntity);
+		if(player == null){
+			return drops;
+		}
 		int crush = EnchantmentContainer.getLevel(player.getHeldItem(), Enchantments.CRUSH);
 		if (crush > 0) {
 			dropCause = EnumDropCause.PISTON_CRUSH;
 		}
-		return EnchantmentMixins.applyMoltenAndScevange(dropCause, player, original.call(instance, world, dropCause, x, y, z, meta, tileEntity));
+		return EnchantmentMixins.applyMoltenAndScevange(dropCause, player, drops);
 	}
 }

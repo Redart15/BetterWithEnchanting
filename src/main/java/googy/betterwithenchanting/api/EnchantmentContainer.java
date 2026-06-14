@@ -181,8 +181,7 @@ public class EnchantmentContainer {
 		result.add(addStack);
 
 		int maxEnchantmentsCycles = 5;
-		int current = enchantability;
-		fillEnchantmentList(random, maxEnchantmentsCycles, current, enchantmentPool, result);
+		fillEnchantmentList(random, maxEnchantmentsCycles, enchantability, enchantmentPool, result);
 		return new ArrayList<>(result);
 	}
 

@@ -27,6 +27,7 @@ public class Enchantments extends Registry<Enchantment> {
 	// ANGLE
 	public static final Enchantment HASTE; // haste
 	public static final Enchantment BAIT;// increase ore gain/fishing
+	public static final Enchantment HAUL;// increase fish amount
 	// TOOLS
 	public static final Enchantment SCAVENGE; // find random extra loot from mining
 	public static final Enchantment CATALYST;
@@ -39,6 +40,8 @@ public class Enchantments extends Registry<Enchantment> {
 	public static final Enchantment BOTTLED_SCORE;
 	public static final Enchantment GLITCHCRAFT;
 	// UNIQUE ENCHANTMENT FOR AXE
+
+	// FUTURE UPDATES
 	// MORE ENCHANTMENT FOR HOE
 	// MORE ENCHANTMENT FOR SHEAR
 
@@ -49,21 +52,23 @@ public class Enchantments extends Registry<Enchantment> {
 //	public static final Enchantment GILLS;
 
 	/**
-	 Rarities:
-	 COMMON: 		10.0f,
-	 UNCOMMON: 		 5.0f,
-	 RARE: 			 2.0f,
-	 VERY_RARE: 	 1.0f;
+	 * Rarities:
+	 * COMMON: 		10.0f,
+	 * UNCOMMON: 		 5.0f,
+	 * RARE: 			 2.0f,
+	 * VERY_RARE: 	 1.0f;
 	 */
 
-	private Enchantments(){}
+	private Enchantments() {
+	}
+
 	private static final Enchantments INSTANCE = new Enchantments();
 
-	public static Enchantments getInstance(){
+	public static Enchantments getInstance() {
 		return INSTANCE;
 	}
 
-	static{
+	static {
 		HASTE = new EnchantmentBuilder(new Enchantment(MOD_ID, "haste"), 1)
 			.setWeight(10.0f)
 			.setTarget(item ->
@@ -86,7 +91,11 @@ public class Enchantments extends Registry<Enchantment> {
 		QUICKSTRIKE = new EnchantmentBuilder(new Enchantment(MOD_ID, "quickswing"), 3)
 			.setWeight(2.0f)
 			.setMaxLevel(3)
-			.setTarget(item -> item instanceof ItemTool || item instanceof ItemToolSword || item.hasTag(ENCHANT_TOOL))
+			.setTarget(item ->
+				item instanceof ItemToolSword
+				|| item instanceof ItemToolAxe
+				|| item.hasTag(ENCHANT_TOOL)
+			)
 			.setEnchantability(10, 50, 0.5)
 			.build();
 
@@ -101,7 +110,14 @@ public class Enchantments extends Registry<Enchantment> {
 			.setWeight(2.0f)
 			.setMaxLevel(3)
 			.setTarget(ItemFishingRod.class::isInstance)
-			.setEnchantability(0, 50, 0.5)
+			.setEnchantability(0, 50, 0.5, 2)
+			.build();
+
+		HAUL = new EnchantmentBuilder(new Enchantment(MOD_ID, "haul"))
+			.setWeight(1.0f)
+			.setMaxLevel(4)
+			.setTarget(ItemFishingRod.class::isInstance)
+			.setEnchantability(0, 50, 0.5, 2)
 			.build();
 
 		BOTTLED_SCORE = new EnchantmentBuilder(new Enchantment(MOD_ID, "score"))
@@ -176,6 +192,7 @@ public class Enchantments extends Registry<Enchantment> {
 				item instanceof ItemToolPickaxe
 					|| item instanceof ItemToolAxe
 					|| item instanceof ItemToolShovel
+					|| item instanceof ItemFishingRod
 					|| item.hasTag(ENCHANT_DIGGER)
 			)
 			.setEnchantability(0, 50, 0.2f, 4)
@@ -225,7 +242,7 @@ public class Enchantments extends Registry<Enchantment> {
 			.build();
 
 		// crushes cobble to gravel
-		CRUSH = new EnchantmentBuilder(new Enchantment(MOD_ID, "crusher"))
+		CRUSH = new EnchantmentBuilder(new Enchantment(MOD_ID, "crush"))
 			.setWeight(1.0f)
 			.setMaxLevel(1)
 			.setTarget(item -> item instanceof ItemToolPickaxe || item.hasTag(ENCHANT_PICKAXE))

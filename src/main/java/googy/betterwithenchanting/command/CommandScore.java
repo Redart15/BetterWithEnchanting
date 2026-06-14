@@ -16,8 +16,7 @@ import net.minecraft.core.net.command.arguments.ArgumentTypeEntity;
 import net.minecraft.core.net.command.helpers.EntitySelector;
 
 import static googy.betterwithenchanting.BetterWithEnchanting.TRANSLATE;
-import static googy.betterwithenchanting.command.ReturnValues.FAIL;
-import static googy.betterwithenchanting.command.ReturnValues.code;
+import static googy.betterwithenchanting.command.ReturnValues.*;
 
 public class CommandScore implements CommandManager.CommandRegistry {
 
@@ -33,6 +32,14 @@ public class CommandScore implements CommandManager.CommandRegistry {
 				.then(ArgumentBuilderRequired.<CommandSource, EntitySelector>argument("player", ArgumentTypeEntity.username())
 					.then(ArgumentBuilderRequired.<CommandSource, Integer>argument("value", ArgumentTypeInteger.integer())
 						.executes(ctx -> addScore(ctx, 0))
+					)
+				)
+			)
+			.then(ArgumentBuilderLiteral.<CommandSource>literal("set")
+				.requires(src -> src.hasAdmin() && src.getSender() != null)
+				.then(ArgumentBuilderRequired.<CommandSource, EntitySelector>argument("player", ArgumentTypeEntity.username())
+					.then(ArgumentBuilderRequired.<CommandSource, Integer>argument("value", ArgumentTypeInteger.integer())
+						.executes(CommandScore::setScore)
 					)
 				)
 			)
@@ -78,6 +85,14 @@ public class CommandScore implements CommandManager.CommandRegistry {
 		player.score += value;
 		ctx.getSource().sendTranslatableMessage("score.command.add", player.getDisplayName(), value);
 		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int setScore(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+		final Player player = getPlayer(ctx);
+		final int value = ctx.getArgument("value", Integer.class);
+		player.score = value;
+		ctx.getSource().sendTranslatableMessage("score.command.set", player.getDisplayName(), value);
+		return code(OK);
 	}
 
 	private static int removeScore(CommandContext<CommandSource> ctx, int counter) throws CommandSyntaxException {

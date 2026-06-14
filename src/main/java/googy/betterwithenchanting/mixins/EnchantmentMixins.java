@@ -92,12 +92,12 @@ public class EnchantmentMixins {
 		world.dropItem(x, y, z, fortuneBag.getRandom(random).getItemStack(random));
 	}
 
-	public static void applyInsight(Player player, ItemStack stack) {
+	public static void applyInsight(Player player, ItemStack stack, int defaultScore) {
 		int level = EnchantmentContainer.getLevel(stack, Enchantments.INSIGHT);
 		if (level <= 0) {
-			player.score += 3;// to give more excess to xp
+			player.score += defaultScore;// to give more excess to xp
 		}else{
-			player.score += (int) Math.floor(10 * Math.pow(level, 0.85));
+			player.score += (int) Math.floor((defaultScore + 7) * Math.pow(level, 0.85));
 		}
 	}
 
@@ -108,7 +108,6 @@ public class EnchantmentMixins {
 		ItemStack heldItem = player.getHeldItem();
 		int molten = EnchantmentContainer.getLevel(heldItem, Enchantments.SEARING);
 		int scavenge = EnchantmentContainer.getLevel(heldItem, Enchantments.SCAVENGE);
-
 		if (dropCause == EnumDropCause.PROPER_TOOL && (molten > 0 || scavenge > 0)) {
 			List<ItemStack> results = new ArrayList<>();
 			if (molten > 0) {
