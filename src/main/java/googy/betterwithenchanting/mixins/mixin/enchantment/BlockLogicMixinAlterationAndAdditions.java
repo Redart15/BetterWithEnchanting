@@ -3,6 +3,8 @@ package googy.betterwithenchanting.mixins.mixin.enchantment;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import googy.betterwithenchanting.api.EnchantmentContainer;
+import googy.betterwithenchanting.api.Enchantments;
 import googy.betterwithenchanting.mixins.EnchantmentMixins;
 import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.block.entity.TileEntity;
@@ -40,6 +42,10 @@ public abstract class BlockLogicMixinAlterationAndAdditions {
 		TileEntity tileEntity, Operation<ItemStack[]> original,
 		@Local(argsOnly = true) Player player
 	) {
-		return EnchantmentMixins.applyMolten(dropCause, player, original.call(instance, world, dropCause, x, y, z, meta, tileEntity));
+		int crush = EnchantmentContainer.getLevel(player.getHeldItem(), Enchantments.CRUSH);
+		if (crush > 0) {
+			dropCause = EnumDropCause.PISTON_CRUSH;
+		}
+		return EnchantmentMixins.applyMoltenAndScevange(dropCause, player, original.call(instance, world, dropCause, x, y, z, meta, tileEntity));
 	}
 }
