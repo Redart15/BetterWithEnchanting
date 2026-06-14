@@ -7,7 +7,7 @@ There are now over 20 enchant covering most tools and weapons. One can see a sma
 <ul>
    <li>Buckshot (1-2) - Fires multiple arrow in a cone.</li>
    <li>Lifesteal (1) - Successful hit restore a small amount of health.</li>
-   <li>Searing () - Mined items are instantly smelted.</li>
+   <li>Searing (1) - Mined items are instantly smelted.</li>
    <li>Scavenge (1) - Mined items are instantly trommeled.</li>
    <li>Insight (1-5) - Increases the amount of score earned by mining.</li>
    <li> and many more</li>
