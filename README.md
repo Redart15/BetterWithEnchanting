@@ -16,4 +16,5 @@ For more information one can now use ingame commands to provide information on e
 Additionaly player are now able to enchant and disenchant item using commands as well as set their own score.
 Lastly player now earn some score when mining and fishing can rare find bottled score in dungeons.
 
-![image](https://github.com/00x1A4/BetterWithEnchanting/assets/125803360/d6c4994d-4622-4e7f-91db-c510be8b6b41)
+<img width="1920" height="1017" alt="2026-06-14_20 53 08" src="https://github.com/user-attachments/assets/ef18b651-6a33-48b9-be7e-6493a1d283bb" />
+
