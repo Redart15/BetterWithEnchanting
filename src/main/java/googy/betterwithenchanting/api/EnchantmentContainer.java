@@ -229,4 +229,22 @@ public class EnchantmentContainer {
 		float randBonusPercent = 1 + (random.nextFloat() + random.nextFloat() - 1) * 0.15f;
 		return Math.max(1, Math.round(k * randBonusPercent));
 	}
+
+    public static String prettyPrint(ItemStack itemStack) {
+		if (itemStack == null) {
+			return "";
+		}
+		StringBuilder resultString = new StringBuilder();
+		CompoundTag enchantData = itemStack.getData().getCompound(ENCHANTMENT_DATA_KEY);
+		ListTag enchantList =  enchantData.getList(ENCHANTMENT_LIST_KEY);
+		for (int i = 0; i < enchantList.tagCount(); i++) {
+			CompoundTag enchantTag = (CompoundTag) enchantList.tagAt(i);
+			EnchantmentStack enchantmentStack = new EnchantmentStack(enchantTag);
+			resultString.append(enchantmentStack.prettyToString());
+			if(i + 1 < enchantList.tagCount()){
+				resultString.append(",");
+			}
+		}
+		return resultString.toString();
+    }
 }

@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.api.command;
+package googy.betterwithenchanting.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -23,25 +23,9 @@ import java.util.List;
 import java.util.Random;
 
 import static googy.betterwithenchanting.BetterWithEnchanting.TRANSLATE;
-import static googy.betterwithenchanting.api.command.CommandEnchantments.ReturnValues.*;
+import static googy.betterwithenchanting.command.ReturnValues.*;
 
-public class CommandEnchantments implements CommandManager.CommandRegistry {
-
-	public enum ReturnValues {
-		CANNOT(-2),
-		FAIL(-1),
-		OK(0);
-		private final int code;
-
-		ReturnValues(int code) {
-			this.code = code;
-		}
-
-		public static int code(ReturnValues v) {
-			return v.code;
-		}
-	}
-
+public class CommandEnchantment implements CommandManager.CommandRegistry {
 
 	public static SimpleCommandExceptionType NOT_APPLICABLE;
 	private static final Random RANDOM = new Random();
@@ -53,21 +37,21 @@ public class CommandEnchantments implements CommandManager.CommandRegistry {
 			ArgumentBuilderLiteral.<CommandSource>literal("enchant")
 				.then(ArgumentBuilderLiteral.<CommandSource>literal("list")
 					.then(ArgumentBuilderLiteral.<CommandSource>literal("all")
-						.executes(CommandEnchantments::listAllEnchantments)
+						.executes(CommandEnchantment::listAllEnchantments)
 					)
 					.then(ArgumentBuilderLiteral.<CommandSource>literal("applicable")
-						.executes(CommandEnchantments::listApplicableEnchantments)
+						.executes(CommandEnchantment::listApplicableEnchantments)
 					)
 				)
 				.then(ArgumentBuilderLiteral.<CommandSource>literal("info")
 					.then(ArgumentBuilderRequired.<CommandSource, Enchantment>argument("name", ArgumentTypeEnchantment.enchantments())
-						.executes(CommandEnchantments::listInfo)
+						.executes(CommandEnchantment::listInfo)
 					)
 				)
 				.then(ArgumentBuilderLiteral.<CommandSource>literal("random")
 					.requires(src -> src.hasAdmin() && src.getSender() != null)
 					.then(ArgumentBuilderRequired.<CommandSource, Integer>argument("cost", ArgumentTypeInteger.integer())
-						.executes(CommandEnchantments::randomEnchant)
+						.executes(CommandEnchantment::randomEnchant)
 					)
 				)
 				.then(ArgumentBuilderLiteral.<CommandSource>literal("add")
@@ -89,10 +73,10 @@ public class CommandEnchantments implements CommandManager.CommandRegistry {
 				.then(ArgumentBuilderLiteral.<CommandSource>literal("remove")
 					.requires(src -> src.hasAdmin() && src.getSender() != null)
 					.then(ArgumentBuilderLiteral.<CommandSource>literal("all")
-						.executes(CommandEnchantments::removeAllEnchantments)
+						.executes(CommandEnchantment::removeAllEnchantments)
 					)
 					.then(ArgumentBuilderRequired.<CommandSource, Enchantment>argument("name", ArgumentTypeEnchantment.enchantments())
-						.executes(CommandEnchantments::removeEnchantment)
+						.executes(CommandEnchantment::removeEnchantment)
 					)
 				)
 		);

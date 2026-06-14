@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.api.command;
+package googy.betterwithenchanting.command;
 
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.StringReader;

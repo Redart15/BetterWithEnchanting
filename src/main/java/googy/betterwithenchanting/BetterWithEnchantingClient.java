@@ -1,6 +1,7 @@
 package googy.betterwithenchanting;
 
-import googy.betterwithenchanting.api.command.CommandEnchantments;
+import googy.betterwithenchanting.command.CommandEnchantment;
+import googy.betterwithenchanting.command.CommandScore;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.entity.particle.ParticleDispatcher;
 import net.minecraft.client.render.texture.stitcher.AtlasStitcher;
@@ -16,7 +17,8 @@ public class BetterWithEnchantingClient implements ClientModInitializer, ClientS
 
 	@Override
 	public void beforeClientStart() {
-		CommandManager.registerCommand(new CommandEnchantments());
+		CommandManager.registerCommand(new CommandEnchantment());
+		CommandManager.registerCommand(new CommandScore());
 		ParticleDispatcher.getInstance().addDispatch("enchant", (world, x, y, z, xa, ya, za, id) -> new ParticleGlyph(world, x, y, z, xa, ya, za));
 		BetterWithEnchantingClient.registerTextures();
 	}

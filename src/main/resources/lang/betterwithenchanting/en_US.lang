@@ -3,8 +3,9 @@ tile.betterwithenchanting.enchantment.table.name        = Enchantment Table
 tile.betterwithenchanting.enchantment.table.desc        = It's a kind of magic, magic magic.
 
 # item name and description
-item.betterwithenchanting.bottle.score.enchanted.name   = Bottled of Score
-item.betterwithenchanting.bottle.score.enchanted.desc   = Drink for higher score.
+item.betterwithenchanting.bottle.score.name             = Bottled of Score
+item.betterwithenchanting.bottle.score.desc             = Drink for higher score.
+
 
 # enchantment names
 enchantment.betterwithenchanting.bait.name              = Bait
@@ -74,6 +75,11 @@ enchantment.command.increased                           = Increased the level of
 enchantment.command.decreased                           = Decreased the level of %1$s from %2$d to %3$d.
 enchantment.command.no.change                           = No level were changed.
 enchantment.command.enchant                             = Enchanted %s.
+
+score.command.cannot                                    = Invalid target.
+score.command.add                                       = Added %2$d to %1$s.
+score.command.remove                                    = Subtracted %1$s from %2$d.
+score.command.info                                      = Player %1$s has a score of %2$d.
 
 # ------------------------------------- currently not ingame -----------------------------------------------------------
 # enchantment that sounded cool but werent all that great

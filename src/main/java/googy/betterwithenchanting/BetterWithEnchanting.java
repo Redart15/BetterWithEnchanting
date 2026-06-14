@@ -14,6 +14,7 @@ import net.minecraft.core.data.registry.Registries;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
+import net.minecraft.core.item.tag.ItemTags;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.sound.BlockSound;
 import net.minecraft.core.util.collection.NamespaceID;
@@ -76,7 +77,9 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 		.setTags(BlockTags.MINEABLE_BY_PICKAXE)
 		.build("enchantment.table", "enchantment_table", CONFIG_HANDLER.getInt("enchantment_table_id"), BlockEnchantmentTable::new);
 
-	public static final Item SCORE_BOTTLE = new ItemBuilder(MOD_ID).build(new ItemEnchantmentBottle("bottle.score", MOD_ID + ":item/bottle_score", CONFIG_HANDLER.getInt("bottled_score_id")));
+	public static final Item SCORE_BOTTLE = new ItemBuilder(MOD_ID)
+		.addTags(ItemTags.NOT_IN_CREATIVE_MENU)
+		.build(new ItemEnchantmentBottle("bottle.score", MOD_ID + ":item/bottle_score", CONFIG_HANDLER.getInt("bottled_score_id")));
 
 	@Override
 	public void onInitialize() {
