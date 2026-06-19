@@ -1,6 +1,8 @@
 package googy.betterwithenchanting.mixins;
 
+import com.mojang.nbt.tags.CompoundTag;
 import googy.betterwithenchanting.BetterWithEnchanting;
+import googy.betterwithenchanting.api.Enchantment;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.api.Enchantments;
@@ -166,15 +168,55 @@ public class EnchantmentMixins {
 		return currentDrop;
 	}
 
+	private static final String COUNT_EAT = "timesEaten";
+
+	private static byte getCount(CompoundTag tag) {
+		if(tag.containsKey(COUNT_EAT)){
+			return tag.getByte(COUNT_EAT);
+		}else{
+			tag.putByte(COUNT_EAT, (byte) 0);
+			return 0;
+		}
+	}
+
+	private static void increaseCount(CompoundTag tag, byte eatCount) {
+		tag.putByte(COUNT_EAT, (byte) (eatCount + 1));
+	}
+
+	public static boolean applyLasting(ItemStack stack) {
+		int lastingLvL = EnchantmentContainer.getLevel(stack, Enchantments.LASTING);
+		if (lastingLvL <= 0) {
+			return false;
+		}
+		CompoundTag tag = stack.getData();
+		byte eatCount = getCount(tag);
+		int value = random.nextInt(5 + lastingLvL);
+		if(value > eatCount){
+			increaseCount(tag, eatCount);
+			return true;
+		}
+		return false;
+	}
+
+	public static void applyScore(Player player, ItemStack itemStack) {
+		int level = EnchantmentContainer.getLevel(itemStack, Enchantments.BOTTLED_SCORE);
+		if(level >= 0){
+			player.score += level * 4000;
+			EnchantmentContainer.removeEnchantment(itemStack, Enchantments.BOTTLED_SCORE);
+		}
+	}
+
+
 	/// Period 3000, offset 1873
 	public static final int PERIOD = 3000;
 	public static final int OFF_SET = 1873;
-
 	/// RGBA (0.5, 0.25, 0.8, 1.0)
 	private static final float R = 0.1F;
 	private static final float G = 0.1F;
 	private static final float B = 0.5F;
+
 	private static final float A = 1.0F;
+
 	public static final String TEXTURE = "/assets/" + MOD_ID + "/textures/misc/glintB.png";
 
 	private static float getOffset(int i, float factor) {

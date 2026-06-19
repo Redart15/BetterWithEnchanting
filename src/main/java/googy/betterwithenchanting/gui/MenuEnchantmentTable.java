@@ -32,7 +32,7 @@ public class MenuEnchantmentTable extends MenuAbstract {
 
 	public MenuEnchantmentTable(ContainerInventory inventoryplayer, TileEntityEnchantmentTable enchantmentTable) {
 		this.enchantmentTable = enchantmentTable;
-		addSlot(new Slot(enchantmentTable, 0, 15, 47));
+		addSlot(new EnchantItemSlot(enchantmentTable, 0, 15, 47));
 		addSlot(new EnchantFuelSlot(enchantmentTable, 1, 35, 47));
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {
@@ -71,7 +71,7 @@ public class MenuEnchantmentTable extends MenuAbstract {
 		if (player.gamemode != Gamemode.creative) {
 			player.score -= cost;
 			if (this.getSlot(1).hasItem() && this.getSlot(1).getItemStack() != null) {
-				this.getSlot(1).getItemStack().stackSize -= enchantOption + 1;
+				this.getSlot(1).remove(enchantOption + 1);
 			}
 		}
 		EnchantmentContainer.addEnchantments(stack, enchantments);

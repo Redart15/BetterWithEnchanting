@@ -5,6 +5,7 @@ import net.minecraft.core.data.registry.Registry;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemBow;
 import net.minecraft.core.item.ItemFishingRod;
+import net.minecraft.core.item.ItemFood;
 import net.minecraft.core.item.tool.*;
 
 import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
@@ -35,9 +36,13 @@ public class Enchantments extends Registry<Enchantment> {
 	public static final Enchantment FORTUNE;
 	public static final Enchantment INSIGHT;
 	public static final Enchantment CRUSH;
+	// FOOD
+	public static final Enchantment BOTTLED_SCORE;
+	public static final Enchantment NOURISHMENT;
+	public static final Enchantment FILLING;
+	public static final Enchantment LASTING;
 	// SPECIAL
 	public static final Enchantment UNBREAKING;
-	public static final Enchantment BOTTLED_SCORE;
 	public static final Enchantment GLITCHCRAFT;
 	// UNIQUE ENCHANTMENT FOR AXE
 
@@ -120,10 +125,36 @@ public class Enchantments extends Registry<Enchantment> {
 			.setEnchantability(0, 50, 0.5, 2)
 			.build();
 
-		BOTTLED_SCORE = new EnchantmentBuilder(new Enchantment(MOD_ID, "score"))
+		// chance to conserve food
+		LASTING = new EnchantmentBuilder(new Enchantment(MOD_ID, "lasting"))
 			.setWeight(10.0f)
+			.setMaxLevel(5)
+			.setTarget(ItemFood.class::isInstance)
+			.setEnchantability(10, 50, 0.5f, 3)
+			.build();
+
+		// TODO figure out how to make them work.
+		// increase regeneration speed
+		NOURISHMENT	= new EnchantmentBuilder(new Enchantment(MOD_ID, "filling"))
+			.setWeight(5.0f)
+			.setMaxLevel(3)
+			.setTarget(ItemFood.class::isInstance)
+			.setEnchantability(0, 50, 1.0f)
+			.build();
+
+		// increases the amount of health restored
+		FILLING = new EnchantmentBuilder(new Enchantment(MOD_ID, "filling"))
+			.setWeight(2.0f)
+			.setMaxLevel(2)
+			.setTarget(ItemFood.class::isInstance)
+			.setEnchantability(15, 65, 0.4f, 4)
+			.build();
+
+
+		BOTTLED_SCORE = new EnchantmentBuilder(new Enchantment(MOD_ID, "score"))
+			.setWeight(1.0f)
 			.setMaxLevel(4)
-			.setTarget(item -> item.id == BetterWithEnchanting.SCORE_BOTTLE.id)
+			.setTarget(item -> item.id == BetterWithEnchanting.SCORE_BOTTLE.id || item instanceof ItemFood)
 			.setEnchantability(0, 50, 0.75, 2)
 			.build();
 
