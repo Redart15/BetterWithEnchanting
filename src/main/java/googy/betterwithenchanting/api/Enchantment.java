@@ -53,6 +53,14 @@ public class Enchantment {
 		return translationKey;
 	}
 
+	public String translationKeyName() {
+		return this.translationKey + ".name";
+	}
+
+	public String translationKeyDesc() {
+		return this.translationKey + ".desc";
+	}
+
 	public double weight() {
 		return weight;
 	}
@@ -82,7 +90,7 @@ public class Enchantment {
 	}
 
 	public final boolean canEnchant(ItemStack itemStack) {
-		if (itemStack == null || itemStack.getItem().hasTag(EnchantingTags.UNECHANT) || itemStack.stackSize == 1) {
+		if (itemStack == null || itemStack.getItem().hasTag(EnchantingTags.UNECHANT) && itemStack.stackSize == 1) {
 			return false;
 		}
 		return this.canApply(itemStack.getItem());
@@ -138,7 +146,7 @@ public class Enchantment {
 
 	public String prettyToString() {
 		String level = String.format(" %s", this.maxLevel() <= 1 ? "" : String.format("(%s)", this.maxLevel()));
-		return String.format("%s%s", TRANSLATE.translateNameKey(this.translationKey()), level);
+		return String.format("%s%s", this.translationKeyName(), level);
 	}
 
 	/**

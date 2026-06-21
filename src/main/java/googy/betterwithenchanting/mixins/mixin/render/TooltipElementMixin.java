@@ -12,9 +12,13 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(value = TooltipElement.class, remap = false)
 public abstract class TooltipElementMixin {
 
-	@WrapOperation(method = "getTooltipText(Lnet/minecraft/core/item/ItemStack;ZLnet/minecraft/core/player/inventory/slot/Slot;)Ljava/lang/String;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/TooltipElement;formatDescription(Ljava/lang/String;I)Ljava/lang/String;"))
-	public String onGetTooltipTextT(String desc, int prefLineLength, Operation<String> original, ItemStack stack, @Local(type = StringBuilder.class, ordinal = 0) StringBuilder builder) {
-		EnchantmentMixins.getEnchantmentText(stack, builder);
-		return original.call(desc, prefLineLength);
+	@WrapOperation(method = "getTooltipText(Lnet/minecraft/core/item/ItemStack;ZLnet/minecraft/core/player/inventory/slot/Slot;)Ljava/lang/String;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/TooltipElement;formatDescription(Ljava/lang/String;)Ljava/lang/String;"))
+	public String onGetTooltipText(
+		String desc, Operation<String> original,
+		@Local(type = StringBuilder.class, ordinal = 0) StringBuilder builder,
+		@Local(argsOnly = true) ItemStack itemStack
+	) {
+		EnchantmentMixins.getEnchantmentText(itemStack, builder);
+		return original.call(desc);
 	}
 }

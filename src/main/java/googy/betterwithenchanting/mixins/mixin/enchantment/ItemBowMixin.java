@@ -16,8 +16,11 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(value = ItemBow.class, remap = false)
 public class ItemBowMixin {
 
-	@WrapOperation(method = "onUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/world/World;entityJoinedWorld(Lnet/minecraft/core/entity/Entity;)Z"))
-	private boolean applyFlameMultiBuck(World instance, Entity entity, Operation<Boolean> original, ItemStack itemStack, @Local Player player) {
+	@WrapOperation(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/world/World;entityJoinedWorld(Lnet/minecraft/core/entity/Entity;)Z"))
+	private boolean applyFlameMultiBuck(
+		World instance, Entity entity, Operation<Boolean> original,
+		ItemStack itemStack, @Local(argsOnly = true) Player player
+	) {
 		EnchantedArrow arrows = new EnchantedArrow(player, itemStack);
 		arrows.setOnFire((Projectile) entity);
 		arrows.setMultiHit((Projectile) entity);

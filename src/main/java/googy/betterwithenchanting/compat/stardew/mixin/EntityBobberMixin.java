@@ -1,19 +1,18 @@
 package googy.betterwithenchanting.compat.stardew.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import googy.betterwithenchanting.api.Enchantments;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.mixins.EnchantmentMixins;
 import googy.betterwithenchanting.mixins.mixin.accessor.EntityAccessor;
+import net.minecraft.core.block.Block;
 import net.minecraft.core.block.Blocks;
-import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityFishingBobber;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemFishingRod;
 import net.minecraft.core.item.ItemStack;
-import net.minecraft.core.world.World;
+import net.minecraft.core.world.pos.TilePos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,32 +21,23 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = EntityFishingBobber.class, remap = false)
-public abstract class EntityBobberMixin extends Entity {
-
-	private EntityBobberMixin(World world) {
-		super(world);
-	}
+public abstract class EntityBobberMixin{
 
 	@ModifyVariable(method = "tick", at = @At("STORE"), ordinal = 1)
 	private int getCatchRate(int catchRate) {
-		if (catchRate != 500) return catchRate;
-
+		if (catchRate != 500) {return catchRate;}
 		EntityFishingBobber thisBobber = (EntityFishingBobber) (Object) this;
-
 		ItemStack stack = thisBobber.owner.getCurrentEquippedItem();
 		int baitLevel = EnchantmentContainer.getLevel(stack, Enchantments.BAIT);
-
 		int rate = catchRate - (baitLevel * 100);
-
-		boolean rainBonus = thisBobber.world.canBlockBeRainedOn((int) Math.floor(thisBobber.x), (int) Math.floor(thisBobber.y) + 1, (int) Math.floor(thisBobber.z));
-		boolean algaeRate = thisBobber.world.getBlockId((int) Math.floor(thisBobber.x), (int) Math.floor(thisBobber.y) + 1, (int) Math.floor(thisBobber.z)) == Blocks.ALGAE.id();
-
+		TilePos tilePos = new TilePos((int) Math.floor(thisBobber.x), (int) Math.floor(thisBobber.y) + 1, (int) Math.floor(thisBobber.z));
+		Block<?> block = thisBobber.world.getBlockType(tilePos);
+		boolean rainBonus = thisBobber.world.isBlockBeingRainedOn(tilePos);
+		boolean algaeRate = block.id() == Blocks.ALGAE.id();
 		int limit = 50; // smallest possible catchRate value
-		if (rainBonus) limit += 200;
-		if (algaeRate) limit += 100;
-
+		if (rainBonus) {limit += 200;}
+		if (algaeRate) {limit += 100;}
 		rate = Math.max(rate, limit);
-
 		return rate;
 	}
 

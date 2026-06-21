@@ -3,17 +3,21 @@ package googy.betterwithenchanting.gui;
 import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.api.EnchantmentContainer;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.InventoryAction;
+import net.minecraft.core.block.Block;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.crafting.ContainerListener;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
-import net.minecraft.core.player.gamemode.Gamemode;
+import net.minecraft.core.player.gamemode.Gamemodes;
 import net.minecraft.core.player.inventory.container.Container;
 import net.minecraft.core.player.inventory.container.ContainerInventory;
 import net.minecraft.core.player.inventory.menu.MenuAbstract;
 import net.minecraft.core.player.inventory.slot.Slot;
 import net.minecraft.core.world.World;
+import net.minecraft.core.world.pos.TilePos;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +31,6 @@ public class MenuEnchantmentTable extends MenuAbstract {
 	protected final int[] labelIndexes = new int[3];
 	protected byte type = 0;
 	protected int bookLevel;
-
 	private final Random random = new Random();
 
 	public MenuEnchantmentTable(ContainerInventory inventoryplayer, TileEntityEnchantmentTable enchantmentTable) {
@@ -58,23 +61,23 @@ public class MenuEnchantmentTable extends MenuAbstract {
 		return ((this.type >> (i % 3)) & 1) == 1;
 	}
 
+
 	public boolean enchantItem(Player player, int enchantOption) {
-		if (!playerCanEnchant(player, enchantOption)) {
-			return false;
-		}
+		Slot enchantSlot 	= this.getSlot(0);
+		Slot lapisSlot 		= this.getSlot(1);
+		if (enchantSlot == null || lapisSlot == null) {return false;}
+		ItemStack enchantItem 	= enchantSlot.getItemStack();
+		if (!playerCanEnchant(player, enchantOption) || enchantItem == null) {return false;}
 		int cost = enchantCost[enchantOption];
-		ItemStack stack = this.getSlot(0).getItemStack();
-		List<EnchantmentStack> enchantments = EnchantmentContainer.generateEnchantmentsList(random, stack, cost);
-		if (enchantments.isEmpty()) {
-			return false;
-		}
-		if (player.gamemode != Gamemode.creative) {
+		List<EnchantmentStack> enchantments = EnchantmentContainer.generateEnchantmentsList(random, enchantItem, cost);
+		if (enchantments.isEmpty()) {return false;}
+		if (player.gamemode != Gamemodes.CREATIVE) {
 			player.score -= cost;
-			if (this.getSlot(1).hasItem() && this.getSlot(1).getItemStack() != null) {
-				this.getSlot(1).remove(enchantOption + 1);
+			if (lapisSlot.hasItem()) {
+				lapisSlot.remove(enchantOption + 1);
 			}
 		}
-		EnchantmentContainer.addEnchantments(stack, enchantments);
+		EnchantmentContainer.addEnchantments(enchantItem, enchantments);
 		forceUpdateInventory();
 		return true;
 	}
@@ -88,31 +91,35 @@ public class MenuEnchantmentTable extends MenuAbstract {
 
 	void updateEnchantmentsCosts() {
 		World world = enchantmentTable.worldObj;
-		ItemStack stack = this.getSlot(0).getItemStack();
-		if (world == null || stack == null) {
+		Slot enchantmentSlot = this.getSlot(0);
+		class Cache{private static final @NotNull TilePos pos = new TilePos();}
+		if(world == null || enchantmentSlot == null){
+			return;
+		}
+		ItemStack stack = enchantmentSlot.getItemStack();
+		if (stack == null) {
 			return;
 		}
 
-		int posX = this.enchantmentTable.x;
-		int posY = this.enchantmentTable.y;
-		int posZ = this.enchantmentTable.z;
-
+		int posX = this.enchantmentTable.tilePos.x();
+		int posY = this.enchantmentTable.tilePos.y();
+		int posZ = this.enchantmentTable.tilePos.z();
 		this.bookLevel = 0;
 
 		for (int x = -1; x <= 1; x++) {
 			for (int z = -1; z <= 1; z++) {
-				if ((x == 0 && z == 0) || !world.isAirBlock(posX + x, posY, posZ + z) || !world.isAirBlock(posX + x, posY + 1, posZ + z)) {
+				if ((x == 0 && z == 0) || !world.isAirBlock(Cache.pos.set(posX + x, posY, posZ + z)) || !world.isAirBlock(Cache.pos.set(posX + x, posY + 1, posZ + z))) {
 					continue;
 				}
-				this.checkForBookShelf(world, posX + x * 2, posY, posZ + z * 2);
-				this.checkForBookShelf(world, posX + x * 2, posY + 1, posZ + z * 2);
+				this.checkForBookShelf(world.getBlockType(Cache.pos.set(posX + x * 2, posY, posZ + z * 2)));
+				this.checkForBookShelf(world.getBlockType(Cache.pos.set(posX + x * 2, posY + 1, posZ + z * 2)));
 				if (x == 0 || z == 0) {
 					continue;
 				}
-				this.checkForBookShelf(world, posX + x * 2, posY, posZ + z);
-				this.checkForBookShelf(world, posX + x * 2, posY + 1, posZ + z);
-				this.checkForBookShelf(world, posX + x, posY, posZ + z * 2);
-				this.checkForBookShelf(world, posX + x, posY + 1, posZ + z * 2);
+				this.checkForBookShelf(world.getBlockType(Cache.pos.set(posX + x * 2, posY, posZ + z)));
+				this.checkForBookShelf(world.getBlockType(Cache.pos.set(posX + x * 2, posY + 1, posZ + z)));
+				this.checkForBookShelf(world.getBlockType(Cache.pos.set(posX + x, posY, posZ + z * 2)));
+				this.checkForBookShelf(world.getBlockType(Cache.pos.set(posX + x, posY + 1, posZ + z * 2)));
 			}
 		}
 		this.bookLevel = Math.min(this.bookLevel, 15);
@@ -121,10 +128,8 @@ public class MenuEnchantmentTable extends MenuAbstract {
 		}
 	}
 
-	private void checkForBookShelf(World world, int x, int y, int z) {
-		if (world.getBlockId(x, y, z) == Blocks.BOOKSHELF_PLANKS_OAK.id()) {
-			bookLevel++;
-		}
+	private void checkForBookShelf(Block<?> block) {
+		if (block.id() == Blocks.BOOKSHELF_PLANKS_OAK.id()) {bookLevel++;}
 	}
 
 	@Override
@@ -171,32 +176,34 @@ public class MenuEnchantmentTable extends MenuAbstract {
 	}
 
 	public boolean playerCanEnchant(Player player, int option) {
-		ItemStack itemStack = this.getSlot(0).getItemStack();
-		if(!this.getSlot(0).hasItem()) 									return false;
-		if(itemStack == null) 											return false;
-		if(!EnchantmentContainer.getEnchantments(itemStack).isEmpty()) 	return false;
-		if(!EnchantmentContainer.hasApplicable(itemStack))				return false;
-		if(itemStack.getItem().hasTag(UNECHANT))						return false;
+		Slot slot = this.getSlot(0);
+		if(slot == null) 												{return false;}
+		ItemStack itemStack = slot.getItemStack();
+		if(itemStack == null) 											{return false;}
+		if(!EnchantmentContainer.getEnchantments(itemStack).isEmpty()) 	{return false;}
+		if(!EnchantmentContainer.hasApplicable(itemStack))				{return false;}
+		if(itemStack.getItem().hasTag(UNECHANT))						{return false;}
 		boolean enoughScore = player.score >= enchantCost[option];
 		boolean enoughFuel = this.getFuelAmount() > option;
-		boolean isCreative = player.gamemode == Gamemode.creative;
+		boolean isCreative = player.gamemode == Gamemodes.CREATIVE;
 		return ((enoughScore && enoughFuel) || isCreative);
 	}
 
 	public int getFuelAmount() {
-		if (!this.getSlot(1).hasItem()) {
+		Slot fuel = this.getSlot(1);
+		if (fuel == null || !fuel.hasItem() || fuel.getItemStack() == null) {
 			return 0;
 		}
-		return this.getSlot(1).getItemStack().stackSize;
+		return fuel.getItemStack().stackSize;
 	}
 
 	@Override
-	public boolean stillValid(Player player) {
+	public boolean stillValid(@NotNull Player player) {
 		return enchantmentTable.stillValid(player);
 	}
 
 	@Override
-	public List<Integer> getMoveSlots(InventoryAction action, Slot slot, int target, Player entityPlayer) {
+	public IntList getMoveSlots(@NotNull InventoryAction action, Slot slot, int target, Player entityPlayer) {
 		if (slot.index >= 0 && slot.index <= 3) {
 			return this.getSlots(slot.index, 1, false);
 		} else {
@@ -215,7 +222,7 @@ public class MenuEnchantmentTable extends MenuAbstract {
 	}
 
 	@Override
-	public List<Integer> getTargetSlots(InventoryAction action, Slot slot, int target, Player entityPlayer) {
+	public IntList getTargetSlots(@NotNull InventoryAction action, Slot slot, int target, Player entityPlayer) {
 		if (slot.index >= 2 && slot.index <= 39) {
 			if (action != InventoryAction.MOVE_ALL) {
 				if (target == 1) {
@@ -235,7 +242,7 @@ public class MenuEnchantmentTable extends MenuAbstract {
 		if (slot.index >= 0 && slot.index <= 1) {
 			return this.getSlots(2, 36, false);
 		} else {
-			return Collections.emptyList();
+			return null;
 		}
 	}
 }

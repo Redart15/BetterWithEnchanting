@@ -19,11 +19,11 @@ public abstract class PlayerControllerMixinQuickStrike {
 	@Final
 	protected Minecraft mc;
 
-	@Definition(id = "blockHitDelay", field = "Lnet/minecraft/client/player/controller/PlayerController;blockHitDelay:I")
-	@Expression("this.blockHitDelay > 0")
+	@Definition(id = "destroyDelay", field = "Lnet/minecraft/client/player/controller/PlayerController;destroyDelay:I")
+	@Expression("this.destroyDelay > 0")
 	@ModifyExpressionValue(method = "continueDestroyBlock", at = @At("MIXINEXTRAS:EXPRESSION"))
 	private boolean applyQuickStrike(boolean original){
 		int quickstrikeLevel = EnchantmentContainer.getLevel(mc.thePlayer.getHeldItem(), Enchantments.QUICKSTRIKE);
-		return quickstrikeLevel > 0 ? ((PlayerControllerAccessor)this).getBlockHitDelay() > 1 : original;
+		return quickstrikeLevel > 0 ? ((PlayerControllerAccessor)this).getDestroyDelay() > 1 : original;
 	}
 }

@@ -27,7 +27,8 @@
 		"client": 						["googy.betterwithenchanting.BetterWithEnchantingClient"],
 		"beforeClientStart": 	["googy.betterwithenchanting.BetterWithEnchantingClient"],
 		"afterClientStart":		["googy.betterwithenchanting.BetterWithEnchantingClient"],
-		"server": 						["googy.betterwithenchanting.BetterWithEnchantingServer"]
+		"server": 						["googy.betterwithenchanting.BetterWithEnchantingServer"],
+		"preLaunch": 					["googy.betterwithenchanting.compat.stardew.ModEntryPoint"]
 	},
   "mixins": ["betterwithenchanting.mixins.json"],
 

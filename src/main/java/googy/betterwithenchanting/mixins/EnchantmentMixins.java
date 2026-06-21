@@ -2,13 +2,14 @@ package googy.betterwithenchanting.mixins;
 
 import com.mojang.nbt.tags.CompoundTag;
 import googy.betterwithenchanting.BetterWithEnchanting;
-import googy.betterwithenchanting.api.Enchantment;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.api.Enchantments;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.render.TextureManager;
-import net.minecraft.client.render.tessellator.Tessellator;
+import net.minecraft.client.render.renderer.CompareFunc;
+import net.minecraft.client.render.renderer.GLRenderer;
+import net.minecraft.client.render.tessellator.TessellatorGeneral;
 import net.minecraft.core.WeightedRandomBag;
 import net.minecraft.core.WeightedRandomLootObject;
 import net.minecraft.core.data.registry.Registries;
@@ -22,7 +23,7 @@ import net.minecraft.core.item.Items;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.world.World;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.core.world.pos.TilePosc;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
@@ -76,22 +77,22 @@ public class EnchantmentMixins {
 
 	protected static Random random = new Random();
 
-	public static void applyDiscovery(World world, int x, int y, int z, ItemStack stack) {
+	public static void applyDiscovery(World world, TilePosc tilePosc, ItemStack stack) {
 		int level = EnchantmentContainer.getLevel(stack, Enchantments.CATALYST);
 		if (level <= 0 || random.nextInt(128) > 1) {
 			return;
 		}
 		for (int i = level; i > 0; i--) {
-			world.dropItem(x, y, z, new ItemStack(Items.DYE, 1, 4));
+			world.dropItem(tilePosc, new ItemStack(Items.DYE, 1, 4));
 		}
 	}
 
-	public static void applyFortune(World world, int x, int y, int z, ItemStack stack) {
+	public static void applyFortune(World world, TilePosc tilePosc, ItemStack stack) {
 		int level = EnchantmentContainer.getLevel(stack, Enchantments.FORTUNE);
 		if (level <= 0 || random.nextInt(128) >= (1 << (level - 1))) {
 			return;
 		}
-		world.dropItem(x, y, z, fortuneBag.getRandom(random).getItemStack(random));
+		world.dropItem(tilePosc, fortuneBag.getRandom(random).getItemStack(random));
 	}
 
 	public static void applyInsight(Player player, ItemStack stack, int defaultScore) {
@@ -147,7 +148,7 @@ public class EnchantmentMixins {
 
 	private static ItemStack matchSmeltingRecipes(ItemStack currentDrop) {
 		for (RecipeEntryBlastFurnace recipeEntryBase : Registries.RECIPES.getAllBlastFurnaceRecipes()) {
-			if (recipeEntryBase != null && recipeEntryBase.matches(currentDrop)) {
+			if (recipeEntryBase != null && recipeEntryBase.matches(currentDrop, null)) {
 				return recipeEntryBase.getOutput().copy();
 			}
 		}
@@ -224,19 +225,21 @@ public class EnchantmentMixins {
 		return (System.currentTimeMillis() % samplingTime) / ((float)samplingTime) * factor;
 	}
 
-    public static void renderEffectFlat(Tessellator tessellator, TextureManager textureManager, ItemStack itemStack) {
+    public static void renderEffectFlat(TessellatorGeneral tessellator, TextureManager textureManager, ItemStack itemStack) {
         if (!EnchantmentContainer.hasEnchantments(itemStack)) {
             return;
         }
-        GL11.glDepthFunc(GL11.GL_EQUAL);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDepthMask(true);
-        textureManager.bindTexture(textureManager.loadTexture(TEXTURE));
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_DST_COLOR);
-        GL11.glColor4f(R, G, B, A);
+
+		GLRenderer.setDepthFunc(CompareFunc.EQUAL);
+//        GL11.glDisable(GL11.GL_LIGHTING);
+//
+//        GL11.glDepthMask(true);
+//        textureManager.bindTexture(textureManager.loadTexture(TEXTURE));
+//        GL11.glEnable(GL11.GL_BLEND);
+//        GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_DST_COLOR);
+//        GL11.glColor4f(R, G, B, A);
         for (int i = 0; i < 2; ++i) {
-            GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+//            GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
             float c = 0.00390625F;
             float startingOffset = getOffset(i, 256.0F);
             float shiftY = i == 1 ? -1.0f : 4.0F;
@@ -256,71 +259,71 @@ public class EnchantmentMixins {
             tessellator.addVertexWithUV(-0.5f, 0.75f, 0.0f, u4, v34);
             tessellator.draw();
         }
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glDepthMask(true);
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glDepthFunc(GL11.GL_LEQUAL);
+//        GL11.glDisable(GL11.GL_BLEND);
+//        GL11.glDepthMask(true);
+//        GL11.glEnable(GL11.GL_LIGHTING);
+//        GL11.glDepthFunc(GL11.GL_LEQUAL);
     }
 
 	public static void renderEffectGui(
-        Tessellator tessellator, TextureManager textureManager, ItemStack itemStack,
+		TessellatorGeneral tessellator, TextureManager textureManager, ItemStack itemStack,
         int x, int y, int offX, int offY
     ) {
-        GL11.glDepthFunc(GL11.GL_GREATER);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDepthMask(false);
+//        GL11.glDepthFunc(GL11.GL_GREATER);
+//        GL11.glDisable(GL11.GL_LIGHTING);
+//        GL11.glDepthMask(false);
         textureManager.bindTexture(textureManager.loadTexture(TEXTURE));
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_DST_COLOR);
-        GL11.glColor4f(R, G, B, A);
+//        GL11.glEnable(GL11.GL_BLEND);
+//        GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_DST_COLOR);
+//        GL11.glColor4f(R, G, B, A);
 		renderGlint(tessellator, x, y, offX, offY);
-		GL11.glColor4f(R, G, B, A);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glDepthMask(true);
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glDepthFunc(GL11.GL_LEQUAL);
+//		GL11.glColor4f(R, G, B, A);
+//        GL11.glDisable(GL11.GL_BLEND);
+//        GL11.glDepthMask(true);
+//        GL11.glEnable(GL11.GL_LIGHTING);
+//        GL11.glDepthFunc(GL11.GL_LEQUAL);
     }
 
-	private static void renderGlint2D(Tessellator tessellator) {
+	private static void renderGlint2D(TessellatorGeneral tessellator) {
 		float colorDimmer = 0.86F; // original 0.76
-		GL11.glColor4f(colorDimmer * R, colorDimmer * G, colorDimmer * B, A);
-		GL11.glMatrixMode(GL11.GL_TEXTURE);
-		GL11.glPushMatrix();
+//		GL11.glColor4f(colorDimmer * R, colorDimmer * G, colorDimmer * B, A);
+//		GL11.glMatrixMode(GL11.GL_TEXTURE);
+//		GL11.glPushMatrix();
 		float scaling = 1.0F / 16.0F;
-		GL11.glScalef(scaling, scaling, scaling);
+//		GL11.glScalef(scaling, scaling, scaling);
 		float offset = getOffset(0, 8.0f);
-		GL11.glTranslatef(offset, 0.0F, 0.0F);
-		GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
+//		GL11.glTranslatef(offset, 0.0F, 0.0F);
+//		GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
 		renderItemIn2D(tessellator, 0.0f, 1.0f, 0.0f, 1.0f, 256, 256, 0.0625F);
-		GL11.glPopMatrix();
-		GL11.glPushMatrix();
-		GL11.glScalef(scaling, scaling, scaling);
+//		GL11.glPopMatrix();
+//		GL11.glPushMatrix();
+//		GL11.glScalef(scaling, scaling, scaling);
 		offset = getOffset(1, 8.0f);
-		GL11.glTranslatef(-offset, 0.0F, 0.0F);
-		GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
+//		GL11.glTranslatef(-offset, 0.0F, 0.0F);
+//		GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
 		renderItemIn2D(tessellator, 0.0f, 1.0f, 0.0f, 1.0f, 256, 256, 0.0625F);
-		GL11.glPopMatrix();
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
+//		GL11.glPopMatrix();
+//		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 	}
 
-	public static void renderEffect2D(Tessellator tessellator, TextureManager textureManager, ItemStack itemStack) {
+	public static void renderEffect2D(TessellatorGeneral tessellator, TextureManager textureManager, ItemStack itemStack) {
 		if (!EnchantmentContainer.hasEnchantments(itemStack)) {
 			return;
 		}
-		GL11.glDepthFunc(GL11.GL_EQUAL);
-		GL11.glDisable(GL11.GL_LIGHTING);
+//		GL11.glDepthFunc(GL11.GL_EQUAL);
+//		GL11.glDisable(GL11.GL_LIGHTING);
 		textureManager.bindTexture(textureManager.loadTexture(EnchantmentMixins.TEXTURE));
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+//		GL11.glEnable(GL11.GL_BLEND);
+//		GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
 		renderGlint2D(tessellator);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_LIGHTING);
-		GL11.glDepthFunc(GL11.GL_LEQUAL);
+//		GL11.glDisable(GL11.GL_BLEND);
+//		GL11.glEnable(GL11.GL_LIGHTING);
+//		GL11.glDepthFunc(GL11.GL_LEQUAL);
 	}
 
-	private static void renderGlint(Tessellator tessellator, int x, int y, int offX, int offY) {
+	private static void renderGlint(TessellatorGeneral tessellator, int x, int y, int offX, int offY) {
 		for (int i = 0; i < 2; ++i) {
-			GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+//			GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
 			float adj = 0.00390625F;
 			float var9 = getOffset(i, 256.0F);
 			float var12 = i == 1 ? -1.0f : 4.0F;
@@ -343,7 +346,7 @@ public class EnchantmentMixins {
 		}
 	}
 
-	private static void renderItemIn2D(Tessellator tessellator, float uMin, float uMax, float vMin, float vMax, int tileWidth, int tileHeight, float thickness) {
+	private static void renderItemIn2D(TessellatorGeneral tessellator, float uMin, float uMax, float vMin, float vMax, int tileWidth, int tileHeight, float thickness) {
 		float foon = 0.5F / tileHeight;
 		float goon = thickness * (16.0F /  tileWidth);
 		float pixelWidth = 1.0F /  tileWidth;

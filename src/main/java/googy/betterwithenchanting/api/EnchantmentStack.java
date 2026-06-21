@@ -112,6 +112,6 @@ public class EnchantmentStack {
 
 	public String prettyToString(){
 		String levelString = enchantment.maxLevel() > 1 ? String.format("(%s)", this.getLevel()) : "";
-		return String.format("%s %s", TRANSLATE.translateNameKey(enchantment.translationKey()), levelString);
+		return String.format("%s %s", this.enchantment.translationKeyName(), levelString);
 	}
 }

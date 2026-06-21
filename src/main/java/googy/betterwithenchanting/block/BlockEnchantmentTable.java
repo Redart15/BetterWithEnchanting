@@ -6,17 +6,22 @@ import net.minecraft.core.Global;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogicRotatable;
 import net.minecraft.core.block.Blocks;
-import net.minecraft.core.block.material.Material;
+import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.block.material.Materials;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
+import net.minecraft.core.world.pos.TilePos;
+import net.minecraft.core.world.pos.TilePosc;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
 public class BlockEnchantmentTable extends BlockLogicRotatable {
 
 	public BlockEnchantmentTable(Block<?> block) {
-		super(block, Material.stone);
+		super(block, Materials.STONE);
 		setBlockBounds(0, 0, 0, 1, 12f / 16, 1);
 		block.withEntity(TileEntityEnchantmentTable::new);
 	}
@@ -27,30 +32,38 @@ public class BlockEnchantmentTable extends BlockLogicRotatable {
 	}
 
 	@Override
-	public boolean onBlockRightClicked(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced) {
+	public boolean onInteracted(@NotNull World world, @NotNull TilePosc tilePos, @NotNull Player player, @Nullable Side side, double xHit, double yHit) {
 		if (!world.isClientSide) {
-			TileEntityEnchantmentTable tile = (TileEntityEnchantmentTable) world.getTileEntity(x, y, z);
-			((IEntityPlayer) player).displayGUIEnchantmentTable(tile);
+			TileEntity tile = world.getTileEntity(tilePos);
+			if(tile instanceof TileEntityEnchantmentTable table){
+				((IEntityPlayer) player).displayGUIEnchantmentTable(table);
+			}
 		}
 		return true;
 	}
 
 	@Override
-	public void animationTick(World world, int x, int y, int z, Random random) {
+	public void animationTick(@NotNull World world, @NotNull TilePosc tilePos, @NotNull Random random) {
+		int x = tilePos.x();
+		int y = tilePos.y();
+		int z = tilePos.z();
 		for (int ix = -1; ix <= 1; ix++) {
 			for (int iz = -1; iz <= 1; iz++) {
 				if ((x == 0 && z == 0)
-					|| !world.isAirBlock(x + ix, y, z + iz)
-					|| !world.isAirBlock(x + ix, y + 1, z + iz)
+					|| !world.isAirBlock(new TilePos(x + ix, y, z + iz))
+					|| !world.isAirBlock(new TilePos(x + ix, y + 1, z + iz))
 				) {
 					continue; // something obstructing the bookshelf
 				}
-				this.spawnParticle(world, random, x + ix * 2, y, z + iz * 2, x, y, z);
-				this.spawnParticle(world, random, x + ix * 2, y + 1, z + iz * 2, x, y, z);
-				this.spawnParticle(world, random, x + ix * 2, y, z + iz, x, y, z);
-				this.spawnParticle(world, random, x + ix * 2, y + 1, z + iz, x, y, z);
-				this.spawnParticle(world, random, x + ix, y, z + iz * 2, x, y, z);
-				this.spawnParticle(world, random, x + ix, y + 1, z + iz * 2, x, y, z);
+				int oppX = ix * 2;
+
+				int oppZ = iz * 2;
+				this.spawnParticle(world, random, x + oppX, y, 		z + oppZ, 	x, y, z);
+				this.spawnParticle(world, random, x + oppX, y + 1, 	z + oppZ, 	x, y, z);
+				this.spawnParticle(world, random, x + oppX, y, 		z + iz, 	x, y, z);
+				this.spawnParticle(world, random, x + oppX, y + 1, 	z + iz, 	x, y, z);
+				this.spawnParticle(world, random, x + ix, 	y, 		z + oppZ, 	x, y, z);
+				this.spawnParticle(world, random, x + ix, 	y + 1, 	z + oppZ, 	x, y, z);
 			}
 		}
 	}
@@ -58,7 +71,8 @@ public class BlockEnchantmentTable extends BlockLogicRotatable {
 	@SuppressWarnings("java:S107")
 	public void spawnParticle(World world, Random random, int bx, int by, int bz, int tx, int ty, int tz) {
 		boolean pass = random.nextInt(Global.TICKS_PER_SECOND * 4) != 0;
-		if (world.getBlockId(bx, by, bz) != Blocks.BOOKSHELF_PLANKS_OAK.id() || pass) {
+		Block<?> block = world.getBlockType(new TilePos(bx, by, bz));
+		if (block.id() != Blocks.BOOKSHELF_PLANKS_OAK.id() || pass) {
 			return;
 		}
 		double dx = (double)tx - bx;
@@ -72,7 +86,7 @@ public class BlockEnchantmentTable extends BlockLogicRotatable {
 			bx + 0.5f + (random.nextFloat() - 0.5f) * 2f * vx,
 			by + 0.5f + (random.nextFloat() - 0.5f) * 2f * vy,
 			bz + 0.5f + (random.nextFloat() - 0.5f) * 2f * vz,
-			vx, vy, vz, 0, 30.0f
+			vx, vy, vz, 0, 30.0f, false
 		);
 	}
 }

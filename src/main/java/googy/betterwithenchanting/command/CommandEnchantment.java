@@ -9,6 +9,7 @@ import com.mojang.brigadier.builder.ArgumentBuilderRequired;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.api.Enchantment;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
@@ -127,7 +128,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 			throw NOT_APPLICABLE.create();
 		}
 		final Enchantment enchantment = ctx.getArgument("name", Enchantment.class);
-		String message = String.format("%s: %s", enchantment.prettyToString(), TRANSLATE.translateDescKey(enchantment.translationKey()));
+		String message = String.format("%s: %s", enchantment.prettyToString(), TRANSLATE.translateKey(enchantment.translationKeyDesc()));
 		ctx.getSource().sendMessage(message);
 		return Command.SINGLE_SUCCESS;
 	}
@@ -175,7 +176,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 			return code(FAIL);
 		}
 		EnchantmentContainer.addEnchantment(itemStack, new EnchantmentStack(enchantment, level));
-		ctx.getSource().sendTranslatableMessage("enchantment.command.add", TRANSLATE.translateNameKey(enchantment.translationKey()));
+		ctx.getSource().sendTranslatableMessage("enchantment.command.add", TRANSLATE.translateKeyAndFormat(enchantment.translationKeyName()));
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -206,9 +207,9 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		EnchantmentContainer.increaseLevel(itemStack, enchantment, level);
 		String message = "";
 		if (nextLevel > currentLevel) {
-			message = TRANSLATE.translateKeyAndFormat("enchantment.command.increased", TRANSLATE.translateNameKey(enchantment.translationKey()), currentLevel, nextLevel);
+			message = TRANSLATE.translateKeyAndFormat("enchantment.command.increased", TRANSLATE.translateKeyAndFormat(enchantment.translationKeyName()), currentLevel, nextLevel);
 		} else if (nextLevel < currentLevel) {
-			message = TRANSLATE.translateKeyAndFormat("enchantment.command.decreased", TRANSLATE.translateNameKey(enchantment.translationKey()), currentLevel, nextLevel);
+			message = TRANSLATE.translateKeyAndFormat("enchantment.command.decreased", TRANSLATE.translateKeyAndFormat(enchantment.translationKeyName()), currentLevel, nextLevel);
 		} else {
 			message = TRANSLATE.translateKey("enchantment.command.no.change");
 		}
@@ -250,12 +251,12 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 			return code(FAIL);
 		}
 		if (!EnchantmentContainer.contains(itemStack, enchantment)) {
-			ctx.getSource().sendTranslatableMessage("enchantment.command.not.fit", itemStack.getDisplayName(), TRANSLATE.translateNameKey(enchantment.translationKey()));
+			ctx.getSource().sendTranslatableMessage("enchantment.command.not.fit", itemStack.getDisplayName(), TRANSLATE.translateKeyAndFormat(enchantment.translationKeyName()));
 			return code(FAIL);
 		}
 		final EnchantmentStack enchantmentStack = EnchantmentContainer.removeEnchantment(itemStack, enchantment);
 		if(enchantmentStack == null){
-			ctx.getSource().sendTranslatableMessage("enchantment.command.remove.cannot", TRANSLATE.translateNameKey(enchantment.translationKey()));
+			ctx.getSource().sendTranslatableMessage("enchantment.command.remove.cannot", TRANSLATE.translateKeyAndFormat(enchantment.translationKeyName()));
 			return code(FAIL);
 		}
 		ctx.getSource().sendTranslatableMessage("enchantment.command.remove.single", enchantmentStack.prettyToString());

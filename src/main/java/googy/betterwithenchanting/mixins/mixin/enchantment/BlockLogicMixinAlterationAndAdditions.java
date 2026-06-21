@@ -10,8 +10,10 @@ import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.enums.EnumDropCause;
+import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.world.World;
+import net.minecraft.core.world.pos.TilePosc;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,29 +23,30 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = BlockLogic.class, remap = false)
 public abstract class BlockLogicMixinAlterationAndAdditions {
 
-	@Inject(method = "harvestBlock", at = @At("TAIL"))
-	private void dropExtras(
+	@Inject(method = "onHarvest", at = @At("TAIL"))
+	private void dropExtrasD(
 		World world, Player player,
-		int x, int y, int z, int meta, TileEntity tileEntity,
-		CallbackInfo ci, @Local ItemStack stack
-	) {
+		TilePosc tilePos, int data, TileEntity tileEntity,
+		CallbackInfo ci
+		){
+		ItemStack stack = player.inventory.getCurrentItem();
 		BlockLogic logic = (BlockLogic) (Object) this;
 		if (!player.canHarvestBlock(logic.block)) {
 			return;
 		}
-		EnchantmentMixins.applyDiscovery(world, x, y, z, stack);
-		EnchantmentMixins.applyFortune(world, x, y, z, stack);
+		EnchantmentMixins.applyDiscovery(world, tilePos, stack);
+		EnchantmentMixins.applyFortune(world, tilePos, stack);
 		EnchantmentMixins.applyInsight(player, stack, 3);
 	}
 
-	@WrapOperation(method = "dropBlockWithCause", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/block/BlockLogic;getBreakResult(Lnet/minecraft/core/world/World;Lnet/minecraft/core/enums/EnumDropCause;IIIILnet/minecraft/core/block/entity/TileEntity;)[Lnet/minecraft/core/item/ItemStack;"))
-	public ItemStack[] adjustResults(
+	@WrapOperation(method = "dropWithCause", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/block/BlockLogic;getBreakResult(Lnet/minecraft/core/world/World;Lnet/minecraft/core/enums/EnumDropCause;Lnet/minecraft/core/world/pos/TilePosc;ILnet/minecraft/core/block/entity/TileEntity;)[Lnet/minecraft/core/item/ItemStack;"))
+	private ItemStack[] adjustResults(
 		BlockLogic instance, World world, EnumDropCause dropCause,
-		int x, int y, int z, int meta,
+		TilePosc tilePos, int data,
 		TileEntity tileEntity, Operation<ItemStack[]> original,
 		@Local(argsOnly = true) Player player
-	) {
-		ItemStack[] drops = original.call(instance, world, dropCause, x, y, z, meta, tileEntity);
+	){
+		ItemStack[] drops = original.call(instance, world, dropCause, tilePos, data, tileEntity);
 		if(player == null){
 			return drops;
 		}

@@ -19,14 +19,14 @@ public abstract class NetClientHandlerMixin {
 	@Shadow
 	private Minecraft mc;
 
-	@Inject(method = "handleOpenWindow", at = @At("TAIL"))
+	@Inject(method = "handleContainerOpen", at = @At("TAIL"))
 	public void handleOpenWindow(PacketContainerOpen packet, CallbackInfo info) {
 		if (packet.inventoryType != BetterWithEnchanting.WINDOW_ID) {
 			return;
 		}
 		TileEntityEnchantmentTable tile = new TileEntityEnchantmentTable();
 		((IEntityPlayer) mc.thePlayer).displayGUIEnchantmentTable(tile);
-		this.mc.thePlayer.craftingInventory.containerId = packet.windowId;
+		this.mc.thePlayer.containerMenu.containerId = packet.windowId;
 	}
 
 }

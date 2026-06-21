@@ -18,6 +18,7 @@ import net.minecraft.core.entity.projectile.ProjectileArrow;
 import net.minecraft.core.util.helper.DamageType;
 import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.util.phys.HitResult;
+import net.minecraft.core.world.pos.TilePos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -83,7 +84,7 @@ public class ProjectileArrowMixin implements IEnchantment {
 
     @WrapOperation(method = "onHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/entity/Entity;hurt(Lnet/minecraft/core/entity/Entity;ILnet/minecraft/core/util/helper/DamageType;)Z"))
     private boolean setMultiHit(Entity instance, Entity attacker, int baseDamage, DamageType type, Operation<Boolean> original) {
-        if (this.enchanting$readMultiHit() && instance instanceof Mob && instance.heartsFlashTime > ((Mob) instance).heartsHalvesLife / 2.0F) {
+        if (this.enchanting$readMultiHit() && instance instanceof Mob mob && instance.heartsFlashTime > mob.heartsHalvesLife / 2.0F) {
             int lastDamage = ((MobAccessor) instance).getLastDamage();
             if (baseDamage <= lastDamage) {
                 return original.call(instance, attacker, baseDamage + lastDamage, type);
@@ -93,25 +94,20 @@ public class ProjectileArrowMixin implements IEnchantment {
     }
 
 	@Inject(method = "onHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/entity/projectile/ProjectileArrow;inGroundAction()V", shift = At.Shift.AFTER))
-	private void setTileOnFire(CallbackInfo ci, @Local HitResult hitResult){
-		if (this.isAFlame <= 0) {
-			return;
-		}
+	private void setTileOnFire(CallbackInfo ci, @Local HitResult.Tile hitResult){
 		ProjectileArrow arrow = (ProjectileArrow) (Object) this;
+		if (this.isAFlame <= 0 || arrow.world == null) {
+			return;
+		}
 		Side side = hitResult.side;
-		int blockX = hitResult.x + side.getOffsetX();
-		int blockY = hitResult.y + side.getOffsetY();
-		int blockZ = hitResult.z + side.getOffsetZ();
-		if (arrow.world == null) {
-			return;
-		}
-		Block<?> block = arrow.world.getBlock(blockX, blockY, blockZ);
-		if (block == null) {
-			return;
-		}
+		int blockX = hitResult.tilePos.x() + side.offsetX();
+		int blockY = hitResult.tilePos.y() + side.offsetY();
+		int blockZ = hitResult.tilePos.z() + side.offsetZ();
+		TilePos tilePos = new TilePos(blockX, blockY, blockZ);
+		Block<?> block = arrow.world.getBlockType(tilePos);
 		Material material = block.getMaterial();
 		if(block.id() == 0 ||(material.isReplaceable() && !(material instanceof MaterialLiquid))){
-			arrow.world.setBlockWithNotify(blockX, blockY, blockZ, Blocks.FIRE.id());
+			arrow.world.setBlockTypeNotify(tilePos, Blocks.FIRE);
 		}
 	}
 }

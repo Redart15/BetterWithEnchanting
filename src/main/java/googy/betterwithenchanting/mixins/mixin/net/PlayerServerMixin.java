@@ -40,10 +40,10 @@ public abstract class PlayerServerMixin extends Player implements IEntityPlayer,
 				enchantmentTable.getContainerSize()
 			));
 
-		this.craftingInventory = new MenuEnchantmentTable(this.inventory, enchantmentTable);
-		this.craftingInventory.onCraftGuiClosed(this);
-		this.craftingInventory.containerId = this.currentWindowId;
-		this.craftingInventory.addSlotListener(this);
+		this.containerMenu = new MenuEnchantmentTable(this.inventory, enchantmentTable);
+		this.containerMenu.onCraftGuiClosed(this);
+		this.containerMenu.containerId = this.currentWindowId;
+		this.containerMenu.addSlotListener(this);
 	}
 
 }

@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(value = ItemFood.class, remap = false)
 public abstract class ItemFoodMixinLasting {
 
-	@WrapOperation(method = "onUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/item/ItemStack;consumeItem(Lnet/minecraft/core/entity/player/Player;)Z"))
+	@WrapOperation(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/item/ItemStack;consumeItem(Lnet/minecraft/core/entity/player/Player;)Z"))
 	private boolean canConsume(ItemStack instance, Player entityplayer, Operation<Boolean> original) {
 		EnchantmentMixins.applyScore(entityplayer, instance);
 		if(EnchantmentMixins.applyLasting(instance)){

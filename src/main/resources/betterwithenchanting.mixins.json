@@ -7,7 +7,6 @@
   "package": "googy.betterwithenchanting.mixins.mixin",
   "compatibilityLevel": "JAVA_${java}",
   "mixins": [
-    "accessor.ConsumedFoodAccessor",
     "WorldFeatureLabyrinthMixinAddBottle",
     "accessor.EntityAccessor",
     "accessor.ItemAccessor",
@@ -29,7 +28,7 @@
     "accessor.ScreenContainerAbstractAccessor",
     "enchantment.PlayerControllerMixinQuickStrike",
     "net.NetClientHandlerMixin",
-    "render.ItemModelStandardMixin",
+    "render.ItemModelStandardMixinGlint",
     "render.TooltipElementMixin"
   ],
   "server": [

@@ -89,7 +89,7 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 
 	@Override
 	public void beforeGameStart() {
-		EntityHelper.createTileEntity(TileEntityEnchantmentTable.class, NamespaceID.getPermanent(MOD_ID, "enchantment_table"));
+		EntityHelper.addMapping(TileEntityEnchantmentTable.class, NamespaceID.getPermanent(MOD_ID, "enchantment_table"));
 	}
 
 	@Override public void afterGameStart() {

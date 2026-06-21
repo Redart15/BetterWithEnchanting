@@ -31,11 +31,10 @@ public class MessageEnchantItem implements NetworkMessage {
 
 	@Override
 	public void handleServerEnv(NetworkContext context) {
-		MenuAbstract container = context.player.craftingInventory;
-		if (!(container instanceof MenuEnchantmentTable)) {
+		MenuAbstract container = context.player.containerMenu;
+		if (!(container instanceof MenuEnchantmentTable enchantment)) {
 			return;
 		}
-		MenuEnchantmentTable enchantment = (MenuEnchantmentTable) container;
 		enchantment.enchantItem(context.player, this.enchantmentOption);
 	}
 }

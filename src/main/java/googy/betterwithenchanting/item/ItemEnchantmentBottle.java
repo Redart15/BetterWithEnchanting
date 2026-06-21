@@ -6,6 +6,7 @@ import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemEnchantmentBottle extends Item {
@@ -15,16 +16,12 @@ public class ItemEnchantmentBottle extends Item {
 	}
 
 	@Override
-	public ItemStack onUseItem(ItemStack itemstack, World world, Player player) {
-		return applyScore(itemstack, player);
-	}
-
-	private static @Nullable ItemStack applyScore(ItemStack itemstack, Player player) {
-		if(EnchantmentContainer.contains(itemstack, Enchantments.BOTTLED_SCORE)){
-			int level = EnchantmentContainer.getLevel(itemstack, Enchantments.BOTTLED_SCORE);
+	public @Nullable ItemStack onUse(@NotNull ItemStack selfStack, @NotNull World world, @NotNull Player player) {
+		int level = EnchantmentContainer.getLevel(selfStack, Enchantments.BOTTLED_SCORE);
+		if(level > 0){
 			player.score += level * 4000;
 			return null;
 		}
-		return itemstack;
+		return selfStack;
 	}
 }

@@ -10,8 +10,8 @@ import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.monster.Enemy;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
-import net.minecraft.core.player.inventory.container.ContainerInventory;
 import net.minecraft.core.util.helper.DamageType;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,10 +21,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = Player.class, remap = false)
 public class PlayerMixinEnchantments {
 
-	@WrapOperation(method = "attackTargetEntityWithCurrentItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/player/inventory/container/ContainerInventory;getDamageVsEntity(Lnet/minecraft/core/entity/Entity;)I"))
-	private int applyCrit(ContainerInventory instance, Entity entity, Operation<Integer> original){
+	@WrapOperation(method = "attackTargetEntityWithCurrentItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/item/ItemStack;getDamageVsEntity(Lnet/minecraft/core/entity/Entity;)I"))
+	private int applyCrit(@NotNull ItemStack instance,@NotNull Entity entity, Operation<Integer> original){
 		int damage = original.call(instance, entity);
-		int level = EnchantmentContainer.getLevel(instance.player.getCurrentEquippedItem(), Enchantments.CRIT);
+		int level = EnchantmentContainer.getLevel(instance, Enchantments.CRIT);
 		if(entity.yd < 0.0F && level > 0 && entity.fallDistance > 1.0f){
 			damage = (int) Math.ceil(level * 0.1 * damage) + (int)EnchantmentMixins.log(entity.fallDistance, 7.0f - level);
 		}
@@ -32,7 +32,10 @@ public class PlayerMixinEnchantments {
 	}
 
 	@WrapOperation(method = "attackTargetEntityWithCurrentItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/entity/Entity;hurt(Lnet/minecraft/core/entity/Entity;ILnet/minecraft/core/util/helper/DamageType;)Z"))
-	private boolean applyLifeStealAndSharpness(Entity instance, Entity attacker, int baseDamage, DamageType type, Operation<Boolean> original){
+	private boolean applyLifeStealAndSharpness(
+		@NotNull Entity instance,@NotNull Entity attacker,
+		int baseDamage, DamageType type, Operation<Boolean> original
+	){
 		ItemStack itemstack = ((Player) attacker).getCurrentEquippedItem();
 		int bonusDamage = 0;
 		if( instance instanceof Enemy){

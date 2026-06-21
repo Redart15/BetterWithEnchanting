@@ -6,20 +6,22 @@ import googy.betterwithenchanting.network.MessageEnchantItem;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.PlayerLocalMultiplayer;
-import net.minecraft.client.render.tessellator.Tessellator;
+import net.minecraft.client.render.font.RenderIntegerBase;
+import net.minecraft.client.render.renderer.GLRenderer;
+import net.minecraft.client.render.renderer.State;
+import net.minecraft.client.render.tessellator.TessellatorGeneral;
 import net.minecraft.client.render.texture.Texture;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.player.inventory.container.ContainerInventory;
+import net.minecraft.core.player.inventory.slot.Slot;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.opengl.GL11;
 import turniplabs.halplibe.helper.network.NetworkHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import static googy.betterwithenchanting.BetterWithEnchanting.LABELS;
-import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
+import static googy.betterwithenchanting.BetterWithEnchanting.*;
 
 public class ScreenEnchantmentTable extends ScreenFix {
 	private static final int ACTIVE_BUTTON_OFFSET = 166;
@@ -27,8 +29,8 @@ public class ScreenEnchantmentTable extends ScreenFix {
 	private static final int MOUSEOVER_BUTTON_OFFSET = 204;
 	private static final int ACTIVE_LEVEL_OFFSET = 223;
 	private static final int DEACTIVATED_LEVEL_OFFSET = 239;
-	public static final int MAX_STRING_LENGTH = 77;
 
+	public static final int MAX_STRING_LENGTH = 77;
 	public static final int UV_SIZE = 16;
 	public static final int ROW_COLUMN_SIZE = 16;
 	public static final int GALACTIC_INDEX = 0;
@@ -41,7 +43,7 @@ public class ScreenEnchantmentTable extends ScreenFix {
 	MenuEnchantmentTable enchantmentTableContainer;
 	int mouseX = 0;
 	int mouseY = 0;
-	private static byte[] charWidth = new byte[256];
+	private static final byte[] CHAR_WIDTH = new byte[256];
 
 	static {
 		InputStream stream = Texture.class.getResourceAsStream("/assets/" + MOD_ID + "/gui/enchant.bin");
@@ -50,7 +52,7 @@ public class ScreenEnchantmentTable extends ScreenFix {
 			throw new RuntimeException("Missing font data");
 		}
 		try {
-			stream.read(charWidth, 0, charWidth.length);
+			stream.read(CHAR_WIDTH, 0, CHAR_WIDTH.length);
 			stream.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -59,8 +61,8 @@ public class ScreenEnchantmentTable extends ScreenFix {
 
 	public ScreenEnchantmentTable(ContainerInventory inventory, TileEntityEnchantmentTable tileEntity) {
 		super(new MenuEnchantmentTable(inventory, tileEntity));
-		enchantmentTable = tileEntity;
-		enchantmentTableContainer = (MenuEnchantmentTable) inventorySlots;
+		this.enchantmentTable = tileEntity;
+		this.enchantmentTableContainer = (MenuEnchantmentTable) inventorySlots;
 	}
 
 	@Override
@@ -73,27 +75,23 @@ public class ScreenEnchantmentTable extends ScreenFix {
 	@Override
 	public void mouseClicked(int x, int y, int mouseButton) {
 		super.mouseClicked(x, y, mouseButton);
-
 		int guiX = (width - xSize) / 2;
 		int guiY = (height - ySize) / 2;
-
 		for (int i = 0; i < 3; i++) {
 			int buttonWidth = 108;
 			int buttonHeight = 19;
 			int buttonX = guiX + 60;
 			int buttonY = guiY + 14 + buttonHeight * i;
-
 			boolean isMouseOver = (x > buttonX && x < buttonX + buttonWidth) && (y > buttonY && y < buttonY + buttonHeight);
 			if (!isMouseOver) {
 				continue;
 			}
-
-			boolean canEnchant = enchantmentTableContainer.playerCanEnchant(mc.thePlayer, i);
+			boolean canEnchant = this.enchantmentTableContainer.playerCanEnchant(this.mc.thePlayer, i);
 			if (canEnchant) {
-				if (mc.thePlayer instanceof PlayerLocalMultiplayer) {
-					NetworkHandler.sendToServer(new MessageEnchantItem(enchantmentTableContainer.containerId, i));
+				if (this.mc.thePlayer instanceof PlayerLocalMultiplayer) {
+					NetworkHandler.sendToServer(new MessageEnchantItem(this.enchantmentTableContainer.containerId, i));
 				} else {
-					enchantmentTableContainer.enchantItem(mc.thePlayer, i);
+					this.enchantmentTableContainer.enchantItem(this.mc.thePlayer, i);
 				}
 				this.enchantmentTable.setRandomLabel();
 			}
@@ -103,60 +101,58 @@ public class ScreenEnchantmentTable extends ScreenFix {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float delta) {
-		GL11.glColor4f(1, 1, 1, 1);
-
+		GLRenderer.setColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.mc.textureManager.loadTexture("/assets/" + MOD_ID + "/gui/" + "enchantment_table.png").bind();
-
-		int x = (width - xSize) / 2;
-		int y = (height - ySize) / 2;
-
+		int x = (this.width - this.xSize) / 2;
+		int y = (this.height - this.ySize) / 2;
 		// draw background
-		drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+		this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
 		int buttonWidth = 108;
 		int buttonHeight = 19;
 		int levelSize = 16;
 		this.renderEnchantButtons(x, y, buttonHeight, buttonWidth, levelSize);
 		this.renderCostAndGlyphs(x, y, buttonHeight);
 		this.renderScore(x, y);
-		GL11.glColor4f(1, 1, 1, 1);
+		GLRenderer.setColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
+	/// draw enchant buttons
 	private void renderEnchantButtons(int x, int y, int buttonHeight, int buttonWidth, int levelSize) {
-		// draw enchant buttons
 		for (int i = 0; i < 3; i++) {
 			int buttonX = x + 60;
 			int buttonY = y + 14 + buttonHeight * i;
-
-			boolean canEnchant = enchantmentTableContainer.playerCanEnchant(mc.thePlayer, i);
-			boolean isMouseOver = (mouseX > buttonX && mouseX < buttonX + buttonWidth) && (mouseY > buttonY && mouseY < buttonY + buttonHeight);
-
+			boolean canEnchant = this.enchantmentTableContainer.playerCanEnchant(this.mc.thePlayer, i);
+			boolean isMouseOver = (this.mouseX > buttonX && this.mouseX < buttonX + buttonWidth) && (this.mouseY > buttonY && this.mouseY < buttonY + buttonHeight);
 			int offset = DEACTIVATED_BUTTON_OFFSET;
 			if (canEnchant) {
 				offset = isMouseOver ? MOUSEOVER_BUTTON_OFFSET : ACTIVE_BUTTON_OFFSET;
 			}
-
-			drawTexturedModalRect(buttonX, buttonY, 0, offset, buttonWidth, buttonHeight);
-
+			this.drawTexturedModalRect(buttonX, buttonY, 0, offset, buttonWidth, buttonHeight);
 			int levelOffset = DEACTIVATED_LEVEL_OFFSET;
 			if (canEnchant) {
 				levelOffset = ACTIVE_LEVEL_OFFSET;
 			}
-
-			drawTexturedModalRect(buttonX, buttonY, levelSize * i, levelOffset, levelSize, levelSize);
+			this.drawTexturedModalRect(buttonX, buttonY, levelSize * i, levelOffset, levelSize, levelSize);
 		}
 	}
 
 	private void renderCostAndGlyphs(int x, int y, int buttonHeight) {
-		if (!enchantmentTableContainer.getSlot(0).hasItem()) {
+		Slot enchantmentSlot = this.enchantmentTableContainer.getSlot(0);
+		if (enchantmentSlot == null) {
 			return;
 		}
 		// draw enchant cost
 		for (int i = 0; i < 3; i++) {
-			boolean canEnchant = enchantmentTableContainer.playerCanEnchant(mc.thePlayer, i) && enchantmentTableContainer.getCostAtIndex(i) > 0;
+			boolean canEnchant = this.enchantmentTableContainer.playerCanEnchant(this.mc.thePlayer, i) && this.enchantmentTableContainer.getCostAtIndex(i) > 0;
 			int color = canEnchant ? 16777088 : 6839882;
-			String costText = String.valueOf(enchantmentTableContainer.getCostAtIndex(i));
-			int costWidth = mc.font.getStringWidth(costText);
-			mc.font.drawString(costText, x + 166 - costWidth, y + 23 + buttonHeight * i, color, canEnchant);
+			String costText = String.valueOf(this.enchantmentTableContainer.getCostAtIndex(i));
+			int costWidth = this.mc.font.stringWidth(costText) + 1;
+			if(canEnchant){
+				this.drawStringShadow(this.mc.font, costText, x + 166 - costWidth, y + 23 + buttonHeight * i, color);
+			}
+			else {
+				this.drawStringNoShadow(this.mc.font, costText, x + 166 - costWidth, y + 23 + buttonHeight * i, color);
+			}
 			this.drawString(LABELS[this.enchantmentTableContainer.getLabelIndexAtIndex(i) % LABELS.length], x + 80, y + 18 + buttonHeight * i, color, this.enchantmentTableContainer.getType(i), canEnchant);
 		}
 	}
@@ -164,15 +160,13 @@ public class ScreenEnchantmentTable extends ScreenFix {
 	private void renderScore(int x, int y) {
 		int xPos = x + 30;
 		int yPos = y + 10;
-
 		String scoreText = "Score:";
-		String scoreNumberText = String.valueOf(mc.thePlayer.score);
-		int scoreWidth = mc.font.getStringWidth(scoreText);
-		int scoreNumberWidth = mc.font.getStringWidth(scoreNumberText);
-		int fontHeight = mc.font.fontHeight;
-
-		mc.font.drawStringWithShadow(scoreText, xPos - scoreWidth / 2, yPos, 0xFFFFFF);
-		mc.font.drawStringWithShadow(scoreNumberText, xPos - scoreNumberWidth / 2, yPos + fontHeight + 1, 16777088);
+		String scoreNumberText = String.valueOf(this.mc.thePlayer.score);
+		int scoreWidth = this.mc.font.stringWidth(scoreText);
+		int scoreNumberWidth = this.mc.font.stringWidth(scoreNumberText);
+		int fontHeight = this.mc.font.getFont().fontHeight() ; // original was 9 now its 8
+		this.drawStringShadow(this.mc.font, scoreText, xPos - scoreWidth / 2, yPos, 0xFFFFFF);
+		this.drawStringShadow(this.mc.font, scoreNumberText, xPos - scoreNumberWidth / 2, yPos + fontHeight + 1, 16777088);
 	}
 
 	public int drawStringWithShadow(String text, int x, int y, int color, boolean useIllager) {
@@ -196,17 +190,17 @@ public class ScreenEnchantmentTable extends ScreenFix {
 		if (shadow) {
 			color = (color & 16579836) >> 2 | color & -16777216;
 		}
-		float red = (float) (color >> 16 & 255) / 255.0F;
-		float blue = (float) (color >> 8 & 255) / 255.0F;
-		float green = (float) (color & 255) / 255.0F;
-		float alpha = (float) (color >> 24 & 255) / 255.0F;
-		GL11.glColor4f(red, blue, green, alpha);
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		Tessellator t = Tessellator.instance;
-		Minecraft.getMinecraft().textureManager.bindTexture(ScreenEnchantmentTable.TEXTURE);
+		float red 	= (color >> 16 & 255) / 255.0F;
+		float blue 	= (color >> 8 & 255) / 255.0F;
+		float green = (color & 255) / 255.0F;
+		float alpha = (color >> 24 & 255) / 255.0F;
+		GLRenderer.setColor4f(red, blue, green, alpha);
+		GLRenderer.enableState(State.DEPTH_TEST);
+		TessellatorGeneral t = GLRenderer.getTessellator();
+		this.mc.textureManager.bindTexture(ScreenEnchantmentTable.TEXTURE);
 		t.startDrawingQuads();
 		float sy = 7.99F;
-		float ex = (float) x;
+		float ex = x;
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
 			int index = ScreenEnchantmentTable.getIndex(c, useIllager);
@@ -214,13 +208,13 @@ public class ScreenEnchantmentTable extends ScreenFix {
 				ex += 4.0f;
 				continue;
 			}
-			int iLeft = (charWidth[index] >> 4);
-			int iRight = (charWidth[index] & 15) + 1;
+			int iLeft = (CHAR_WIDTH[index] >> 4);
+			int iRight = (CHAR_WIDTH[index] & 15) + 1;
 			int rowIndex = Math.floorDiv(index, ScreenEnchantmentTable.ROW_COLUMN_SIZE);
 			int columnIndex = index - rowIndex * ScreenEnchantmentTable.ROW_COLUMN_SIZE;
-			double len = ((double) iRight - (double) iLeft - 0.02F) / (double) ScreenEnchantmentTable.UV_SIZE * sy;
-			double uMin = ((double) columnIndex * ScreenEnchantmentTable.ROW_COLUMN_SIZE + (double) iLeft) / (ScreenEnchantmentTable.ROW_COLUMN_SIZE * ScreenEnchantmentTable.UV_SIZE);
-			double uMax = ((double) columnIndex * ScreenEnchantmentTable.ROW_COLUMN_SIZE + (double) iRight) / (ScreenEnchantmentTable.ROW_COLUMN_SIZE * ScreenEnchantmentTable.UV_SIZE);
+			double len = ((double) iRight - (double) iLeft - 0.02F) / ScreenEnchantmentTable.UV_SIZE * sy;
+			double uMin = ((double) columnIndex * ScreenEnchantmentTable.ROW_COLUMN_SIZE + iLeft) / (ScreenEnchantmentTable.ROW_COLUMN_SIZE * ScreenEnchantmentTable.UV_SIZE);
+			double uMax = ((double) columnIndex * ScreenEnchantmentTable.ROW_COLUMN_SIZE + iRight) / (ScreenEnchantmentTable.ROW_COLUMN_SIZE * ScreenEnchantmentTable.UV_SIZE);
 			double vMin = (double) rowIndex / ScreenEnchantmentTable.ROW_COLUMN_SIZE;
 			double vMax = vMin + 1.0f / ScreenEnchantmentTable.ROW_COLUMN_SIZE;
 			t.addVertexWithUV(ex, y, 0, uMin, vMin);
@@ -234,7 +228,8 @@ public class ScreenEnchantmentTable extends ScreenFix {
 			}
 		}
 		t.draw();
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GLRenderer.disableState(State.DEPTH_TEST);
+		GLRenderer.setColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		return (int) ex;
 	}
 
@@ -251,10 +246,11 @@ public class ScreenEnchantmentTable extends ScreenFix {
 	}
 
 	@Override
-	public int getTargetSlot(ItemStack stackInSlot, int clickedItemId) {
+	public int getTargetSlot(ItemStack stackInSlot, int target) {
 		if (stackInSlot != null && stackInSlot.getItem().id == Items.DYE.id && stackInSlot.getMetadata() == 4) {
 			return 2;
-		} else if (EnchantmentContainer.getEnchantments(stackInSlot).isEmpty()) {
+		}
+		if (stackInSlot != null && EnchantmentContainer.getEnchantments(stackInSlot).isEmpty()) {
 			return 1;
 		}
 		return 0;

@@ -7,6 +7,7 @@ import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.player.inventory.container.Container;
 import net.minecraft.core.util.helper.MathHelper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
@@ -47,11 +48,13 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 
 	@Override
 	public void tick() {
+		if(worldObj == null){
+			return;
+		}
 		this.ticks++;
 		this.prevBookSpread = bookSpread;
 		this.prevBookRot = bookRot;
-
-		Player player = this.worldObj.getClosestPlayer((float) this.x + 0.5F, (float) this.y + 0.5F, (float) this.z + 0.5F, 3.0D);
+		Player player = this.worldObj.getClosestPlayer(this.tilePos.x() + 0.5F, this.tilePos.y() + 0.5F, this.tilePos.z() + 0.5F, 3.0D);
 		boolean cRot = this.adjustRotation(player);
 		this.tRot += !cRot ? 0.0F : 0.02F;
 		this.itemRot += 0.03F;
@@ -78,12 +81,12 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 	}
 
 	private void setUpBookSpread(Player player) {
-		if (player != null || this.items[0] != null) {
+		if ((player != null || this.items[0] != null) && this.worldObj != null) {
 			this.bookSpread += 0.1F;
 			if (this.bookSpread < 0.5F || this.worldObj.rand.nextInt(40) == 0) {
 				float f = this.flipT;
 				while (true) {
-					this.flipT += (float) (this.worldObj.rand.nextInt(4) - this.worldObj.rand.nextInt(4));
+					this.flipT += (this.worldObj.rand.nextInt(4) - this.worldObj.rand.nextInt(4));
 					if (f != this.flipT) {
 						break;
 					}
@@ -96,8 +99,8 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 
 	private boolean adjustRotation(Player player) {
 		if (player != null) {
-			double x = player.x - (this.x + 0.5F);
-			double z = player.z - (this.z + 0.5F);
+			double x = player.x - (this.tilePos.x() + 0.5F);
+			double z = player.z - (this.tilePos.y() + 0.5F);
 			this.tRot = (float) Math.atan2(z, x);
 			return true;
 		}
@@ -145,7 +148,7 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 	}
 
 	@Override
-	public String getNameTranslationKey() {
+	public @NotNull String getNameTranslationKey() {
 		return MOD_ID +  "contianer.enchantment.table.name";
 	}
 
@@ -160,8 +163,7 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 	}
 
 	@Override
-	public void readFromNBT(CompoundTag tagCompound) {
-		super.readFromNBT(tagCompound);
+	public void readAdditionalData(@NotNull CompoundTag tagCompound) {
 		ListTag itemList = tagCompound.getList("Items");
 		for (int i = 0; i < itemList.tagCount(); i++) {
 			CompoundTag itemTag = (CompoundTag) itemList.tagAt(i);
@@ -187,8 +189,7 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 	}
 
 	@Override
-	public void writeToNBT(CompoundTag tagCompound) {
-		super.writeToNBT(tagCompound);
+	public void writeAdditionalData(@NotNull CompoundTag tagCompound) {
 		ListTag itemsTag = new ListTag();
 		for (int i = 0; i < items.length; i++) {
 			if (items[i] == null) {
@@ -214,16 +215,20 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 	}
 
 	@Override
-	public void sortContainer() { /* no need */}
+	public void sort() {
+		/* no need for sorting */
+	}
+
 
 	@Override
-	public boolean stillValid(Player entityplayer) {
-		if (this.worldObj != null && this.worldObj.getTileEntity(this.x, this.y, this.z) == this) {
-			return entityplayer.distanceToSqr(this.x + 0.5, this.y + 0.5, this.z + 0.5) <= 64.0;
+	public boolean stillValid(@NotNull Player entityplayer) {
+		if (this.worldObj != null && this.worldObj.getTileEntity(this.tilePos) == this) {
+			return entityplayer.distanceToSqr(this.tilePos.x() + 0.5f, this.tilePos.y() + 0.5f, this.tilePos.z() + 0.5f) <= 64.0;
 		} else {
 			return false;
 		}
 	}
+
 	///  getter for EnchantmentTableRenderer (tileentity renderer)
 	public int ticks() {return ticks;}
 	public float bookRot() {return bookRot;}

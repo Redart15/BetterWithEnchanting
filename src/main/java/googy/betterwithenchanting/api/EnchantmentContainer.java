@@ -95,11 +95,8 @@ public class EnchantmentContainer {
 		return enchantList.tagCount() > 0;
 	}
 
-	public static List<EnchantmentStack> getEnchantments(ItemStack stack) {
+	public static List<EnchantmentStack> getEnchantments(@NotNull ItemStack stack) {
 		List<EnchantmentStack> enchantments = new ArrayList<>();
-		if (stack == null) {
-			return enchantments;
-		}
 		CompoundTag enchantData = stack.getData().getCompound(ENCHANTMENT_DATA_KEY);
 		ListTag enchantList =  enchantData.getList(ENCHANTMENT_LIST_KEY);
 		for (int i = 0; i < enchantList.tagCount(); i++) {
@@ -143,7 +140,7 @@ public class EnchantmentContainer {
 		return data == null ? 0 : Math.max(data.getLevel(), 0);
 	}
 
-	public static WeightedRandomBag<EnchantmentStack> getPossible(ItemStack stack, int enchantability) {
+	public static WeightedRandomBag<EnchantmentStack> getPossible(@NotNull ItemStack stack, int enchantability) {
 		WeightedRandomBag<EnchantmentStack> bag = new WeightedRandomBag<>();
 		for (Enchantment enchantment : Enchantments.getInstance()) {
 			if (enchantment == null || !enchantment.canEnchant(stack) || enchantment.hidden()) {
@@ -167,7 +164,7 @@ public class EnchantmentContainer {
 		return false;
 	}
 
-	public static List<EnchantmentStack> generateEnchantmentsList(Random random, ItemStack itemStack, int cost) {
+	public static List<EnchantmentStack> generateEnchantmentsList(@NotNull Random random, @NotNull ItemStack itemStack, int cost) {
 		int enchantability = calcEnchantability(random, cost);
 		List<EnchantmentStack> enchantmentResults = new ArrayList<>();
 		WeightedRandomBag<EnchantmentStack> enchantmentPool = EnchantmentContainer.getPossible(itemStack, enchantability);

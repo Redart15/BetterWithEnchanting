@@ -7,5 +7,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(PlayerController.class)
 public interface PlayerControllerAccessor {
 	@Accessor
-	int getBlockHitDelay();
+	int getDestroyDelay();
 }
