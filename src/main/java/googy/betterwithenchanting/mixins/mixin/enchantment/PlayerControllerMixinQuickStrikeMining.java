@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = PlayerController.class, remap = false)
-public abstract class PlayerControllerMixinQuickStrike {
+public abstract class PlayerControllerMixinQuickStrikeMining {
 	@Shadow
 	@Final
 	protected Minecraft mc;

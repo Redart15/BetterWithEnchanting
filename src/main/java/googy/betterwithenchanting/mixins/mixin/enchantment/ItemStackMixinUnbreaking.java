@@ -28,4 +28,5 @@ public abstract class ItemStackMixinUnbreaking {
 		}
 		return Math.max(damage, 0);
 	}
+
 }

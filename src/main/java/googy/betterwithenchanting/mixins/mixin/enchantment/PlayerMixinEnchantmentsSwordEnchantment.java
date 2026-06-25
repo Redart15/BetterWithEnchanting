@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.Enchantments;
-import googy.betterwithenchanting.mixins.EnchantmentMixins;
+import googy.betterwithenchanting.mixins.MixinsHelperLogic;
 import googy.betterwithenchanting.mixins.mixin.accessor.EntityAccessor;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.monster.Enemy;
@@ -19,14 +19,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 
 @Mixin(value = Player.class, remap = false)
-public class PlayerMixinEnchantments {
+public class PlayerMixinEnchantmentsSwordEnchantment {
 
 	@WrapOperation(method = "attackTargetEntityWithCurrentItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/item/ItemStack;getDamageVsEntity(Lnet/minecraft/core/entity/Entity;)I"))
 	private int applyCrit(@NotNull ItemStack instance,@NotNull Entity entity, Operation<Integer> original){
 		int damage = original.call(instance, entity);
 		int level = EnchantmentContainer.getLevel(instance, Enchantments.CRIT);
 		if(entity.yd < 0.0F && level > 0 && entity.fallDistance > 1.0f){
-			damage = (int) Math.ceil(level * 0.1 * damage) + (int)EnchantmentMixins.log(entity.fallDistance, 7.0f - level);
+			damage = (int) Math.ceil(level * 0.1 * damage) + (int) MixinsHelperLogic.log(entity.fallDistance, 7.0f - level);
 		}
 		return damage;
 	}

@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = ProjectileArrow.class, remap = false)
-public class ProjectileArrowMixin implements IEnchantment {
+public class ProjectileArrowMixinBowEnchantment implements IEnchantment {
 
     @Unique
     int isAFlame = 0;

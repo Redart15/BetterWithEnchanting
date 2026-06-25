@@ -9,7 +9,7 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.Enchantments;
-import googy.betterwithenchanting.mixins.EnchantmentMixins;
+import googy.betterwithenchanting.mixins.MixinsHelperLogic;
 import googy.betterwithenchanting.mixins.mixin.accessor.ItemAccessor;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.Mob;
@@ -22,16 +22,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Objects;
+
 @Mixin(value = Mob.class, remap = false)
 public class MobMixinEnchantments {
 	@Inject(method = "hurt", at = @At(value = "RETURN"))
 	private void applyQuickStrike(Entity attacker, int damage, DamageType type, CallbackInfoReturnable<Boolean> info) {
-		if (!(attacker instanceof Player)) {
+		if (!(attacker instanceof Player player)) {
 			return;
 		}
-		Player player = (Player) attacker;
 		Mob thisLiving = (Mob) (Object) this;
-		EnchantmentMixins.devLog("Victims timer: " + thisLiving.heartsFlashTime);
+		MixinsHelperLogic.devLog("Victims timer: " + thisLiving.heartsFlashTime);
 		int quickstrikeLevel = EnchantmentContainer.getLevel(player.getHeldItem(), Enchantments.QUICKSTRIKE);
 		if (quickstrikeLevel <= 0) {
 			return;
@@ -43,8 +44,7 @@ public class MobMixinEnchantments {
 
 	@WrapOperation(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/entity/Mob;dropDeathItems()V"))
 	private void applyLooting(Mob instance, Operation<Void> original, Entity killer) {
-		if (killer instanceof Player && !(instance instanceof Player)) {
-			Player player = (Player) killer;
+		if (killer instanceof Player player && !(instance instanceof Player)) {
 			ItemStack itemStack = player.getCurrentEquippedItem();
 			int level = EnchantmentContainer.getLevel(itemStack, Enchantments.LOOTING);
 			if (level > 0) {
@@ -64,8 +64,7 @@ public class MobMixinEnchantments {
 		CallbackInfo ci,
 		@Share("level")LocalIntRef knockBackLevel
 	){
-		if(entity instanceof Player){
-			Player player = (Player) entity;
+		if(entity instanceof Player player){
 			ItemStack itemStack = player.getCurrentEquippedItem();
 			int level = EnchantmentContainer.getLevel(itemStack, Enchantments.KNOCKBACK);
 			if(level > 0){
@@ -100,4 +99,43 @@ public class MobMixinEnchantments {
 		}
 		return original;
 	}
+
+	@Inject(method = "eatFood", at = @At("HEAD"))
+	private void cacheResults(
+		ItemStack stack, CallbackInfo ci,
+		@Share("nourishmentLvL")LocalIntRef nourishmentLvL,
+		@Share("fillingLvL")LocalIntRef fillingLvL
+	){
+		nourishmentLvL.set(EnchantmentContainer.getLevel(stack, Enchantments.NOURISHMENT));
+		fillingLvL.set(EnchantmentContainer.getLevel(stack, Enchantments.FILLING));
+	}
+
+	@WrapOperation(method = "eatFood", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/item/ItemStack;getItemKey()Ljava/lang/String;"))
+	private String changeKey(
+		ItemStack instance, Operation<String> original,
+		@Share("nourishmentLvL")LocalIntRef nourishmentLvL,
+		@Share("fillingLvL")LocalIntRef fillingLvL
+	){
+		String key = original.call(instance);
+		int nourishment = nourishmentLvL.get();
+		int filling = fillingLvL.get();
+		if(nourishment == 0 && filling == 0){
+			return key;
+		}
+		return String.format("%s.%02d", key, Objects.hash(nourishment, filling));
+	}
+
+
+	@WrapOperation(method = "eatFood", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/entity/Mob;heal(I)V"))
+	private void healAdditional(
+		Mob instance, int i, Operation<Void> original,
+		@Share("nourishmentLvL")LocalIntRef nourishmentLvL,
+		@Share("fillingLvL")LocalIntRef fillingLvL
+	){
+		i += MixinsHelperLogic.getAdditionalHealing(i, fillingLvL.get());
+		i += nourishmentLvL.get() > 0 ? 1: 0;
+		original.call(instance, i);
+	}
+
+
 }
