@@ -20,6 +20,7 @@ import net.minecraft.core.sound.BlockSound;
 import net.minecraft.core.util.collection.NamespaceID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.helper.*;
 import turniplabs.halplibe.helper.network.NetworkHandler;
 import turniplabs.halplibe.util.*;
@@ -28,7 +29,7 @@ import java.util.Properties;
 
 
 public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, GameStartEntrypoint{
-	public static final String MOD_ID = "betterwithenchanting";
+	public static final String MOD_ID = HalpLibe.registerMod("betterwithenchanting");
 	public static final Logger LOG = LoggerFactory.getLogger(MOD_ID);
 	public static final ConfigHandler CONFIG_HANDLER;
 	public static final int START_COST_OFFSET = 5;

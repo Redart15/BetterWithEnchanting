@@ -35,7 +35,6 @@ public class EnchantmentTableRenderer extends TileEntityRenderer<TileEntityEncha
 		GLRenderer.modelM4f().translate(0.0F, 0.1F + MathHelper.sin(t * 0.1F) * 0.01F, 0.0F);
 		for (f = tileEntity.bookRot() - tileEntity.prevBookRot(); f >= (float) Math.PI; f -= ((float) Math.PI * 2.0F));
 		while (f < -(float) Math.PI) f += ((float) Math.PI * 2.0F);
-
 		float f2 = tileEntity.prevBookRot() + f * partialTicks;
 		GLRenderer.modelM4f().rotate(MathHelper.toRadians(-f2 * (180.0F / (float) Math.PI)), 0.0F, 1.0F, 0.0F);
 		GLRenderer.modelM4f().rotate(MathHelper.toRadians(80.0F), 0.0F, 0.0F, 1.0F);
@@ -45,7 +44,6 @@ public class EnchantmentTableRenderer extends TileEntityRenderer<TileEntityEncha
 		float f4 = tileEntity.prevPageFlip() + (tileEntity.pageFlip() - tileEntity.prevPageFlip()) * partialTicks + 0.75F;
 		f3 = (f3 - MathHelper.floor_float(f3)) * 1.6F - 0.3F;
 		f4 = (f4 - MathHelper.floor_float(f4)) * 1.6F - 0.3F;
-
 		if (f3 < 0.0F) f3 = 0.0F;
 		if (f4 < 0.0F) f4 = 0.0F;
 		if (f3 > 1.0F) f3 = 1.0F;
@@ -68,14 +66,13 @@ public class EnchantmentTableRenderer extends TileEntityRenderer<TileEntityEncha
 		) {
 			GLRenderer.modelM4f().rotate(MathHelper.toRadians(-(tileEntity.itemRot() + 0.01F * partialTicks) * (180.0F / (float) Math.PI)), 0.0F, 1.0F, 0.0F);
 		}
-		this.entityItem.item = new ItemStack(stack.itemID, 1, stack.getMetadata(), stack.getData());
+		this.entityItem.item = new ItemStack(stack.getItem(), 1, stack.getMetadata(), stack.getData());
 		this.entityItem.entityBrightness = tileEntity.worldObj.getLightBrightness(tileEntity.tilePos);
-		if(this.entityItem.world == null){
-			GLRenderer.popFrame();
-			return;
-		}
+		this.entityItem.world = tileEntity.worldObj;
+		this.entityItem.x = tileEntity.tilePos.x();
+		this.entityItem.y = tileEntity.tilePos.y();
+		this.entityItem.z = tileEntity.tilePos.z();
 		this.renderer.render(tessellator, this.entityItem, 0D, -0.3D, 0D, 0F, 0F);
-
 		GLRenderer.popFrame();
 	}
 }
