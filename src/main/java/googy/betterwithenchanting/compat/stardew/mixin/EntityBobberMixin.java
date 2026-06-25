@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import googy.betterwithenchanting.api.Enchantments;
 import googy.betterwithenchanting.api.EnchantmentContainer;
-import googy.betterwithenchanting.mixins.EnchantmentMixins;
+import googy.betterwithenchanting.mixins.MixinsHelperLogic;
 import googy.betterwithenchanting.mixins.mixin.accessor.EntityAccessor;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.Blocks;
@@ -73,6 +73,6 @@ public abstract class EntityBobberMixin{
 		if(rod == null || !(rod.getItem() instanceof ItemFishingRod)){
 			return;
 		}
-		EnchantmentMixins.applyInsight(player, rod, 10);
+		MixinsHelperLogic.applyInsight(player, rod, 10);
 	}
 }

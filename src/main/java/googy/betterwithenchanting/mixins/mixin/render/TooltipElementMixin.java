@@ -3,7 +3,7 @@ package googy.betterwithenchanting.mixins.mixin.render;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import googy.betterwithenchanting.mixins.EnchantmentMixins;
+import googy.betterwithenchanting.mixins.MixinsHelperLogic;
 import net.minecraft.client.gui.TooltipElement;
 import net.minecraft.core.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,7 +18,7 @@ public abstract class TooltipElementMixin {
 		@Local(type = StringBuilder.class, ordinal = 0) StringBuilder builder,
 		@Local(argsOnly = true) ItemStack itemStack
 	) {
-		EnchantmentMixins.getEnchantmentText(itemStack, builder);
+		MixinsHelperLogic.getEnchantmentText(itemStack, builder);
 		return original.call(desc);
 	}
 }
