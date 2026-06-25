@@ -6,8 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static googy.betterwithenchanting.BetterWithEnchanting.TRANSLATE;
-
 public class EnchantmentStack {
 	private static final String SID_KEY = "sid";
 	private static final String LEVEL_KEY = "lvl";
@@ -29,9 +27,9 @@ public class EnchantmentStack {
 	public CompoundTag readNBT(CompoundTag nbt) {
 		if (nbt.containsKey(ID_KEY)) {
 			int id = nbt.getShort(ID_KEY);
-			for (Enchantment enchantment : Enchantments.getInstance()) {
-				if (enchantment.getIntID() == id) {
-					this.enchantment = enchantment;
+			for (Enchantment enchants : Enchantments.getInstance()) {
+				if (enchants.getIntID() == id) {
+					this.enchantment = enchants;
 					break;
 				}
 			}
@@ -92,8 +90,7 @@ public class EnchantmentStack {
 
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof EnchantmentStack)) return false;
-		EnchantmentStack that = (EnchantmentStack) object;
+		if (!(object instanceof EnchantmentStack that)) return false;
 		return level == that.level && Objects.equals(enchantment, that.enchantment);
 	}
 

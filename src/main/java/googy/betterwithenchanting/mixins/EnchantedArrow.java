@@ -75,15 +75,15 @@ public class EnchantedArrow {
 	}
 
 	public void setOnFire(Projectile projectile) {
-		if (flameLevel > 0 && projectile instanceof IEnchantment) {
-			((IEnchantment) projectile).enchanting$writeFlame(this.flameLevel);
+		if (flameLevel > 0 && projectile instanceof IEnchantment iEnchantment) {
+			iEnchantment.enchanting$writeFlame(this.flameLevel);
 			projectile.fireHurt();
 		}
 	}
 
 	public void setMultiHit(Projectile projectile) {
-		if (projectile instanceof IEnchantment) {
-			((IEnchantment) projectile).enchanting$writeMultiHit(multiHit);
+		if (projectile instanceof IEnchantment iEnchantment) {
+			iEnchantment.enchanting$writeMultiHit(multiHit);
 		}
 	}
 

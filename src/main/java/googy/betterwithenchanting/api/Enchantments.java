@@ -135,7 +135,7 @@ public class Enchantments extends Registry<Enchantment> {
 
 		// TODO figure out how to make them work.
 		// increase regeneration speed
-		NOURISHMENT	= new EnchantmentBuilder(new Enchantment(MOD_ID, "filling"))
+		NOURISHMENT	= new EnchantmentBuilder(new Enchantment(MOD_ID, "nourishment"))
 			.setWeight(5.0f)
 			.setMaxLevel(3)
 			.setTarget(ItemFood.class::isInstance)

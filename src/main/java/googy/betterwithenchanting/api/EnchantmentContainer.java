@@ -4,6 +4,7 @@ import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
 import com.mojang.nbt.tags.Tag;
 import net.minecraft.core.WeightedRandomBag;
+import net.minecraft.core.item.ItemFood;
 import net.minecraft.core.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -133,7 +134,7 @@ public class EnchantmentContainer {
 	}
 
 	public static int getLevel(ItemStack stack, Enchantment enchantment) {
-		if (stack == null || stack.stackSize <= 0) {
+		if (stack == null || stack.stackSize <= 0 && !(stack.getItem() instanceof ItemFood)) {
 			return 0;
 		}
 		EnchantmentStack data = getEnchantmentStack(stack, enchantment);
