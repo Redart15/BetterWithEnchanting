@@ -64,8 +64,8 @@ public abstract class ItemModelStandardMixinGlint {
 		CallbackInfo ci
 	){
 		if(items3d){
-			///  glint 3d item entity
-			MixinsHelperRenderer.renderEffect2D(tessellator, Minecraft.getMinecraft().textureManager, itemStack, lightIndex);
+			///  glint 3d item entity - broken, going to think while trying to figure out what to do.
+//			MixinsHelperRenderer.renderEffect2D(tessellator, Minecraft.getMinecraft().textureManager, itemStack, lightIndex);
 		}else {
 			///  glint flat item entity
 			MixinsHelperRenderer.renderEffectFlat(tessellator, Minecraft.getMinecraft().textureManager, itemStack);
