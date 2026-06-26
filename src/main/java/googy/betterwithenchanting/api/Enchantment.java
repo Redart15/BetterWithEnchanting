@@ -82,7 +82,7 @@ public class Enchantment {
 	}
 
 	public final boolean canEnchant(ItemStack itemStack) {
-		if (itemStack == null || itemStack.getItem().hasTag(EnchantingTags.UNECHANT) || itemStack.stackSize == 1) {
+		if (itemStack == null || itemStack.getItem().hasTag(EnchantingTags.UNECHANT)) {
 			return false;
 		}
 		return this.canApply(itemStack.getItem());
