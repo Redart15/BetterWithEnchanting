@@ -83,27 +83,27 @@ public class MixinsHelperRenderer {
 			return;
 		}
 		GLRenderer.pushFrame();
-		GLRenderer.setShader(Shaders.ITEM);
+//		GLRenderer.setShader(Shaders.ITEM);
 		GLRenderer.setDepthFunc(CompareFunc.EQUAL);
 		GLRenderer.globalSetLightEnabled(false);
 		GLRenderer.enableState(State.BLEND);
 		GLRenderer.setBlendFunc(BlendFactor.SRC_COLOR, BlendFactor.ONE);
 		textureManager.bindTexture(textureManager.loadTexture("/assets/" + MOD_ID + "/textures/misc/glintB.png"));
-		float colorDimmer = 0.86F; // original 0.76
+		float colorDimmer = 0.76F; // original 0.76
 		GLRenderer.pushFrame();
 		GLRenderer.setColor4f(colorDimmer * R, colorDimmer * G, colorDimmer * B, A);
-		float scaling = 1.0f / 256.0F;
-		GLRenderer.textureM4f().scale(scaling, scaling, scaling);
+		float scaling = 1.0f / 16.0f;
 		float offset = getOffset(0, 8.0f);
-		GLRenderer.modelM4f().translate(offset, 0.0F, 0.0F);
-		GLRenderer.modelM4f().rotate(MathHelper.toRadians(-50.0F), 0.0F, 0.0F, 1.0F);
+		GLRenderer.textureM4f().translate(offset, 0.0F, 0.0F);
+		GLRenderer.textureM4f().scale(scaling, scaling, scaling);
+		GLRenderer.textureM4f().rotate(MathHelper.toRadians(-50.0F), 0.0F, 0.0F, 1.0F);
 		renderCoordinate(tessellator, textureManager, 0.0f, 1.0f, 0.0f, 1.0f, lightIndex, 256, 256, 0.0625F);
 		GLRenderer.popFrame();
 		GLRenderer.pushFrame();
-		GLRenderer.textureM4f().scale(scaling, scaling, scaling);
 		offset = getOffset(1, 8.0f);
-		GLRenderer.modelM4f().translate(-offset, 0.0F, 0.0F);
-		GLRenderer.modelM4f().rotate(MathHelper.toRadians(10.0F), 0.0F, 0.0F, 1.0F);
+		GLRenderer.textureM4f().translate(-offset, 0.0F, 0.0F);
+		GLRenderer.textureM4f().scale(scaling, scaling, scaling);
+		GLRenderer.textureM4f().rotate(MathHelper.toRadians(10.0F), 0.0F, 0.0F, 1.0F);
 		renderCoordinate(tessellator, textureManager, 0.0f, 1.0f, 0.0f, 1.0f, lightIndex, 256, 256, 0.0625F);
 		GLRenderer.popFrame();
 		GLRenderer.setColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -190,6 +190,7 @@ public class MixinsHelperRenderer {
 		tessellator.draw();
 	}
 
+	@Deprecated
 	private static void renderItemIn2D(TessellatorGeneral tessellator, float uMin, float uMax, float vMin, float vMax, int tileWidth, int tileHeight, float thickness) {
 		float foon = 0.5F / tileHeight;
 		float goon = thickness * (16.0F / tileWidth);
