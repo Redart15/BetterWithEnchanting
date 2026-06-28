@@ -84,8 +84,8 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 
 	@Override
 	public void onInitialize() {
-		LOG.info("BetterWithEnchanting initialized!");
 		NetworkHandler.registerNetworkMessage(MessageEnchantItem::new);
+		LOG.info("BetterWithEnchanting initialized!");
 	}
 
 	@Override
@@ -98,8 +98,7 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 		Enchantments.init();
 		Registries.getInstance().register(MOD_ID + ":enchantments", Enchantments.getInstance());
 		TRANSLATE = I18n.getInstance();
-		LOG.info("{} enchantments registered.", Enchantments.getInstance().size());
-		LOG.info("Enchantments initialized.");
+		LOG.info("Registered {} enchantments.", Enchantments.getInstance().size());
 	}
 
 	@Override

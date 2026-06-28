@@ -10,7 +10,6 @@ import net.minecraft.core.player.inventory.container.Container;
 import net.minecraft.core.util.helper.MathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.useless.dragonfly.DisplayPos;
 
 import java.util.Random;
 
@@ -102,10 +101,11 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 	private boolean adjustRotation(Player player) {
 		if (player != null) {
 			double x = player.x - (this.tilePos.x() + 0.5F);
-			double z = player.z - (this.tilePos.y() + 0.5F);
+			double z = player.z - (this.tilePos.z() + 0.5F);
 			this.tRot = (float) Math.atan2(z, x);
 			return true;
 		}
+		this.tRot += 0.03F;
 		return false;
 	}
 
