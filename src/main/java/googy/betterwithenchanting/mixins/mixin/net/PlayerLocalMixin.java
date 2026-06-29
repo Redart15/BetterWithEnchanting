@@ -1,7 +1,7 @@
 package googy.betterwithenchanting.mixins.mixin.net;
 
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
-import googy.betterwithenchanting.gui.ScreenEnchantmentTable;
+import googy.betterwithenchanting.gui.table.ScreenEnchantmentTable;
 import googy.betterwithenchanting.mixins.interfaces.IEntityPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.PlayerLocal;

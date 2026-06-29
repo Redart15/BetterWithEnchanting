@@ -83,33 +83,70 @@ public class MixinsHelperRenderer {
 			return;
 		}
 		GLRenderer.pushFrame();
-//		GLRenderer.setShader(Shaders.ITEM);
-		GLRenderer.setDepthFunc(CompareFunc.EQUAL);
-		GLRenderer.globalSetLightEnabled(false);
+		GLRenderer.setShader(Shaders.ITEM);
 		GLRenderer.enableState(State.BLEND);
 		GLRenderer.setBlendFunc(BlendFactor.SRC_COLOR, BlendFactor.ONE);
+		GLRenderer.setDepthFunc(CompareFunc.EQUAL);
+		GLRenderer.globalSetLightEnabled(false);
 		textureManager.bindTexture(textureManager.loadTexture("/assets/" + MOD_ID + "/textures/misc/glintB.png"));
 		float colorDimmer = 0.76F; // original 0.76
 		GLRenderer.pushFrame();
 		GLRenderer.setColor4f(colorDimmer * R, colorDimmer * G, colorDimmer * B, A);
 		float scaling = 1.0f / 16.0f;
 		float offset = getOffset(0, 8.0f);
-		GLRenderer.textureM4f().translate(offset, 0.0F, 0.0F);
 		GLRenderer.textureM4f().scale(scaling, scaling, scaling);
+		GLRenderer.textureM4f().translate(offset, 0.0F, 0.0F);
 		GLRenderer.textureM4f().rotate(MathHelper.toRadians(-50.0F), 0.0F, 0.0F, 1.0F);
-		renderCoordinate(tessellator, textureManager, 0.0f, 1.0f, 0.0f, 1.0f, lightIndex, 256, 256, 0.0625F);
+		renderCoordinate(tessellator, textureManager, 0.0f + offset, 1.0f + offset, 0.0f + offset, 1.0f + offset, lightIndex, 256, 256, 0.0625F);
 		GLRenderer.popFrame();
 		GLRenderer.pushFrame();
 		offset = getOffset(1, 8.0f);
-		GLRenderer.textureM4f().translate(-offset, 0.0F, 0.0F);
 		GLRenderer.textureM4f().scale(scaling, scaling, scaling);
+		GLRenderer.textureM4f().translate(-offset, 0.0F, 0.0F);
 		GLRenderer.textureM4f().rotate(MathHelper.toRadians(10.0F), 0.0F, 0.0F, 1.0F);
-		renderCoordinate(tessellator, textureManager, 0.0f, 1.0f, 0.0f, 1.0f, lightIndex, 256, 256, 0.0625F);
+		renderCoordinate(tessellator, textureManager, 0.0f + offset, 1.0f +offset, 0.0f + offset, 1.0f + offset, lightIndex, 256, 256, 0.0625F);
+		GLRenderer.setColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GLRenderer.globalSetLightEnabled(true);
+		GLRenderer.disableState(State.BLEND);
+		GLRenderer.setDepthFunc(CompareFunc.EQUAL);
+		GLRenderer.popFrame();
+	}
+
+	public static void renderEffect2DD(TessellatorGeneral tessellator, TextureManager textureManager, ItemStack itemStack, byte lightIndex) {
+		if (!EnchantmentContainer.hasEnchantments(itemStack)) {
+			return;
+		}
+		boolean lightning = GLRenderer.globalGetLightEnabled();
+		GLRenderer.pushFrame();
+		GLRenderer.setShader(Shaders.ITEM);
+		GLRenderer.enableState(State.BLEND);
+		GLRenderer.setBlendFunc(BlendFactor.SRC_COLOR, BlendFactor.ONE);
+		GLRenderer.setDepthFunc(CompareFunc.EQUAL);
+		GLRenderer.globalSetLightEnabled(false);
+		float scaling = 1.0f / 16.0f;
+		float colorDimmer = 0.76F; // original 0.76
+		textureManager.bindTexture(textureManager.loadTexture(TEXTURE));
+
+		GLRenderer.pushFrame();
+		float offset = getOffset(0, 256.0f);
+		GLRenderer.setColor4f(colorDimmer * R, colorDimmer * G, colorDimmer * B, A);
+		GLRenderer.textureM4f().translate(offset, 0.0F, 0.0F);
+		GLRenderer.textureM4f().scale(scaling, scaling, scaling);
+		GLRenderer.modelM4f().rotate(MathHelper.toRadians(-50.0F), 0.0F, 0.0F, 1.0F);
+		renderCoordinate(tessellator, textureManager, 0.0F + offset, 1.0F + offset, 0.0F + offset, 1.0F + offset, lightIndex, 256, 256, 0.0625F);
+		GLRenderer.popFrame();
+		GLRenderer.pushFrame();
+		offset = -getOffset(1, 256.0f);
+		GLRenderer.setColor4f(colorDimmer * R, colorDimmer * G, colorDimmer * B, A);
+		GLRenderer.textureM4f().translate(offset, 0.0F, 0.0F);
+		GLRenderer.textureM4f().scale(scaling, scaling, scaling);
+		GLRenderer.modelM4f().rotate(MathHelper.toRadians(10.0F), 0.0F, 0.0F, 1.0F);
+		renderCoordinate(tessellator, textureManager, 0.0F + offset, 1.0F + offset, 0.0F + offset, 1.0F + offset, lightIndex, 256, 256, 0.0625F);
 		GLRenderer.popFrame();
 		GLRenderer.setColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GLRenderer.globalSetLightEnabled(lightning);
 		GLRenderer.disableState(State.BLEND);
-		GLRenderer.globalSetLightEnabled(true);
-		GLRenderer.setDepthFunc(CompareFunc.NOT_EQUAL);
+		GLRenderer.setDepthFunc(CompareFunc.EQUAL);
 		GLRenderer.popFrame();
 	}
 
@@ -136,7 +173,8 @@ public class MixinsHelperRenderer {
 
 	protected static void renderCoordinate(
 		@NotNull TessellatorGeneral tessellator, TextureManager textureManager,
-		float cUMin, float cUMax, float cVMin, float cVMax, byte lightIndex, int tileWidth, int tileHeight, float thinckness
+		float cUMin, float cUMax, float cVMin, float cVMax,
+		byte lightIndex, int tileWidth, int tileHeight, float thinckness
 	) {
 		float halfThinkness = thinckness / 2.0f;
 		tessellator.startDrawingQuads();
