@@ -2,6 +2,7 @@ package googy.betterwithenchanting;
 
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.render.EnchantmentTableRenderer;
+import googy.betterwithenchanting.render.ItemModelEnchantmentTable;
 import net.minecraft.client.render.EntityRendererDispatcher;
 import net.minecraft.client.render.TileEntityRenderDispatcher;
 import net.minecraft.client.render.block.color.BlockColorDispatcher;
@@ -9,6 +10,7 @@ import net.minecraft.client.render.block.model.BlockModelDispatcher;
 import net.minecraft.client.render.block.model.BlockModelStandard;
 import net.minecraft.client.render.item.model.ItemModelDispatcher;
 import net.minecraft.client.render.item.model.ItemModelStandard;
+import net.minecraft.core.item.block.ItemBlock;
 import net.minecraft.core.util.helper.Side;
 import turniplabs.halplibe.util.ModelEntrypoint;
 
@@ -26,7 +28,7 @@ public class BetterWithEnchantingModel implements ModelEntrypoint {
 
 	@Override public void initItemModels(ItemModelDispatcher dispatcher) {
 		dispatcher.addDispatch(new ItemModelStandard(SCORE_BOTTLE, true).setIcon(MOD_ID + ":item/score_bottle1"));
-
+		dispatcher.addDispatch(new ItemModelEnchantmentTable((ItemBlock<?>) ENCHANTMENT_TABLE.asItem()));
 	}
 
 	@Override public void initTileEntityModels(TileEntityRenderDispatcher dispatcher) {
