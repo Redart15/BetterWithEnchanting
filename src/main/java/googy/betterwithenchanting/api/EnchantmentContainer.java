@@ -26,36 +26,48 @@ public class EnchantmentContainer {
 		return (int) Math.ceil(MAX_ENCHANTMENT_COST * percentage);
 	}
 
-	public static void addEnchantments(ItemStack stack, List<EnchantmentStack> enchantments) {
+	public static void addEnchantments(@NotNull ItemStack stack, @NotNull List<EnchantmentStack> enchantments) {
 		for (EnchantmentStack enchantment : enchantments) {
-			addEnchantment(stack, enchantment);
+			if (EnchantmentContainer.contains(stack, enchantment.getEnchantment()) || enchantment.getEnchantment().canEnchant(stack)) {
+				continue;
+			}
+			EnchantmentContainer.rawAddEnchantment(stack, enchantment);
 		}
 	}
 
-	public static void addEnchantment(ItemStack stack, EnchantmentStack enchantmentStack) {
-		if (contains(stack, enchantmentStack.getEnchantment())) {
-			return;
-		}
+	/// The caller guarantees that the enchantment can be applied to the item.
+	/// If such a guarantee can not be provided call EnchantmentContain::addEnchantment instead.
+	public static void rawAddEnchantment(@NotNull ItemStack stack, @NotNull EnchantmentStack enchantmentStack) {
 		CompoundTag enchantTag = enchantmentStack.writeNBT(new CompoundTag());
 		CompoundTag enchantData = stack.getData().getCompound(ENCHANTMENT_DATA_KEY);
-		ListTag enchantList =  enchantData.getList(ENCHANTMENT_LIST_KEY);
+		ListTag enchantList = enchantData.getList(ENCHANTMENT_LIST_KEY);
 		enchantList.addTag(enchantTag);
 		CompoundTag enchantmentsTag = new CompoundTag();
 		enchantmentsTag.putList(ENCHANTMENT_LIST_KEY, enchantList);
 		stack.getData().putCompound(ENCHANTMENT_DATA_KEY, enchantmentsTag);
 	}
 
-	public static EnchantmentStack removeEnchantment(ItemStack itemStack, Enchantment enchantment) {
-		if (!contains(itemStack, enchantment)) {
+
+	/// The function is responsible for checking if a given enchantment applies to the item or not, before calling the
+	/// raw version.
+	public static void addEnchantment(@NotNull ItemStack stack, @NotNull EnchantmentStack enchantmentStack) {
+		if (EnchantmentContainer.contains(stack, enchantmentStack.getEnchantment()) || enchantmentStack.getEnchantment().canEnchant(stack)) {
+			return;
+		}
+		EnchantmentContainer.rawAddEnchantment(stack, enchantmentStack);
+	}
+
+	public static @Nullable EnchantmentStack removeEnchantment(@NotNull ItemStack itemStack, @NotNull Enchantment enchantment) {
+		if (!EnchantmentContainer.contains(itemStack, enchantment)) {
 			return null;
 		}
 		CompoundTag enchantData = itemStack.getData().getCompound(ENCHANTMENT_DATA_KEY);
-		ListTag enchantList =  enchantData.getList(ENCHANTMENT_LIST_KEY);
+		ListTag enchantList = enchantData.getList(ENCHANTMENT_LIST_KEY);
 		Iterator<Tag<?>> it = enchantList.iterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			CompoundTag enchantTag = (CompoundTag) it.next();
 			EnchantmentStack enchantmentStack = new EnchantmentStack(enchantTag);
-			if(enchantmentStack.getEnchantment().equals(enchantment)){
+			if (enchantmentStack.getEnchantment().equals(enchantment)) {
 				it.remove();
 				return enchantmentStack;
 			}
@@ -63,19 +75,19 @@ public class EnchantmentContainer {
 		return null;
 	}
 
-	public static int removeAllEnchantment(ItemStack itemStack) {
+	public static int removeAllEnchantment(@NotNull ItemStack itemStack) {
 		CompoundTag enchantData = itemStack.getData().getCompound(ENCHANTMENT_DATA_KEY);
-		int count =  enchantData.getList(ENCHANTMENT_LIST_KEY).tagCount();
+		int count = enchantData.getList(ENCHANTMENT_LIST_KEY).tagCount();
 		enchantData.getValue().remove(ENCHANTMENT_LIST_KEY);
 		return count;
 	}
 
-	public static void increaseLevel(ItemStack itemStack, Enchantment enchantment, int level) {
-		if (!contains(itemStack, enchantment)) {
+	public static void increaseLevel(@NotNull ItemStack itemStack, @NotNull Enchantment enchantment, int level) {
+		if (!EnchantmentContainer.contains(itemStack, enchantment)) {
 			return;
 		}
 		CompoundTag enchantData = itemStack.getData().getCompound(ENCHANTMENT_DATA_KEY);
-		ListTag enchantList =  enchantData.getList(ENCHANTMENT_LIST_KEY);
+		ListTag enchantList = enchantData.getList(ENCHANTMENT_LIST_KEY);
 		for (int i = 0; i < enchantList.tagCount(); i++) {
 			CompoundTag enchantTag = (CompoundTag) enchantList.tagAt(i);
 			EnchantmentStack enchantmentStack = new EnchantmentStack(enchantTag);
@@ -87,19 +99,16 @@ public class EnchantmentContainer {
 		}
 	}
 
-	public static boolean hasEnchantments(ItemStack stack){
-		if (stack == null) {
-			return false;
-		}
+	public static boolean hasEnchantments(@NotNull ItemStack stack) {
 		CompoundTag enchantData = stack.getData().getCompound(ENCHANTMENT_DATA_KEY);
-		ListTag enchantList =  enchantData.getList(ENCHANTMENT_LIST_KEY);
+		ListTag enchantList = enchantData.getList(ENCHANTMENT_LIST_KEY);
 		return enchantList.tagCount() > 0;
 	}
 
 	public static List<EnchantmentStack> getEnchantments(@NotNull ItemStack stack) {
 		List<EnchantmentStack> enchantments = new ArrayList<>();
 		CompoundTag enchantData = stack.getData().getCompound(ENCHANTMENT_DATA_KEY);
-		ListTag enchantList =  enchantData.getList(ENCHANTMENT_LIST_KEY);
+		ListTag enchantList = enchantData.getList(ENCHANTMENT_LIST_KEY);
 		for (int i = 0; i < enchantList.tagCount(); i++) {
 			CompoundTag enchantTag = (CompoundTag) enchantList.tagAt(i);
 			enchantments.add(new EnchantmentStack(enchantTag));
@@ -107,9 +116,9 @@ public class EnchantmentContainer {
 		return enchantments;
 	}
 
-	public static boolean contains(ItemStack stack, Enchantment enchantment) {
+	public static boolean contains(@NotNull ItemStack stack, @NotNull Enchantment enchantment) {
 		CompoundTag enchantData = stack.getData().getCompound(ENCHANTMENT_DATA_KEY);
-		ListTag enchantList =  enchantData.getList(ENCHANTMENT_LIST_KEY);
+		ListTag enchantList = enchantData.getList(ENCHANTMENT_LIST_KEY);
 		for (int i = 0; i < enchantList.tagCount(); i++) {
 			CompoundTag enchantTag = (CompoundTag) enchantList.tagAt(i);
 			EnchantmentStack enchantmentStack = new EnchantmentStack(enchantTag);
@@ -120,9 +129,9 @@ public class EnchantmentContainer {
 		return false;
 	}
 
-	public static @Nullable EnchantmentStack getEnchantmentStack(@NotNull ItemStack stack, Enchantment enchantment) {
+	public static @Nullable EnchantmentStack getEnchantmentStack(@NotNull ItemStack stack, @NotNull Enchantment enchantment) {
 		CompoundTag enchantData = stack.getData().getCompound(ENCHANTMENT_DATA_KEY);
-		ListTag enchantList =  enchantData.getList(ENCHANTMENT_LIST_KEY);
+		ListTag enchantList = enchantData.getList(ENCHANTMENT_LIST_KEY);
 		for (int i = 0; i < enchantList.tagCount(); i++) {
 			CompoundTag enchantTag = (CompoundTag) enchantList.tagAt(i);
 			EnchantmentStack enchantmentStack = new EnchantmentStack(enchantTag);
@@ -133,15 +142,15 @@ public class EnchantmentContainer {
 		return null;
 	}
 
-	public static int getLevel(ItemStack stack, Enchantment enchantment) {
+	public static int getLevel(@Nullable ItemStack stack, @NotNull Enchantment enchantment) {
 		if (stack == null || stack.stackSize <= 0 && !(stack.getItem() instanceof ItemFood)) {
 			return 0;
 		}
-		EnchantmentStack data = getEnchantmentStack(stack, enchantment);
+		EnchantmentStack data = EnchantmentContainer.getEnchantmentStack(stack, enchantment);
 		return data == null ? 0 : Math.max(data.getLevel(), 0);
 	}
 
-	public static WeightedRandomBag<EnchantmentStack> getPossible(@NotNull ItemStack stack, int enchantability) {
+	private static WeightedRandomBag<EnchantmentStack> getPossible(@NotNull ItemStack stack, int enchantability) {
 		WeightedRandomBag<EnchantmentStack> bag = new WeightedRandomBag<>();
 		for (Enchantment enchantment : Enchantments.getInstance()) {
 			if (enchantment == null || !enchantment.canEnchant(stack) || enchantment.hidden()) {
@@ -156,7 +165,7 @@ public class EnchantmentContainer {
 		return bag;
 	}
 
-	public static boolean hasApplicable(ItemStack stack) {
+	public static boolean hasApplicable(@NotNull ItemStack stack) {
 		for (Enchantment enchantment : Enchantments.getInstance()) {
 			if (enchantment != null && enchantment.canEnchant(stack) && !enchantment.hidden()) {
 				return true;
@@ -166,7 +175,7 @@ public class EnchantmentContainer {
 	}
 
 	public static List<EnchantmentStack> generateEnchantmentsList(@NotNull Random random, @NotNull ItemStack itemStack, int cost) {
-		int enchantability = calcEnchantability(random, cost);
+		int enchantability = EnchantmentContainer.calcEnchantability(random, cost);
 		List<EnchantmentStack> enchantmentResults = new ArrayList<>();
 		WeightedRandomBag<EnchantmentStack> enchantmentPool = EnchantmentContainer.getPossible(itemStack, enchantability);
 		if (enchantmentPool.getEntries().isEmpty()) {
@@ -179,11 +188,15 @@ public class EnchantmentContainer {
 		result.add(addStack);
 
 		int maxEnchantmentsCycles = 5;
-		fillEnchantmentList(random, maxEnchantmentsCycles, enchantability, enchantmentPool, result);
+		fillEnchantmentList(enchantmentPool, random, maxEnchantmentsCycles, enchantability, result);
 		return new ArrayList<>(result);
 	}
 
-	private static void fillEnchantmentList(Random random, int maxEnchantmentsCycles, int current, WeightedRandomBag<EnchantmentStack> enchantmentPool, Set<EnchantmentStack> result) {
+	private static void fillEnchantmentList(
+		@NotNull WeightedRandomBag<EnchantmentStack> enchantmentPool,
+		@NotNull Random random, int maxEnchantmentsCycles, int current,
+		@NotNull Set<EnchantmentStack> result
+	) {
 		EnchantmentStack addStack;
 		while (maxEnchantmentsCycles-- > 0
 			&& random.nextInt(50) <= current
@@ -191,11 +204,11 @@ public class EnchantmentContainer {
 			addStack = enchantmentPool.getRandom(random);
 			boolean decrement = true;
 			boolean add = true;
-			for(EnchantmentStack stack: result){
-				if(stack.getEnchantment().equals(addStack.getEnchantment())){
+			for (EnchantmentStack stack : result) {
+				if (stack.getEnchantment().equals(addStack.getEnchantment())) {
 					add = false;
 					int level = addStack.getLevel() + stack.getLevel();
-					if(level > stack.maxLevel()){
+					if (level > stack.maxLevel()) {
 						level = stack.maxLevel();
 						decrement = false;
 					}
@@ -203,18 +216,18 @@ public class EnchantmentContainer {
 					break;
 				}
 			}
-			if(add){
+			if (add) {
 				result.add(addStack);
 			}
-			if(decrement){
+			if (decrement) {
 				/// the original made it way harder to get multiple enchantments, 1.2 softens it up quite a bit
 //				current >>= 1;
-				current = (int)Math.floor(current / 1.2f);
+				current = (int) Math.floor(current / 1.2f);
 			}
 		}
 	}
 
-	private static int calcEnchantability(Random random, double cost) {
+	private static int calcEnchantability(@NotNull Random random, double cost) {
 		// Normalize cost into percentage
 		double costPercentage = cost / MAX_ENCHANTMENT_COST;
 
@@ -227,21 +240,21 @@ public class EnchantmentContainer {
 		return Math.max(1, Math.round(k * randBonusPercent));
 	}
 
-    public static String prettyPrint(ItemStack itemStack) {
+	public static String prettyPrint(@Nullable ItemStack itemStack) {
 		if (itemStack == null) {
 			return "";
 		}
 		StringBuilder resultString = new StringBuilder();
 		CompoundTag enchantData = itemStack.getData().getCompound(ENCHANTMENT_DATA_KEY);
-		ListTag enchantList =  enchantData.getList(ENCHANTMENT_LIST_KEY);
+		ListTag enchantList = enchantData.getList(ENCHANTMENT_LIST_KEY);
 		for (int i = 0; i < enchantList.tagCount(); i++) {
 			CompoundTag enchantTag = (CompoundTag) enchantList.tagAt(i);
 			EnchantmentStack enchantmentStack = new EnchantmentStack(enchantTag);
 			resultString.append(enchantmentStack.prettyToString());
-			if(i + 1 < enchantList.tagCount()){
+			if (i + 1 < enchantList.tagCount()) {
 				resultString.append(",");
 			}
 		}
 		return resultString.toString();
-    }
+	}
 }

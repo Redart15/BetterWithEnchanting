@@ -24,7 +24,7 @@ public abstract class WorldFeatureLabyrinthMixinAddBottle {
 	private void addCustomLoot(World world, Random random, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
 		for(int i = 0; i < Enchantments.BOTTLED_SCORE.maxLevel(); i++){
 			ItemStack bottle = BetterWithEnchanting.SCORE_BOTTLE.getDefaultStack();
-			EnchantmentContainer.addEnchantment(bottle, Enchantments.BOTTLED_SCORE.getDefaultStack().setLevel(i + 1));
+			EnchantmentContainer.rawAddEnchantment(bottle, Enchantments.BOTTLED_SCORE.getDefaultStack().setLevel(i + 1));
 			this.chestLoot.addEntry(new WeightedRandomLootObject(bottle), 16.0F / Math.pow(2, i));
 		}
 	}

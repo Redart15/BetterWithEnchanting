@@ -1,8 +1,10 @@
-package googy.betterwithenchanting.gui;
+package googy.betterwithenchanting.gui.table;
 
 import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.api.EnchantmentContainer;
+import googy.betterwithenchanting.gui.slot.EnchantFuelSlot;
+import googy.betterwithenchanting.gui.slot.EnchantItemSlot;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.InventoryAction;
 import net.minecraft.core.block.Block;
@@ -19,7 +21,6 @@ import net.minecraft.core.world.World;
 import net.minecraft.core.world.pos.TilePos;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 

@@ -1,6 +1,6 @@
 package googy.betterwithenchanting.network;
 
-import googy.betterwithenchanting.gui.MenuEnchantmentTable;
+import googy.betterwithenchanting.gui.table.MenuEnchantmentTable;
 import net.minecraft.core.player.inventory.menu.MenuAbstract;
 import org.jspecify.annotations.NonNull;
 import turniplabs.halplibe.helper.network.NetworkMessage;

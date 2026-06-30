@@ -2,7 +2,6 @@ package googy.betterwithenchanting.block;
 
 import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
-import net.minecraft.client.render.renderer.GLRenderer;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;

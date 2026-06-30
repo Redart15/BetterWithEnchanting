@@ -28,7 +28,7 @@ public class MixinsHelperRenderer {
 	}
 
 	public static void renderEffectFlat(TessellatorGeneral tessellator, TextureManager textureManager, ItemStack itemStack) {
-		if (!EnchantmentContainer.hasEnchantments(itemStack)) {
+		if (itemStack == null || !EnchantmentContainer.hasEnchantments(itemStack)) {
 			return;
 		}
 		boolean lightning = GLRenderer.globalGetLightEnabled();
@@ -79,7 +79,7 @@ public class MixinsHelperRenderer {
 	}
 
 	public static void renderEffect2D(TessellatorGeneral tessellator, TextureManager textureManager, ItemStack itemStack, byte lightIndex) {
-		if (!EnchantmentContainer.hasEnchantments(itemStack)) {
+		if (itemStack == null || !EnchantmentContainer.hasEnchantments(itemStack)) {
 			return;
 		}
 		GLRenderer.pushFrame();
@@ -113,7 +113,7 @@ public class MixinsHelperRenderer {
 	}
 
 	public static void renderEffect2DD(TessellatorGeneral tessellator, TextureManager textureManager, ItemStack itemStack, byte lightIndex) {
-		if (!EnchantmentContainer.hasEnchantments(itemStack)) {
+		if (itemStack == null || !EnchantmentContainer.hasEnchantments(itemStack)) {
 			return;
 		}
 		boolean lightning = GLRenderer.globalGetLightEnabled();

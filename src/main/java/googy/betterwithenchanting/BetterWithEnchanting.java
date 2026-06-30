@@ -6,6 +6,7 @@ import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.item.EnchantingTags;
 import googy.betterwithenchanting.item.ItemEnchantmentBottle;
 import googy.betterwithenchanting.network.MessageEnchantItem;
+import googy.betterwithenchanting.render.GlyphRenderer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.Blocks;
@@ -96,6 +97,7 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 	@Override public void afterGameStart() {
 		EnchantingTags.init();
 		Enchantments.init();
+		GlyphRenderer.init();
 		Registries.getInstance().register(MOD_ID + ":enchantments", Enchantments.getInstance());
 		TRANSLATE = I18n.getInstance();
 		LOG.info("Registered {} enchantments.", Enchantments.getInstance().size());

@@ -1,25 +1,17 @@
-package googy.betterwithenchanting.gui;
+package googy.betterwithenchanting.gui.table;
 
-import googy.betterwithenchanting.BetterWithEnchanting;
+import googy.betterwithenchanting.render.GlyphRenderer;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
+import googy.betterwithenchanting.gui.ScreenFix;
 import googy.betterwithenchanting.network.MessageEnchantItem;
 import googy.betterwithenchanting.api.EnchantmentContainer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.PlayerLocalMultiplayer;
-import net.minecraft.client.render.font.RenderIntegerBase;
 import net.minecraft.client.render.renderer.GLRenderer;
-import net.minecraft.client.render.renderer.State;
-import net.minecraft.client.render.tessellator.TessellatorGeneral;
-import net.minecraft.client.render.texture.Texture;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.player.inventory.container.ContainerInventory;
 import net.minecraft.core.player.inventory.slot.Slot;
-import org.jetbrains.annotations.NotNull;
 import turniplabs.halplibe.helper.network.NetworkHandler;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 import static googy.betterwithenchanting.BetterWithEnchanting.*;
 
@@ -30,34 +22,10 @@ public class ScreenEnchantmentTable extends ScreenFix {
 	private static final int ACTIVE_LEVEL_OFFSET = 223;
 	private static final int DEACTIVATED_LEVEL_OFFSET = 239;
 
-	public static final int MAX_STRING_LENGTH = 77;
-	public static final int UV_SIZE = 16;
-	public static final int ROW_COLUMN_SIZE = 16;
-	public static final int GALACTIC_INDEX = 0;
-	public static final int GALACTIC_INDEX_NUMBERS = GALACTIC_INDEX + 3 * ROW_COLUMN_SIZE;
-	public static final int ILLAGER_INDEX = GALACTIC_INDEX_NUMBERS + ROW_COLUMN_SIZE;
-	public static final int ILLAGER_INDEX_NUMBERS = ILLAGER_INDEX + 3 * ROW_COLUMN_SIZE;
-	public static final Texture TEXTURE = Minecraft.getMinecraft().textureManager.loadTexture("/assets/" + MOD_ID + "/gui/enchantment_letters.png");
-
 	TileEntityEnchantmentTable enchantmentTable;
 	MenuEnchantmentTable enchantmentTableContainer;
 	int mouseX = 0;
 	int mouseY = 0;
-	private static final byte[] CHAR_WIDTH = new byte[256];
-
-	static {
-		InputStream stream = Texture.class.getResourceAsStream("/assets/" + MOD_ID + "/gui/enchant.bin");
-
-		if (stream == null) {
-			throw new RuntimeException("Missing font data");
-		}
-		try {
-			stream.read(CHAR_WIDTH, 0, CHAR_WIDTH.length);
-			stream.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
 
 	public ScreenEnchantmentTable(ContainerInventory inventory, TileEntityEnchantmentTable tileEntity) {
 		super(new MenuEnchantmentTable(inventory, tileEntity));
@@ -153,7 +121,8 @@ public class ScreenEnchantmentTable extends ScreenFix {
 			else {
 				this.drawStringNoShadow(this.mc.font, costText, x + 166 - costWidth, y + 23 + buttonHeight * i, color);
 			}
-			this.drawString(LABELS[this.enchantmentTableContainer.getLabelIndexAtIndex(i) % LABELS.length], x + 80, y + 18 + buttonHeight * i, color, this.enchantmentTableContainer.getType(i), canEnchant);
+			String label = LABELS[this.enchantmentTableContainer.getLabelIndexAtIndex(i) % LABELS.length];
+			GlyphRenderer.drawString(label, x + 80, y + 18 + buttonHeight * i, color, this.enchantmentTableContainer.getType(i), canEnchant);
 		}
 	}
 
@@ -167,82 +136,6 @@ public class ScreenEnchantmentTable extends ScreenFix {
 		int fontHeight = this.mc.font.getFont().fontHeight() ; // original was 9 now its 8
 		this.drawStringShadow(this.mc.font, scoreText, xPos - scoreWidth / 2, yPos, 0xFFFFFF);
 		this.drawStringShadow(this.mc.font, scoreNumberText, xPos - scoreNumberWidth / 2, yPos + fontHeight + 1, 16777088);
-	}
-
-	public int drawStringWithShadow(String text, int x, int y, int color, boolean useIllager) {
-		return this.drawString(text, x, y, color, useIllager, true);
-	}
-
-	public int drawString(String text, int x, int y, int color, boolean useIllager, boolean shadow) {
-		if (text == null) {
-			return x;
-		}
-		if (shadow) {
-			this.renderString(text, x + 1, y + 1, color, useIllager, true);
-		}
-		return this.renderString(text, x, y, color, useIllager, false);
-	}
-
-	private int renderString(@NotNull String text, int x, int y, int color, boolean useIllager, boolean shadow) {
-		if ((color & -16777216) == 0) {
-			color |= -16777216;
-		}
-		if (shadow) {
-			color = (color & 16579836) >> 2 | color & -16777216;
-		}
-		float red 	= (color >> 16 & 255) / 255.0F;
-		float blue 	= (color >> 8 & 255) / 255.0F;
-		float green = (color & 255) / 255.0F;
-		float alpha = (color >> 24 & 255) / 255.0F;
-		GLRenderer.setColor4f(red, blue, green, alpha);
-		GLRenderer.enableState(State.DEPTH_TEST);
-		TessellatorGeneral t = GLRenderer.getTessellator();
-		this.mc.textureManager.bindTexture(ScreenEnchantmentTable.TEXTURE);
-		t.startDrawingQuads();
-		float sy = 7.99F;
-		float ex = x;
-		for (int i = 0; i < text.length(); i++) {
-			char c = text.charAt(i);
-			int index = ScreenEnchantmentTable.getIndex(c, useIllager);
-			if (c == ' ' || index < 0) {
-				ex += 4.0f;
-				continue;
-			}
-			int iLeft = (CHAR_WIDTH[index] >> 4);
-			int iRight = (CHAR_WIDTH[index] & 15) + 1;
-			int rowIndex = Math.floorDiv(index, ScreenEnchantmentTable.ROW_COLUMN_SIZE);
-			int columnIndex = index - rowIndex * ScreenEnchantmentTable.ROW_COLUMN_SIZE;
-			double len = ((double) iRight - (double) iLeft - 0.02F) / ScreenEnchantmentTable.UV_SIZE * sy;
-			double uMin = ((double) columnIndex * ScreenEnchantmentTable.ROW_COLUMN_SIZE + iLeft) / (ScreenEnchantmentTable.ROW_COLUMN_SIZE * ScreenEnchantmentTable.UV_SIZE);
-			double uMax = ((double) columnIndex * ScreenEnchantmentTable.ROW_COLUMN_SIZE + iRight) / (ScreenEnchantmentTable.ROW_COLUMN_SIZE * ScreenEnchantmentTable.UV_SIZE);
-			double vMin = (double) rowIndex / ScreenEnchantmentTable.ROW_COLUMN_SIZE;
-			double vMax = vMin + 1.0f / ScreenEnchantmentTable.ROW_COLUMN_SIZE;
-			t.addVertexWithUV(ex, y, 0, uMin, vMin);
-			t.addVertexWithUV(ex, y + sy, 0, uMin, vMax);
-			t.addVertexWithUV(ex + len, y + sy, 0, uMax, vMax);
-			t.addVertexWithUV(ex + len, y, 0, uMax, vMin);
-			ex += (float) (len);
-			ex += 1.0f;
-			if(Math.abs(ex - x) > MAX_STRING_LENGTH){
-				break;
-			}
-		}
-		t.draw();
-		GLRenderer.disableState(State.DEPTH_TEST);
-		GLRenderer.setColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		return (int) ex;
-	}
-
-	public static int getIndex(char c, boolean useIllager) {
-		boolean illager = useIllager && BetterWithEnchanting.ILLAGER_FONT;
-		int fontIndex = illager ? ILLAGER_INDEX : GALACTIC_INDEX;
-		if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
-			return fontIndex + Character.toUpperCase(c) - 'A';
-		} else if ((c >= '0' && c <= '9')) {
-			fontIndex = illager ? ILLAGER_INDEX_NUMBERS : GALACTIC_INDEX_NUMBERS;
-			return fontIndex + c - '0';
-		}
-		return -1;
 	}
 
 	@Override

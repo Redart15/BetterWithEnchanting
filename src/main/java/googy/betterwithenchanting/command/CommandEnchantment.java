@@ -9,7 +9,6 @@ import com.mojang.brigadier.builder.ArgumentBuilderRequired;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.api.Enchantment;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
@@ -175,7 +174,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 			ctx.getSource().sendTranslatableMessage("enchantment.command.cannot");
 			return code(FAIL);
 		}
-		EnchantmentContainer.addEnchantment(itemStack, new EnchantmentStack(enchantment, level));
+		EnchantmentContainer.rawAddEnchantment(itemStack, new EnchantmentStack(enchantment, level));
 		ctx.getSource().sendTranslatableMessage("enchantment.command.add", TRANSLATE.translateKeyAndFormat(enchantment.translationKeyName()));
 		return Command.SINGLE_SUCCESS;
 	}
