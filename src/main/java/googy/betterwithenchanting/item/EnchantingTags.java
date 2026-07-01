@@ -14,6 +14,11 @@ public class EnchantingTags {
 	public static final Tag<Item> ENCHANT_MEELE = Tag.of("enchant_meele");
 	public static final Tag<Item> ENCHANT_DIGGER = Tag.of("enchant_digger");
 	public static final Tag<Item> ENCHANT_PICKAXE = Tag.of("enchant_pickaxe");
+	public static final Tag<Item> ENCHANT_AXE = Tag.of("enchant_axe");
+	public static final Tag<Item> ENCHANT_SHOVEL = Tag.of("enchant_shovel");
+	public static final Tag<Item> ENCHANT_HOE = Tag.of("enchant_hoe");
+	public static final Tag<Item> ENCHANT_ROD = Tag.of("enchant_rod");
+	public static final Tag<Item> ENCHANT_SHEAR = Tag.of("enchant_shear");
 	public static final Tag<Item> ENCHANT_TOOL = Tag.of("enchant_tool");
 	public static final Tag<Item> ENCHANT_ARMOR = Tag.of("enchant_armor");
 	public static final Tag<Item> UNECHANT = Tag.of("unechant");

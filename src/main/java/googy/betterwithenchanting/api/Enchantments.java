@@ -2,10 +2,7 @@ package googy.betterwithenchanting.api;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
 import net.minecraft.core.data.registry.Registry;
-import net.minecraft.core.item.Item;
-import net.minecraft.core.item.ItemBow;
-import net.minecraft.core.item.ItemFishingRod;
-import net.minecraft.core.item.ItemFood;
+import net.minecraft.core.item.*;
 import net.minecraft.core.item.tool.*;
 
 import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
@@ -22,21 +19,32 @@ public class Enchantments extends Registry<Enchantment> {
 	public static final Enchantment CRIT;
 	public static final Enchantment LIFESTEAL;
 	// RANGE
-	public static final Enchantment POWER; // projtile speed
-	public static final Enchantment MULTI_SHOT; // increase proj(main)
-	public static final Enchantment BUCK_SHOT; // increase proj(extra)
+	public static final Enchantment POWER;
+	public static final Enchantment MULTI_SHOT;
+	public static final Enchantment BUCK_SHOT;
 	// ANGLE
-	public static final Enchantment HASTE; // haste
-	public static final Enchantment BAIT;// increase ore gain/fishing
-	public static final Enchantment HAUL;// increase fish amount
+	public static final Enchantment HASTE;
+	public static final Enchantment BAIT;
+	public static final Enchantment HAUL;
+	public static final Enchantment REELING;
 	// TOOLS
-	public static final Enchantment SCAVENGE; // find random extra loot from mining
+	public static final Enchantment SCAVENGE;
 	public static final Enchantment CATALYST;
 	public static final Enchantment SEARING;
 	public static final Enchantment FORTUNE;
 	public static final Enchantment INSIGHT;
 	// PICKAXE
 	public static final Enchantment CRUSH;
+	public static final Enchantment SILKTOUCH;
+	// AXE
+	public static final Enchantment FELLING;
+	// SHEAR
+	public static final Enchantment FORAGER;
+	// HANDCANON
+	public static final Enchantment EXPLOSIVE;
+	public static final Enchantment INCENDIARY;
+	// HOE
+	public static final Enchantment REAP;
 	// FOOD
 	public static final Enchantment BOTTLED_SCORE;
 	public static final Enchantment NOURISHMENT;
@@ -45,11 +53,6 @@ public class Enchantments extends Registry<Enchantment> {
 	// SPECIAL
 	public static final Enchantment UNBREAKING;
 	public static final Enchantment GLITCHCRAFT;
-	// UNIQUE ENCHANTMENT FOR AXE
-
-	// FUTURE UPDATES
-	// MORE ENCHANTMENT FOR HOE
-	// MORE ENCHANTMENT FOR SHEAR
 
 	// ARMOR -> not sure what to do with those, also not in the mood of animating armour glint
 //	public static final Enchantment THORN;
@@ -112,6 +115,7 @@ public class Enchantments extends Registry<Enchantment> {
 			.setEnchantability(0, 50, 0.75, 4)
 			.build();
 
+		// increase ore gain/fishing
 		BAIT = new EnchantmentBuilder(new Bait(MOD_ID, "bait"), 8)
 			.setWeight(2.0f)
 			.setMaxLevel(3)
@@ -119,6 +123,7 @@ public class Enchantments extends Registry<Enchantment> {
 			.setEnchantability(0, 50, 0.5, 2)
 			.build();
 
+		// increase fish amount
 		HAUL = new EnchantmentBuilder(new Enchantment(MOD_ID, "haul"))
 			.setWeight(1.0f)
 			.setMaxLevel(4)
@@ -196,6 +201,7 @@ public class Enchantments extends Registry<Enchantment> {
 			.setMaxEnchatability(level -> 60)
 			.build();
 
+		// projtile speed
 		POWER = new EnchantmentBuilder(new Enchantment(MOD_ID, "power"))
 			.setWeight(5.0f)
 			.setMaxLevel(3)
@@ -203,6 +209,7 @@ public class Enchantments extends Registry<Enchantment> {
 			.setEnchantability(0, 50, 0.5f)
 			.build();
 
+		// increase proj(main)
 		BUCK_SHOT = new EnchantmentBuilder(new Enchantment(MOD_ID, "buckhot"))
 			.setWeight(2.0f)
 			.setMaxLevel(2)
@@ -210,6 +217,7 @@ public class Enchantments extends Registry<Enchantment> {
 			.setEnchantability(10, 50, 0.25f)
 			.build();
 
+		// increase proj(extra)
 		MULTI_SHOT = new EnchantmentBuilder(new Enchantment(MOD_ID, "multishot"))
 			.setWeight(2.0f)
 			.setMaxLevel(2)
@@ -225,7 +233,9 @@ public class Enchantments extends Registry<Enchantment> {
 					|| item instanceof ItemToolAxe
 					|| item instanceof ItemToolShovel
 					|| item instanceof ItemFishingRod
-					|| item.hasTag(ENCHANT_DIGGER)
+					|| item instanceof ItemToolHoe
+					|| item instanceof ItemToolShears
+					|| !item.hasTag(UNECHANT)
 			)
 			.setEnchantability(0, 50, 0.2f, 4)
 			.build();
@@ -287,6 +297,64 @@ public class Enchantments extends Registry<Enchantment> {
 			.setTarget(item -> false)
 			.setHidden(true)
 			.build();
+
+		// TODO: implement them!
+		// drops blocks as if mined with silktouch
+		SILKTOUCH = new EnchantmentBuilder(new Enchantment(MOD_ID, "silktouch"))
+			.setWeight(1.0f)
+			.setTarget( item -> item instanceof ItemToolPickaxe || item.hasTag(ENCHANT_PICKAXE))
+			.setMinEnchantability(level -> 30)
+			.setMaxEnchatability(level -> 60)
+			.build();
+
+		// tree capitator
+		FELLING = new EnchantmentBuilder(new Enchantment(MOD_ID, "felling"))
+			.setWeight(1.0f)
+			.setTarget(item -> item instanceof ItemToolAxe || item.hasTag(ENCHANT_ROD))
+			.setMinEnchantability(level -> 15)
+			.setMaxEnchatability(level -> 30)
+			.build();
+
+		// get more saplings, more sticka and apples
+		FORAGER = new EnchantmentBuilder(new Enchantment(MOD_ID, "forager"))
+			.setWeight(5.0f)
+			.setMaxLevel(4)
+			.setTarget(item -> item instanceof ItemToolShears || item.hasTag(ENCHANT_SHEAR))
+			.setEnchantability(10, 60, 0.25, 3)
+			.build();
+
+		// increase explosive damage adn power
+		EXPLOSIVE = new EnchantmentBuilder(new Enchantment(MOD_ID, "explosive"))
+			.setWeight(5.0f)
+			.setMaxLevel(3)
+			.setTarget(item -> item instanceof ItemHandCannonLoaded || item instanceof ItemHandCannonUnloaded)
+			.setEnchantability(20, 60, 0.8f)
+			.build();
+
+		// cause fire
+		INCENDIARY = new EnchantmentBuilder(new Enchantment(MOD_ID, "incendiary"))
+			.setWeight(1.0f)
+			.setTarget(item -> item instanceof ItemHandCannonLoaded || item instanceof ItemHandCannonUnloaded)
+			.setMinEnchantability(level -> 25)
+			.setMaxEnchatability(level -> 35)
+			.build();
+
+		// increase field
+		REAP = new EnchantmentBuilder(new Enchantment(MOD_ID, "reap"))
+			.setWeight(10.0f)
+			.setMaxLevel(2)
+			.setTarget(item -> item instanceof ItemToolHoe || item.hasTag(ENCHANT_HOE))
+			.setEnchantability(10, 50, 0.8f)
+			.build();
+
+		// increase speed of entity beeing yoinked
+		REELING = new EnchantmentBuilder(new Enchantment(MOD_ID, "reeling"))
+			.setWeight(1.0f)
+			.setMaxLevel(2)
+			.setTarget(item -> item instanceof ItemFishingRod || item.hasTag(ENCHANT_ROD))
+			.setEnchantability(10, 50, 0.4f)
+			.build();
+
 	}
 
 	public static void init() {/* just to load this class*/}
