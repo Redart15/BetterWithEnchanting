@@ -34,7 +34,16 @@ public class EnchantmentStack {
 				}
 			}
 		} else {
+			///  ------------------------------------------------------------------------------------------------------
+			/// TODO remove it at a later date
+			if ("betterwithenchanting:scavange".equals(nbt.getString(SID_KEY))) {
+				this.enchantment = Enchantments.SCAVENGE;
+				this.level = nbt.getShort(LEVEL_KEY);
+				return nbt;
+			}
+			///  ------------------------------------------------------------------------------------------------------
 			this.enchantment = Enchantments.getInstance().getItem(nbt.getString(SID_KEY));
+
 		}
 		this.level = nbt.getShort(LEVEL_KEY);
 		return nbt;
@@ -107,7 +116,7 @@ public class EnchantmentStack {
 			'}';
 	}
 
-	public String prettyToString(){
+	public String prettyToString() {
 		String levelString = enchantment.maxLevel() > 1 ? String.format("(%s)", this.getLevel()) : "";
 		return String.format("%s %s", this.enchantment.translationKeyName(), levelString);
 	}

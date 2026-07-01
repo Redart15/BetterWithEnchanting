@@ -55,11 +55,12 @@ public class MixinsHelperLogic {
 
 	public static void getEnchantmentText(ItemStack itemStack, StringBuilder toolTip) {
 		List<EnchantmentStack> enchantmentsData = EnchantmentContainer.getEnchantments(itemStack);
+		enchantmentsData.removeIf(e -> e == null || e.getEnchantment() == null);
 		enchantmentsData.sort(Comparator.comparing(e -> e.getEnchantment().id()));
 		for (EnchantmentStack enchantmentStack : enchantmentsData) {
 			boolean isNull = enchantmentStack.getEnchantment() == null;
 			boolean noLevel = isNull || enchantmentStack.minLevel() == enchantmentStack.maxLevel();
-			String key = isNull ? "disabled" : enchantmentStack.getTranslationKey() + ".name";
+			String key = isNull ? "disabled.name" : enchantmentStack.getTranslationKey() + ".name";
 			String enchantLevel = noLevel ? "" : String.valueOf(enchantmentStack.getLevel());
 			String enchantName = TextFormatting.formatted(I18n.getInstance().translateKey(key), TextFormatting.CYAN);
 			enchantLevel = TextFormatting.formatted(enchantLevel, TextFormatting.CYAN);

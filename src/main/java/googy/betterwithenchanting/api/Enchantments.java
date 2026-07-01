@@ -35,6 +35,7 @@ public class Enchantments extends Registry<Enchantment> {
 	public static final Enchantment SEARING;
 	public static final Enchantment FORTUNE;
 	public static final Enchantment INSIGHT;
+	// PICKAXE
 	public static final Enchantment CRUSH;
 	// FOOD
 	public static final Enchantment BOTTLED_SCORE;
