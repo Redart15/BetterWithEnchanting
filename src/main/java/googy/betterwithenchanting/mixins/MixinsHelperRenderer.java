@@ -128,47 +128,29 @@ public class MixinsHelperRenderer {
 		textureManager.bindTexture(textureManager.loadTexture(TEXTURE));
 
 		GLRenderer.pushFrame();
-		float offset = getOffset(0, 256.0f);
+		float factor = 1024.0f;
+		float offset = getOffset(0, factor);
 		GLRenderer.setColor4f(colorDimmer * R, colorDimmer * G, colorDimmer * B, A);
-		GLRenderer.textureM4f().translate(offset, 0.0F, 0.0F);
 		GLRenderer.textureM4f().scale(scaling, scaling, scaling);
-		GLRenderer.modelM4f().rotate(MathHelper.toRadians(-50.0F), 0.0F, 0.0F, 1.0F);
+		GLRenderer.textureM4f().translate(offset, 0.0F, 0.0F);
+		GLRenderer.textureM4f().rotate(MathHelper.toRadians(-50.0F), 0.0F, 0.0F, 1.0F);
 		renderCoordinate(tessellator, textureManager, 0.0F + offset, 1.0F + offset, 0.0F + offset, 1.0F + offset, lightIndex, 256, 256, 0.0625F);
+//		renderCoordinate(tessellator, textureManager, 0.0F, 1.0F, 0.0F, 1.0F, lightIndex, 256, 256, 0.0625F);
 		GLRenderer.popFrame();
 		GLRenderer.pushFrame();
-		offset = -getOffset(1, 256.0f);
+		offset = -getOffset(1, factor);
 		GLRenderer.setColor4f(colorDimmer * R, colorDimmer * G, colorDimmer * B, A);
-		GLRenderer.textureM4f().translate(offset, 0.0F, 0.0F);
 		GLRenderer.textureM4f().scale(scaling, scaling, scaling);
-		GLRenderer.modelM4f().rotate(MathHelper.toRadians(10.0F), 0.0F, 0.0F, 1.0F);
+		GLRenderer.textureM4f().translate(offset, 0.0F, 0.0F);
+		GLRenderer.textureM4f().rotate(MathHelper.toRadians(10.0F), 0.0F, 0.0F, 1.0F);
 		renderCoordinate(tessellator, textureManager, 0.0F + offset, 1.0F + offset, 0.0F + offset, 1.0F + offset, lightIndex, 256, 256, 0.0625F);
+//		renderCoordinate(tessellator, textureManager, 0.0F, 1.0F, 0.0F, 1.0F, lightIndex, 256, 256, 0.0625F);
 		GLRenderer.popFrame();
 		GLRenderer.setColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		GLRenderer.globalSetLightEnabled(lightning);
 		GLRenderer.disableState(State.BLEND);
 		GLRenderer.setDepthFunc(CompareFunc.EQUAL);
 		GLRenderer.popFrame();
-	}
-
-	private static void renderGlint2D(TessellatorGeneral tessellator, TextureManager textureManager, byte lightIndex) {
-		float colorDimmer = 0.86F; // original 0.76
-		GLRenderer.pushFrame();
-		GLRenderer.setColor4f(colorDimmer * R, colorDimmer * G, colorDimmer * B, A);
-		float scaling = 1024.0f / 16.0F;
-		GLRenderer.textureM4f().scale(scaling, scaling, scaling);
-		float offset = getOffset(0, 8.0f);
-		GLRenderer.modelM4f().translate(offset, 0.0F, 0.0F);
-		GLRenderer.modelM4f().rotate(MathHelper.toRadians(-50.0F), 0.0F, 0.0F, 1.0F);
-		renderCoordinate(tessellator, textureManager, 0.0f, 1.0f, 0.0f, 1.0f, lightIndex, 256, 256, 0.0625F);
-//		GLRenderer.popFrame();
-//		GLRenderer.pushFrame();
-		GLRenderer.textureM4f().scale(scaling, scaling, scaling);
-		offset = getOffset(1, 8.0f);
-		GLRenderer.modelM4f().translate(-offset, 0.0F, 0.0F);
-		GLRenderer.modelM4f().rotate(MathHelper.toRadians(10.0F), 0.0F, 0.0F, 1.0F);
-		renderCoordinate(tessellator, textureManager, 0.0f, 1.0f, 0.0f, 1.0f, lightIndex, 256, 256, 0.0625F);
-		GLRenderer.popFrame();
-		GLRenderer.setColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	protected static void renderCoordinate(
@@ -179,7 +161,6 @@ public class MixinsHelperRenderer {
 		float halfThinkness = thinckness / 2.0f;
 		tessellator.startDrawingQuads();
 		tessellator.setLightmapCoord1i(lightIndex);
-//		tessellator.setColor1i(color);
 		tessellator.setNormal(0.0F, 0.0F, -1.0F);
 		tessellator.addVertexWithUV(-0.5F, 0.5F, -halfThinkness, cUMin, cVMin);
 		tessellator.addVertexWithUV(0.5F, 0.5F, -halfThinkness, cUMax, cVMin);
@@ -227,122 +208,4 @@ public class MixinsHelperRenderer {
 		tessellator.addVertexWithUV(0.5F, 0.5F, halfThinkness, cUMax, cVMin);
 		tessellator.draw();
 	}
-
-	@Deprecated
-	private static void renderItemIn2D(TessellatorGeneral tessellator, float uMin, float uMax, float vMin, float vMax, int tileWidth, int tileHeight, float thickness) {
-		float foon = 0.5F / tileHeight;
-		float goon = thickness * (16.0F / tileWidth);
-		float pixelWidth = 1.0F / tileWidth;
-		tessellator.startDrawingQuads();
-		tessellator.setNormal(0.0F, 0.0F, 1.0F);
-		tessellator.addVertexWithUV(0.0F, 0.0F, 0.0F, uMax, vMax);
-		tessellator.addVertexWithUV(1.0F, 0.0F, 0.0F, uMin, vMax);
-		tessellator.addVertexWithUV(1.0F, 1.0F, 0.0F, uMin, vMin);
-		tessellator.addVertexWithUV(0.0F, 1.0F, 0.0F, uMax, vMin);
-		tessellator.draw();
-		tessellator.startDrawingQuads();
-		tessellator.setNormal(0.0F, 0.0F, -1.0F);
-		tessellator.addVertexWithUV(0.0F, 1.0F, -thickness, uMax, vMin);
-		tessellator.addVertexWithUV(1.0F, 1.0F, -thickness, uMin, vMin);
-		tessellator.addVertexWithUV(1.0F, 0.0F, -thickness, uMin, vMax);
-		tessellator.addVertexWithUV(0.0F, 0.0F, -thickness, uMax, vMax);
-		tessellator.draw();
-		tessellator.startDrawingQuads();
-		tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-
-		float uDiff = uMin - uMax;
-		float vDiff = vMin - vMax;
-		for (int i = 0; i < tileWidth; ++i) {
-			float texProgress = i * pixelWidth;
-			float u = uMax + uDiff * texProgress - foon;
-			tessellator.addVertexWithUV(texProgress, 0.0F, -thickness, u, vMax);
-			tessellator.addVertexWithUV(texProgress, 0.0F, 0.0F, u, vMax);
-			tessellator.addVertexWithUV(texProgress, 1.0F, 0.0F, u, vMin);
-			tessellator.addVertexWithUV(texProgress, 1.0F, -thickness, u, vMin);
-		}
-
-		tessellator.draw();
-		tessellator.startDrawingQuads();
-		tessellator.setNormal(1.0F, 0.0F, 0.0F);
-
-		for (int i = 0; i < tileWidth; ++i) {
-			float texProgress = i * pixelWidth;
-			float u = uMax + uDiff * texProgress - foon;
-			float x = texProgress + goon;
-			tessellator.addVertexWithUV(x, 1.0F, -thickness, u, vMin);
-			tessellator.addVertexWithUV(x, 1.0F, 0.0F, u, vMin);
-			tessellator.addVertexWithUV(x, 0.0F, 0.0F, u, vMax);
-			tessellator.addVertexWithUV(x, 0.0F, -thickness, u, vMax);
-		}
-
-		tessellator.draw();
-		tessellator.startDrawingQuads();
-		tessellator.setNormal(0.0F, 1.0F, 0.0F);
-
-		for (int i = 0; i < tileWidth; ++i) {
-			float texProgress = i * pixelWidth;
-			float v = vMax + vDiff * texProgress - foon;
-			float y = texProgress + goon;
-			tessellator.addVertexWithUV(0.0F, y, 0.0F, uMax, v);
-			tessellator.addVertexWithUV(1.0F, y, 0.0F, uMin, v);
-			tessellator.addVertexWithUV(1.0F, y, -thickness, uMin, v);
-			tessellator.addVertexWithUV(0.0F, y, -thickness, uMax, v);
-		}
-
-		tessellator.draw();
-		tessellator.startDrawingQuads();
-		tessellator.setNormal(0.0F, -1.0F, 0.0F);
-
-		for (int i = 0; i < tileWidth; ++i) {
-			float texProgress = i * pixelWidth;
-			float v = vMax + vDiff * texProgress - foon;
-			tessellator.addVertexWithUV(1.0F, texProgress, 0.0F, uMin, v);
-			tessellator.addVertexWithUV(0.0F, texProgress, 0.0F, uMax, v);
-			tessellator.addVertexWithUV(0.0F, texProgress, -thickness, uMax, v);
-			tessellator.addVertexWithUV(1.0F, texProgress, -thickness, uMin, v);
-		}
-
-		tessellator.draw();
-	}
-
-	@Deprecated
-	public static void renderEffectGui(
-		TessellatorGeneral tessellator, TextureManager textureManager, ItemStack itemStack,
-		int x, int y, int offX, int offY
-	) {
-		GLRenderer.setDepthFunc(CompareFunc.GREATER_EQUAL);
-		Lighting.disable();
-		GLRenderer.setDepthMask(false);
-		textureManager.bindTexture(textureManager.loadTexture(TEXTURE));
-		GLRenderer.enableState(State.BLEND);
-		GLRenderer.setBlendFunc(BlendFactor.DST_COLOR, BlendFactor.DST_COLOR);
-		GLRenderer.setColor4f(R, G, B, A);
-		for (int i = 0; i < 2; ++i) {
-			GLRenderer.setBlendFunc(BlendFactor.SRC_COLOR, BlendFactor.ONE);
-			float c = 0.00390625F;
-			float startingOffset = getOffset(i, 256.0F);
-			float shiftY = i == 1 ? -1.0f : 4.0F;
-
-			float u1 = (startingOffset + offY * shiftY) * c;
-			float u2 = (startingOffset + offX + offY * shiftY) * c;
-			float u3 = (startingOffset + offX) * c;
-			float u4 = (startingOffset + 0.0F) * c;
-			float v12 = offY * c;
-			float v34 = 0.0f;
-
-			float z = 1.0f;
-			tessellator.startDrawingQuads();
-			tessellator.addVertexWithUV(x, (double) y + offY, z, u1, v12);
-			tessellator.addVertexWithUV((double) x + offX, (double) y + offY, z, u2, v12);
-			tessellator.addVertexWithUV((double) x + offX, y, z, u3, v34);
-			tessellator.addVertexWithUV(x, y, z, u4, v34);
-			tessellator.draw();
-		}
-		GLRenderer.setColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		GLRenderer.disableState(State.BLEND);
-		GLRenderer.setDepthMask(true);
-		Lighting.enableLight();
-		GLRenderer.setDepthFunc(CompareFunc.LESS_EQUAL);
-	}
-
 }
