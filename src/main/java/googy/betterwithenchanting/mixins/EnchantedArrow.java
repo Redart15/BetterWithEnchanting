@@ -3,7 +3,7 @@ package googy.betterwithenchanting.mixins;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.Enchantments;
-import googy.betterwithenchanting.mixins.interfaces.IEnchantment;
+import googy.betterwithenchanting.mixins.interfaces.EnchantmentArrow;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.entity.projectile.Projectile;
 import net.minecraft.core.entity.projectile.ProjectileArrowPurple;
@@ -75,14 +75,14 @@ public class EnchantedArrow {
 	}
 
 	public void setOnFire(Projectile projectile) {
-		if (flameLevel > 0 && projectile instanceof IEnchantment iEnchantment) {
-			iEnchantment.enchanting$writeFlame(this.flameLevel);
+		if (flameLevel > 0 && projectile instanceof EnchantmentArrow iEnchantment) {
+			iEnchantment.enchanting$writeFlame((byte)this.flameLevel);
 			projectile.fireHurt();
 		}
 	}
 
 	public void setMultiHit(Projectile projectile) {
-		if (projectile instanceof IEnchantment iEnchantment) {
+		if (projectile instanceof EnchantmentArrow iEnchantment) {
 			iEnchantment.enchanting$writeMultiHit(multiHit);
 		}
 	}

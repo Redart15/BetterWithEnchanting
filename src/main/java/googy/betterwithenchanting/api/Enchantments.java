@@ -39,10 +39,12 @@ public class Enchantments extends Registry<Enchantment> {
 	// AXE
 	public static final Enchantment FELLING;
 	// SHEAR
-	public static final Enchantment FORAGER;
+	public static final Enchantment FORAGING;
 	// HANDCANON
 	public static final Enchantment EXPLOSIVE;
 	public static final Enchantment INCENDIARY;
+	public static final Enchantment VOLATILE;
+	public static final Enchantment PRECISE;
 	// HOE
 	public static final Enchantment REAP;
 	// FOOD
@@ -139,7 +141,6 @@ public class Enchantments extends Registry<Enchantment> {
 			.setEnchantability(10, 50, 0.5f, 3)
 			.build();
 
-		// TODO figure out how to make them work.
 		// increase regeneration speed
 		NOURISHMENT	= new EnchantmentBuilder(new Enchantment(MOD_ID, "nourishment"))
 			.setWeight(5.0f)
@@ -205,7 +206,11 @@ public class Enchantments extends Registry<Enchantment> {
 		POWER = new EnchantmentBuilder(new Enchantment(MOD_ID, "power"))
 			.setWeight(5.0f)
 			.setMaxLevel(3)
-			.setTarget(item -> item instanceof ItemBow || item.hasTag(ENCHANT_RANGED))
+			.setTarget(
+				item -> item instanceof ItemBow
+				|| item instanceof ItemHandCannonUnloaded
+				|| item instanceof ItemHandCannonLoaded
+				|| item.hasTag(ENCHANT_RANGED))
 			.setEnchantability(0, 50, 0.5f)
 			.build();
 
@@ -235,12 +240,12 @@ public class Enchantments extends Registry<Enchantment> {
 					|| item instanceof ItemFishingRod
 					|| item instanceof ItemToolHoe
 					|| item instanceof ItemToolShears
-					|| !item.hasTag(UNECHANT)
+					&& !item.hasTag(UNECHANT)
 			)
 			.setEnchantability(0, 50, 0.2f, 4)
 			.build();
 
-		/// trommel
+		// trommel
 		SCAVENGE = new EnchantmentBuilder(new Enchantment(MOD_ID, "scavenge"))
 			.setWeight(5.0f)
 			.setMaxLevel(1)
@@ -298,11 +303,10 @@ public class Enchantments extends Registry<Enchantment> {
 			.setHidden(true)
 			.build();
 
-		// TODO: implement them!
 		// drops blocks as if mined with silktouch
 		SILKTOUCH = new EnchantmentBuilder(new Enchantment(MOD_ID, "silktouch"))
 			.setWeight(1.0f)
-			.setTarget( item -> item instanceof ItemToolPickaxe || item.hasTag(ENCHANT_PICKAXE))
+			.setTarget( item -> (item instanceof ItemToolPickaxe || item.hasTag(ENCHANT_PICKAXE)) && !item.isSilkTouch())
 			.setMinEnchantability(level -> 30)
 			.setMaxEnchatability(level -> 60)
 			.build();
@@ -315,20 +319,37 @@ public class Enchantments extends Registry<Enchantment> {
 			.setMaxEnchatability(level -> 30)
 			.build();
 
-		// get more saplings, more sticka and apples
-		FORAGER = new EnchantmentBuilder(new Enchantment(MOD_ID, "forager"))
+		//------------------------------------------- lang missing --------------------------
+		// get more saplings, more stick and apples
+		FORAGING = new EnchantmentBuilder(new Enchantment(MOD_ID, "foraging"))
 			.setWeight(5.0f)
 			.setMaxLevel(4)
 			.setTarget(item -> item instanceof ItemToolShears || item.hasTag(ENCHANT_SHEAR))
 			.setEnchantability(10, 60, 0.25, 3)
 			.build();
 
-		// increase explosive damage adn power
+		// increase explosive power
 		EXPLOSIVE = new EnchantmentBuilder(new Enchantment(MOD_ID, "explosive"))
 			.setWeight(5.0f)
 			.setMaxLevel(3)
 			.setTarget(item -> item instanceof ItemHandCannonLoaded || item instanceof ItemHandCannonUnloaded)
 			.setEnchantability(20, 60, 0.8f)
+			.build();
+
+		// makes the explosion cause damage to the environment
+		VOLATILE = new EnchantmentBuilder(new Enchantment(MOD_ID, "volatile"))
+			.setWeight(2.0f)
+			.setTarget(item -> item instanceof ItemHandCannonLoaded || item instanceof ItemHandCannonUnloaded)
+			.setMinEnchantability(level -> 25)
+			.setMaxEnchatability(level -> 35)
+			.build();
+
+		// makes it hit entities
+		PRECISE = new EnchantmentBuilder(new Enchantment(MOD_ID, "precise"))
+			.setWeight(1.0f)
+			.setMaxLevel(5)
+			.setTarget(item -> item instanceof ItemHandCannonLoaded || item instanceof ItemHandCannonUnloaded)
+			.setEnchantability(10, 50, 0.8f, 3)
 			.build();
 
 		// cause fire
@@ -339,20 +360,24 @@ public class Enchantments extends Registry<Enchantment> {
 			.setMaxEnchatability(level -> 35)
 			.build();
 
+		// TODO: implement them!
 		// increase field
 		REAP = new EnchantmentBuilder(new Enchantment(MOD_ID, "reap"))
 			.setWeight(10.0f)
 			.setMaxLevel(2)
 			.setTarget(item -> item instanceof ItemToolHoe || item.hasTag(ENCHANT_HOE))
 			.setEnchantability(10, 50, 0.8f)
+			.setHidden()
 			.build();
 
+		// TODO: implement them!
 		// increase speed of entity beeing yoinked
 		REELING = new EnchantmentBuilder(new Enchantment(MOD_ID, "reeling"))
 			.setWeight(1.0f)
 			.setMaxLevel(2)
 			.setTarget(item -> item instanceof ItemFishingRod || item.hasTag(ENCHANT_ROD))
 			.setEnchantability(10, 50, 0.4f)
+			.setHidden()
 			.build();
 
 	}

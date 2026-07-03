@@ -28,7 +28,7 @@ public class EnchantmentContainer {
 
 	public static void addEnchantments(@NotNull ItemStack stack, @NotNull List<EnchantmentStack> enchantments) {
 		for (EnchantmentStack enchantment : enchantments) {
-			if (EnchantmentContainer.contains(stack, enchantment.getEnchantment()) || enchantment.getEnchantment().canEnchant(stack)) {
+			if (EnchantmentContainer.contains(stack, enchantment.getEnchantment()) || !enchantment.getEnchantment().canEnchant(stack)) {
 				continue;
 			}
 			EnchantmentContainer.rawAddEnchantment(stack, enchantment);
@@ -220,7 +220,7 @@ public class EnchantmentContainer {
 				result.add(addStack);
 			}
 			if (decrement) {
-				/// the original made it way harder to get multiple enchantments, 1.2 softens it up quite a bit
+				// the original made it way harder to get multiple enchantments, 1.2 softens it up quite a bit
 //				current >>= 1;
 				current = (int) Math.floor(current / 1.2f);
 			}

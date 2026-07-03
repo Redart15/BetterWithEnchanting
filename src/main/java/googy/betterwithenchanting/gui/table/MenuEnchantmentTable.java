@@ -5,6 +5,7 @@ import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.gui.slot.EnchantFuelSlot;
 import googy.betterwithenchanting.gui.slot.EnchantItemSlot;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.InventoryAction;
 import net.minecraft.core.block.Block;
@@ -207,24 +208,23 @@ public class MenuEnchantmentTable extends MenuAbstract {
 	public IntList getMoveSlots(@NotNull InventoryAction action, Slot slot, int target, Player entityPlayer) {
 		if (slot.index >= 0 && slot.index <= 3) {
 			return this.getSlots(slot.index, 1, false);
-		} else {
-			if (action == InventoryAction.MOVE_ALL) {
-				if (slot.index >= 3 && slot.index <= 30) {
-					return this.getSlots(3, 27, false);
-				}
-
-				if (slot.index >= 30 && slot.index <= 38) {
-					return this.getSlots(30, 9, false);
-				}
+		}
+		if (action == InventoryAction.MOVE_ALL) {
+			if (slot.index >= 3 && slot.index < 30) {
+				return this.getSlots(3, 27, false);
 			}
 
-			return slot.index >= 3 && slot.index <= 38 ? this.getSlots(3, 36, false) : null;
+			if (slot.index >= 30 && slot.index < 39) {
+				return this.getSlots(30, 9, false);
+			}
 		}
+
+		return slot.index >= 3 && slot.index <= 38 ? this.getSlots(3, 36, false) : null;
 	}
 
 	@Override
 	public IntList getTargetSlots(@NotNull InventoryAction action, Slot slot, int target, Player entityPlayer) {
-		if (slot.index >= 2 && slot.index <= 39) {
+		if (slot.index > 1 && slot.index < 38) {
 			if (action != InventoryAction.MOVE_ALL) {
 				if (target == 1) {
 					return this.getSlots(0, 1, false);
@@ -233,17 +233,16 @@ public class MenuEnchantmentTable extends MenuAbstract {
 					return this.getSlots(1, 1, false);
 				}
 			}
-			if (slot.index <= 29) {
-				return this.getSlots(30, 9, false);
+			if (slot.index > 2 && slot.index < 30) {
+				return this.getSlots(29, 8, false);
 			}
-			if (slot.index >= 31 && slot.index <= 38) {
-				return this.getSlots(3, 27, false);
+			if (slot.index >= 30) {
+				return this.getSlots(2, 27, false);
 			}
 		}
-		if (slot.index >= 0 && slot.index <= 1) {
-			return this.getSlots(2, 36, false);
-		} else {
-			return null;
+		if (slot.index < 0 || slot.index >= 2) {
+			return new IntArrayList(0);
 		}
+		return this.getSlots(2, 36, slot.index == 1);
 	}
 }

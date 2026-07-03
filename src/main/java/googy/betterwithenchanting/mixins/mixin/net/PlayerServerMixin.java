@@ -2,7 +2,7 @@ package googy.betterwithenchanting.mixins.mixin.net;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
-import googy.betterwithenchanting.mixins.interfaces.IEntityPlayer;
+import googy.betterwithenchanting.mixins.interfaces.EntityPlayer;
 import googy.betterwithenchanting.gui.table.MenuEnchantmentTable;
 import net.minecraft.core.crafting.ContainerListener;
 import net.minecraft.core.entity.player.Player;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(value = PlayerServer.class, remap = false)
-public abstract class PlayerServerMixin extends Player implements IEntityPlayer, ContainerListener {
+public abstract class PlayerServerMixin extends Player implements EntityPlayer, ContainerListener {
 	@Shadow
 	protected abstract void getNextWindowId();
 

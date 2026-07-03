@@ -1,6 +1,6 @@
 package googy.betterwithenchanting.block;
 
-import googy.betterwithenchanting.mixins.interfaces.IEntityPlayer;
+import googy.betterwithenchanting.mixins.interfaces.EntityPlayer;
 import googy.betterwithenchanting.ParticleGlyph;
 import net.minecraft.core.Global;
 import net.minecraft.core.block.Block;
@@ -36,7 +36,7 @@ public class BlockEnchantmentTable extends BlockLogicRotatable {
 		if (!world.isClientSide) {
 			TileEntity tile = world.getTileEntity(tilePos);
 			if(tile instanceof TileEntityEnchantmentTable table){
-				((IEntityPlayer) player).displayGUIEnchantmentTable(table);
+				((EntityPlayer) player).displayGUIEnchantmentTable(table);
 			}
 		}
 		return true;

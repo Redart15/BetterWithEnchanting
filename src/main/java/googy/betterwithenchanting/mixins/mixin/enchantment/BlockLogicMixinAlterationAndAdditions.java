@@ -1,5 +1,8 @@
 package googy.betterwithenchanting.mixins.mixin.enchantment;
 
+import com.llamalad7.mixinextras.expression.Definition;
+import com.llamalad7.mixinextras.expression.Expression;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -22,8 +25,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = BlockLogic.class, remap = false)
 public abstract class BlockLogicMixinAlterationAndAdditions {
 
+
+	@Definition(id = "isSilkTouch", method = "Lnet/minecraft/core/item/Item;isSilkTouch()Z")
+	@Expression("?.isSilkTouch()")
+	@ModifyExpressionValue(method = "onHarvest", at = @At("MIXINEXTRAS:EXPRESSION"))
+	public boolean adjustCause(boolean original, @Local ItemStack itemStack){
+		if(EnchantmentContainer.contains(itemStack,  Enchantments.SILKTOUCH)){
+			return true;
+		}
+		return original;
+	}
+
 	@Inject(method = "onHarvest", at = @At("TAIL"))
-	private void dropExtrasD(
+	private void dropExtras(
 		World world, Player player,
 		TilePosc tilePos, int data, TileEntity tileEntity,
 		CallbackInfo ci
@@ -35,6 +49,7 @@ public abstract class BlockLogicMixinAlterationAndAdditions {
 		}
 		MixinsHelperLogic.applyDiscovery(world, tilePos, stack);
 		MixinsHelperLogic.applyFortune(world, tilePos, stack);
+		MixinsHelperLogic.applyForaging(world, tilePos, stack, (BlockLogic) (Object) this);
 		MixinsHelperLogic.applyInsight(player, stack, 3);
 	}
 

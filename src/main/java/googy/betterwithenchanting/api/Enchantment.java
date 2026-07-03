@@ -146,7 +146,7 @@ public class Enchantment {
 
 	public String prettyToString() {
 		String level = String.format(" %s", this.maxLevel() <= 1 ? "" : String.format("(%s)", this.maxLevel()));
-		return String.format("%s%s", this.translationKeyName(), level);
+		return String.format("%s%s", TRANSLATE.translateKey(this.translationKeyName()), level);
 	}
 
 	/**

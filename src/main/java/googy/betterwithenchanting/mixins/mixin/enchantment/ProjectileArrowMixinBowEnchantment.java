@@ -6,7 +6,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.nbt.tags.CompoundTag;
 import googy.betterwithenchanting.mixins.mixin.accessor.MobAccessor;
 import googy.betterwithenchanting.mixins.mixin.accessor.EntityAccessor;
-import googy.betterwithenchanting.mixins.interfaces.IEnchantment;
+import googy.betterwithenchanting.mixins.interfaces.EnchantmentArrow;
 import net.minecraft.core.Global;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.Blocks;
@@ -26,12 +26,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = ProjectileArrow.class, remap = false)
-public class ProjectileArrowMixinBowEnchantment implements IEnchantment {
+public abstract class ProjectileArrowMixinBowEnchantment implements EnchantmentArrow {
 
+	@Unique
+	public static final String IS_MULTI_HIT = "isMultiHit";
+	@Unique
+	public static final String IS_A_FLAME = "isAFlame";
+	@Unique
+    private byte isAFlame = 0;
     @Unique
-    int isAFlame = 0;
-    @Unique
-    boolean multiHit = false;
+    private boolean multiHit = false;
 
     @Override
     public int enchanting$readFlame() {
@@ -39,7 +43,7 @@ public class ProjectileArrowMixinBowEnchantment implements IEnchantment {
     }
 
     @Override
-    public void enchanting$writeFlame(int level) {
+    public void enchanting$writeFlame(byte level) {
         this.isAFlame = level;
     }
 
@@ -55,18 +59,18 @@ public class ProjectileArrowMixinBowEnchantment implements IEnchantment {
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     private void readIsAFlame(CompoundTag tag, CallbackInfo ci) {
-        if (tag.containsKey("isAFlame")) {
-            this.isAFlame = tag.getInteger("isAFlame");
+        if (tag.containsKey(IS_A_FLAME)) {
+            this.isAFlame = tag.getByte(IS_A_FLAME);
         }
-        if (tag.containsKey("isMultiHit")) {
-            this.multiHit = tag.getBoolean("isMultiHit");
+        if (tag.containsKey(IS_MULTI_HIT)) {
+            this.multiHit = tag.getBoolean(IS_MULTI_HIT);
         }
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     private void addIsAFlame(CompoundTag tag, CallbackInfo ci) {
-        tag.putInt("isAFlame", this.isAFlame);
-        tag.putBoolean("isMultiHit", this.multiHit);
+        tag.putByte(IS_A_FLAME, this.isAFlame);
+        tag.putBoolean(IS_MULTI_HIT, this.multiHit);
     }
 
     @WrapOperation(method = "onHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/entity/Entity;fireHurt()V"))

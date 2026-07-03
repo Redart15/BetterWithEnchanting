@@ -5,22 +5,33 @@ import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.api.Enchantments;
+import googy.betterwithenchanting.mixins.interfaces.EnchantmentCannonball;
+import googy.betterwithenchanting.mixins.mixin.accessor.BlockLogicLeavesBaseAccessor;
 import googy.betterwithenchanting.mixins.mixin.accessor.ConsumedFoodAccessor;
+import googy.betterwithenchanting.mixins.mixin.accessor.ProjectileAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.WeightedRandomBag;
 import net.minecraft.core.WeightedRandomLootObject;
+import net.minecraft.core.block.*;
+import net.minecraft.core.block.tag.BlockTags;
 import net.minecraft.core.data.registry.Registries;
 import net.minecraft.core.data.registry.recipe.entry.RecipeEntryBlastFurnace;
 import net.minecraft.core.data.registry.recipe.entry.RecipeEntryFurnace;
 import net.minecraft.core.data.registry.recipe.entry.RecipeEntryTrommel;
 import net.minecraft.core.entity.player.Player;
+import net.minecraft.core.entity.projectile.ProjectileCannonball;
 import net.minecraft.core.enums.EnumDropCause;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.net.command.TextFormatting;
+import net.minecraft.core.util.helper.Direction;
+import net.minecraft.core.util.helper.DyeColor;
 import net.minecraft.core.world.World;
+import net.minecraft.core.world.chunk.ChunkPosition;
+import net.minecraft.core.world.pos.TilePos;
 import net.minecraft.core.world.pos.TilePosc;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
@@ -29,7 +40,7 @@ public class MixinsHelperLogic {
 	protected static WeightedRandomBag<WeightedRandomLootObject> fortuneBag = new WeightedRandomBag<>();
 
 	static {
-		/// fortune bag and its filling
+		// fortune bag and its filling
 		// trash
 		fortuneBag.addEntry(new WeightedRandomLootObject(Items.QUARTZ.getDefaultStack(), 1, 2), 128);
 		fortuneBag.addEntry(new WeightedRandomLootObject(Items.OLIVINE.getDefaultStack()), 96);
@@ -85,7 +96,7 @@ public class MixinsHelperLogic {
 	}
 
 	public static ItemStack applyDiscovery(Player player) {
-		if(player.getHeldItem() == null){
+		if (player.getHeldItem() == null) {
 			return null;
 		}
 		ItemStack held = player.getHeldItem();
@@ -105,12 +116,12 @@ public class MixinsHelperLogic {
 	}
 
 	public static ItemStack applyFortune(Player player) {
-		if(player.getHeldItem() == null){
+		if (player.getHeldItem() == null) {
 			return null;
 		}
 		ItemStack held = player.getHeldItem();
 		int level = EnchantmentContainer.getLevel(held, Enchantments.FORTUNE);
-		if(level <= 0){
+		if (level <= 0) {
 			return null;
 		}
 		return fortuneBag.getRandom(random).getItemStack(random);
@@ -126,7 +137,7 @@ public class MixinsHelperLogic {
 	}
 
 	public static void applyInsight(Player player, int defaultScore) {
-		if(player.getHeldItem() == null){
+		if (player.getHeldItem() == null) {
 			return;
 		}
 		ItemStack held = player.getHeldItem();
@@ -280,4 +291,135 @@ public class MixinsHelperLogic {
 		return (int) Math.floor(duration * 0.2f * lvl);
 	}
 
+
+	public static void applyForaging(World world, TilePosc tilePos, ItemStack stack, BlockLogic logic) {
+		int level = EnchantmentContainer.getLevel(stack, Enchantments.FORAGING);
+		if (level <= 0 && !(logic instanceof BlockLogicLeavesBase)) {
+			return;
+		}
+		ItemStack additionalDrops = null;
+		if (logic instanceof BlockLogicLeavesCherryFlowering) {
+			additionalDrops = new ItemStack(Items.FOOD_CHERRY, 1);
+		}
+		if (logic instanceof BlockLogicLeavesCacao) {
+			additionalDrops = new ItemStack(Items.DYE, 1, DyeColor.BROWN.itemMeta);
+		}
+		ItemStack sapling = ((BlockLogicLeavesBaseAccessor) logic).callGetSapling().asItem().getDefaultStack();
+		ItemStack sticks = new ItemStack(Items.STICK, 1);
+		ItemStack leaves = new ItemStack(logic.asItem(), 1);
+		for (int i = 0; i < level; i++) {
+			dropItems(world, tilePos, additionalDrops, sapling, leaves, sticks);
+		}
+	}
+
+	private static void dropItems(World world, TilePosc tilePos, ItemStack additionalDrops, ItemStack sapling, ItemStack leaves, ItemStack sticks) {
+		int id = random.nextInt(30);
+		if (id > 25 && additionalDrops != null) {
+			world.dropItem(tilePos, additionalDrops);
+			return;
+		}
+		if (id > 15) {
+			world.dropItem(tilePos, sapling);
+			return;
+		}
+		if (id > 10) {
+			world.dropItem(tilePos, leaves);
+			return;
+		}
+		world.dropItem(tilePos, sticks);
+	}
+
+	public static void setExplosive(ProjectileCannonball cannonball, ItemStack itemStack) {
+		int level = EnchantmentContainer.getLevel(itemStack, Enchantments.EXPLOSIVE);
+		if (level > 0 && cannonball instanceof EnchantmentCannonball iEnchantment) {
+			iEnchantment.enchanting$writeExplosive((byte) level);
+		}
+	}
+
+	public static void setIncendiary(ProjectileCannonball cannonball, ItemStack itemStack) {
+		boolean hasEnchantment = EnchantmentContainer.contains(itemStack, Enchantments.INCENDIARY);
+		if (hasEnchantment && cannonball instanceof EnchantmentCannonball iEnchantment) {
+			iEnchantment.enchanting$writeIncendiary();
+		}
+	}
+
+	public static void setVolatile(ProjectileCannonball cannonball, ItemStack itemStack) {
+		boolean hasEnchantment = EnchantmentContainer.contains(itemStack, Enchantments.VOLATILE);
+		if (hasEnchantment && cannonball instanceof EnchantmentCannonball iEnchantment) {
+			iEnchantment.enchanting$writeVolatile();
+		}
+	}
+
+	public static void setPrecise(ProjectileCannonball cannonball, ItemStack itemStack) {
+		int level = EnchantmentContainer.getLevel(itemStack, Enchantments.PRECISE);
+		if (level > 0 && cannonball instanceof EnchantmentCannonball iEnchantment) {
+			iEnchantment.enchanting$writeprecise();
+			ProjectileAccessor projectile = (ProjectileAccessor) cannonball;
+			float speed = projectile.getDefaultProjectileSpeed() + (0.99f - projectile.getDefaultProjectileSpeed()) * ((float) level / Enchantments.PRECISE.maxLevel());
+			projectile.setDefaultProjectileSpeed(speed);
+		}
+	}
+
+	public static void setPower(ProjectileCannonball cannonball, ItemStack itemStack) {
+		int level = EnchantmentContainer.getLevel(itemStack, Enchantments.POWER);
+		if (level > 0) {
+			cannonball.xd = cannonball.xd * (1.0f + level * 0.3);
+			cannonball.yd = cannonball.yd * (1.0f + level * 0.3);
+			cannonball.zd = cannonball.zd * (1.0f + level * 0.3);
+		}
+	}
+
+	public static void createFire(World world, TilePosc tilePosc, float explosionSize) {
+		MixinsHelperLogic.createFireIntern(world, tilePosc.x(), tilePosc.y(), tilePosc.z(), explosionSize);
+	}
+
+	public static void createFire(World world, double cx, double cy, double cz, float explosionSize) {
+		MixinsHelperLogic.createFireIntern(world, (int) Math.round(cx), (int) Math.round(cy), (int) Math.round(cz), explosionSize);
+	}
+
+	private static void createFireIntern(World world, int cx, int cy, int cz, float explosionSize) {
+		class Cache { private static final @NotNull TilePos pos = new TilePos();}
+		int size = (int) Math.ceil(explosionSize * (0.7F + random.nextFloat() * 0.6F));
+		int r = size * size;
+		TilePos tilePos = null;
+		Set<ChunkPosition> visited = new HashSet<>();
+		Deque<ChunkPosition> queue = new ArrayDeque<>();
+		queue.add(new ChunkPosition(cx, cy, cz));
+		while (!queue.isEmpty()) {
+			ChunkPosition next = queue.pop();
+			for (Direction direction : Direction.ID_MAP) {
+				int nx = next.x + direction.offsetX();
+				int ny = next.y + direction.offsetY();
+				int nz = next.z + direction.offsetZ();
+				int x = nx - cx;
+				int y = ny - cy;
+				int z = nz - cz;
+				ChunkPosition newPack = new ChunkPosition(nx, ny, nz);
+				if (x * x + y * y + z * z > r || visited.contains(newPack)) {
+					continue;
+				}
+				visited.add(newPack);
+				queue.add(newPack);
+				Block<?> underBlock = world.getBlockType(Cache.pos.set(nx, ny - 1, nz));
+				tilePos = Cache.pos.set(nx, ny, nz);
+				Block<?> block = world.getBlockType(tilePos);
+				if ((block == Blocks.AIR) && (Blocks.solid[underBlock.id()]) && random.nextInt(3) == 0) {
+					createFireAtLocation(world, underBlock, tilePos);
+				}
+			}
+		}
+	}
+
+	private static void createFireAtLocation(World world, Block<?> underBlock, TilePos tilePos) {
+		if (underBlock.hasTag(BlockTags.INFINITE_BURN_SULFURIC)) {
+			world.setBlockTypeNotify(tilePos, Blocks.FIRE_SULFURIC);
+			return;
+		}
+		if (underBlock.hasTag(BlockTags.INFINITE_BURN_COLD)) {
+			world.setBlockTypeNotify(tilePos, Blocks.FIRE_COLD);
+			return;
+		}
+		world.setBlockTypeNotify(tilePos, Blocks.FIRE);
+
+	}
 }

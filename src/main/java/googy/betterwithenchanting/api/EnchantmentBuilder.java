@@ -54,6 +54,11 @@ public class EnchantmentBuilder {
 		return this;
 	}
 
+	public EnchantmentBuilder setHidden() {
+		this.hidden = true;
+		return this;
+	}
+
 	public EnchantmentBuilder setEnchantability(int start, int end, double overlay) {
 		int[] values = EnchantmentBuilder.getFactorAndAdder(this.maxLevel, start, end, overlay);
 		this.minEnchantability = level -> (level - 1) * values[0] + start;
