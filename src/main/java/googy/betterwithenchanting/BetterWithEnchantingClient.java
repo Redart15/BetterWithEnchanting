@@ -2,6 +2,8 @@ package googy.betterwithenchanting;
 
 import googy.betterwithenchanting.command.CommandEnchantment;
 import googy.betterwithenchanting.command.CommandScore;
+import googy.betterwithenchanting.particle.ParticleCrit;
+import googy.betterwithenchanting.particle.ParticleGlyph;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.render.particle.Particle;
 import net.minecraft.client.render.particle.ParticleDispatcher;
@@ -29,11 +31,26 @@ public class BetterWithEnchantingClient implements ClientModInitializer, ClientS
 					@NotNull World world,
 					double x, double y, double z,
 					double xa, double ya, double za,
-					int data) {
+					int data
+				) {
 					return new ParticleGlyph(world, x, y, z, xa, ya, za);
 				}
 			}
 		);
+		ParticleDispatcher.getInstance().addDispatch("crit",
+			new ParticleEntry() {
+				@Override
+				public Particle newParticle(
+					@NotNull World world,
+					double x, double y, double z,
+					double xa, double ya, double za,
+					int data
+				) {
+					return new ParticleCrit(world, x, y, z, xa, ya, za);
+				}
+			}
+		);
+
 		BetterWithEnchantingClient.registerTextures();
 	}
 

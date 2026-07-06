@@ -18,6 +18,7 @@ import net.minecraft.core.data.registry.Registries;
 import net.minecraft.core.data.registry.recipe.entry.RecipeEntryBlastFurnace;
 import net.minecraft.core.data.registry.recipe.entry.RecipeEntryFurnace;
 import net.minecraft.core.data.registry.recipe.entry.RecipeEntryTrommel;
+import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.entity.projectile.ProjectileCannonball;
 import net.minecraft.core.enums.EnumDropCause;
@@ -32,11 +33,14 @@ import net.minecraft.core.world.chunk.ChunkPosition;
 import net.minecraft.core.world.pos.TilePos;
 import net.minecraft.core.world.pos.TilePosc;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
 
 public class MixinsHelperLogic {
+	private MixinsHelperLogic() {}
+
 	protected static WeightedRandomBag<WeightedRandomLootObject> fortuneBag = new WeightedRandomBag<>();
 
 	static {
@@ -53,9 +57,6 @@ public class MixinsHelperLogic {
 		fortuneBag.addEntry(new WeightedRandomLootObject(Items.DIAMOND.getDefaultStack()), 16);
 		// bizzare
 		fortuneBag.addEntry(new WeightedRandomLootObject(Items.DUST_GLOWSTONE.getDefaultStack()), 8);
-	}
-
-	private MixinsHelperLogic() {
 	}
 
 	public static void devLog(String message) {
@@ -422,4 +423,22 @@ public class MixinsHelperLogic {
 		world.setBlockTypeNotify(tilePos, Blocks.FIRE);
 
 	}
+
+    public static void spawnCritParticles(Player player, @NotNull Entity entity) {
+		World world = player.world;
+		double x = entity.x;
+		double y = entity.y + entity.bbHeight;
+		double z = entity.z;
+		Vector3d view = new Vector3d(player.x - entity.x, 0, player.z - entity.z).normalize();
+		Vector3d vector = new Vector3d(0, 1, 0);
+		for(int i = 0; i < 12; i++){
+			double angle = Math.toRadians(45 + i * 90f);
+			Vector3d dir = new Vector3d(vector); // copy each time
+			dir = dir.rotateAxis(angle, view.x, view.y, view.z);
+			world.spawnParticle("crit", x, y, z, dir.x * 0.2f, dir.y * 0.2f, dir.z * 0.2f, 0, 32.0f, false);
+		}
+
+
+
+    }
 }

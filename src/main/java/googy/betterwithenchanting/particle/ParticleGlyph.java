@@ -1,5 +1,6 @@
-package googy.betterwithenchanting;
+package googy.betterwithenchanting.particle;
 
+import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.mixins.mixin.accessor.ParticleAccessor;
 import net.minecraft.client.render.particle.Particle;
 import net.minecraft.client.render.texture.stitcher.IconCoordinate;

@@ -1,7 +1,7 @@
 package googy.betterwithenchanting.block;
 
 import googy.betterwithenchanting.mixins.interfaces.EntityPlayer;
-import googy.betterwithenchanting.ParticleGlyph;
+import googy.betterwithenchanting.particle.ParticleGlyph;
 import net.minecraft.core.Global;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogicRotatable;
