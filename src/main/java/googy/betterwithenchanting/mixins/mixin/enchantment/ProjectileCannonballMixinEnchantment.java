@@ -22,14 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ProjectileCannonballMixinEnchantment implements EnchantmentCannonball, AdditionalNBTTag {
 
 	@Unique
-	private static final String IS_VOLATILE = "isVolatile";
-	@Unique
-	private static final String IS_INCENDIARY = "isIncendiary";
-	@Unique
-	private static final String IS_PRECISE = "isPrecise";
-	@Unique
-	private static final String IS_EXPLOSIVE = "isExplosive";
-	@Unique
 	private byte isExplosive = 0;
 	@Unique
 	private boolean isIncendiary = false;
@@ -90,25 +82,25 @@ public class ProjectileCannonballMixinEnchantment implements EnchantmentCannonba
 
 	@Override
 	public void enchanting$readAdditionalSaveData(CompoundTag tag) {
-		if (tag.containsKey(IS_VOLATILE)) {
-			this.isVolatile = tag.getByte(IS_VOLATILE) == 0;
+		if (tag.containsKey("isVolatile")) {
+			this.isVolatile = tag.getByte("isVolatile") == 0;
 		}
-		if (tag.containsKey(IS_INCENDIARY)) {
-			this.isIncendiary = tag.getByte(IS_INCENDIARY) == 0;
+		if (tag.containsKey("isIncendiary")) {
+			this.isIncendiary = tag.getByte("isIncendiary") == 0;
 		}
-		if (tag.containsKey(IS_PRECISE)) {
-			this.isPrecice = tag.getByte(IS_PRECISE) == 0;
+		if (tag.containsKey("isPrecise")) {
+			this.isPrecice = tag.getByte("isPrecise") == 0;
 		}
-		if (tag.containsKey(IS_EXPLOSIVE)) {
-			this.isExplosive = tag.getByte(IS_EXPLOSIVE);
+		if (tag.containsKey("isExplosive")) {
+			this.isExplosive = tag.getByte("isExplosive");
 		}
 	}
 
 	@Override
 	public void enchanting$addAdditionalSaveData(CompoundTag tag) {
-		tag.putByte(IS_VOLATILE, this.isVolatile ? (byte) 1 : (byte) 0);
-		tag.putByte(IS_INCENDIARY, this.isIncendiary ? (byte) 1 : (byte) 0);
-		tag.putByte(IS_PRECISE, this.isPrecice ? (byte) 1 : (byte) 0);
-		tag.putByte(IS_EXPLOSIVE, this.isExplosive);
+		tag.putByte("isVolatile", this.isVolatile ? (byte) 1 : (byte) 0);
+		tag.putByte("isIncendiary", this.isIncendiary ? (byte) 1 : (byte) 0);
+		tag.putByte("isPrecise", this.isPrecice ? (byte) 1 : (byte) 0);
+		tag.putByte("isExplosive", this.isExplosive);
 	}
 }

@@ -29,10 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ProjectileArrowMixinBowEnchantment implements EnchantmentArrow {
 
 	@Unique
-	public static final String IS_MULTI_HIT = "isMultiHit";
-	@Unique
-	public static final String IS_A_FLAME = "isAFlame";
-	@Unique
     private byte isAFlame = 0;
     @Unique
     private boolean multiHit = false;
@@ -59,18 +55,18 @@ public abstract class ProjectileArrowMixinBowEnchantment implements EnchantmentA
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     private void readIsAFlame(CompoundTag tag, CallbackInfo ci) {
-        if (tag.containsKey(IS_A_FLAME)) {
-            this.isAFlame = tag.getByte(IS_A_FLAME);
+        if (tag.containsKey("isAFlame")) {
+            this.isAFlame = tag.getByte("isAFlame");
         }
-        if (tag.containsKey(IS_MULTI_HIT)) {
-            this.multiHit = tag.getBoolean(IS_MULTI_HIT);
+        if (tag.containsKey("isMultiHit")) {
+            this.multiHit = tag.getBoolean("isMultiHit");
         }
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     private void addIsAFlame(CompoundTag tag, CallbackInfo ci) {
-        tag.putByte(IS_A_FLAME, this.isAFlame);
-        tag.putBoolean(IS_MULTI_HIT, this.multiHit);
+        tag.putByte("isAFlame", this.isAFlame);
+        tag.putBoolean("isMultiHit", this.multiHit);
     }
 
     @WrapOperation(method = "onHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/entity/Entity;fireHurt()V"))
