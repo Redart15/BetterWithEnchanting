@@ -188,43 +188,26 @@ public class EnchantmentContainer {
 		result.add(addStack);
 
 		int maxEnchantmentsCycles = 5;
-		fillEnchantmentList(enchantmentPool, random, maxEnchantmentsCycles, enchantability, result);
-		return new ArrayList<>(result);
-	}
-
-	private static void fillEnchantmentList(
-		@NotNull WeightedRandomBag<EnchantmentStack> enchantmentPool,
-		@NotNull Random random, int maxEnchantmentsCycles, int current,
-		@NotNull Set<EnchantmentStack> result
-	) {
-		EnchantmentStack addStack;
+		boolean finished = false;
+		int current = enchantability;
 		while (maxEnchantmentsCycles-- > 0
 			&& random.nextInt(50) <= current
 		) {
 			addStack = enchantmentPool.getRandom(random);
-			boolean decrement = true;
-			boolean add = true;
 			for (EnchantmentStack stack : result) {
 				if (stack.getEnchantment().equals(addStack.getEnchantment())) {
-					add = false;
-					int level = addStack.getLevel() + stack.getLevel();
-					if (level > stack.maxLevel()) {
-						level = stack.maxLevel();
-						decrement = false;
-					}
+					int level = Math.min(stack.maxLevel(), Math.max(addStack.getLevel(), stack.getLevel()) + 1);
 					stack.setLevel(level);
+					finished = true;
 					break;
 				}
 			}
-			if (add) {
-				result.add(addStack);
-			}
-			if (decrement) {
-				// the original made it way harder to get multiple enchantments, 1.2 softens it up quite a bit
-//				current >>= 1;
-				current = (int) Math.floor(current / 1.2f);
-			}
+			if (finished) break;
+			result.add(addStack);
+			current = (int) Math.ceil(current / 1.2f);
+
 		}
+		return new ArrayList<>(result);
 	}
 
 	private static int calcEnchantability(@NotNull Random random, double cost) {
