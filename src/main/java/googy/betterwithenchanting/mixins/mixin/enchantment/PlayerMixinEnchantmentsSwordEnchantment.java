@@ -23,10 +23,11 @@ public class PlayerMixinEnchantmentsSwordEnchantment {
 
 	@WrapOperation(method = "attackTargetEntityWithCurrentItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/item/ItemStack;getDamageVsEntity(Lnet/minecraft/core/entity/Entity;)I"))
 	private int applyCrit(@NotNull ItemStack instance,@NotNull Entity entity, Operation<Integer> original){
+		Player asThis = (Player) (Object) this;
 		int damage = original.call(instance, entity);
 		int level = EnchantmentContainer.getLevel(instance, Enchantments.CRIT);
-		if(entity.yd < 0.0F && level > 0 && entity.fallDistance > 1.0f){
-			damage = (int) Math.ceil(level * 0.1 * damage) + (int) MixinsHelperLogic.log(entity.fallDistance, 7.0f - level);
+		if(asThis.yd < 0.0F && level > 0 && asThis.fallDistance > 1.0f){
+			damage = (int) Math.ceil(level * 0.1 * damage) + (int) MixinsHelperLogic.log(asThis.fallDistance, 7.0f - level);
 		}
 		return damage;
 	}
@@ -45,6 +46,9 @@ public class PlayerMixinEnchantmentsSwordEnchantment {
 		if(EnchantmentContainer.getLevel(itemstack, Enchantments.LIFESTEAL) > 0 && hasHit){
 			((Player) attacker).heal(2);
 		}
+//		if(EnchantmentContainer.getLevel(itemstack, Enchantments.CRIT) > 0 && hasHit){
+//			MixinsHelperLogic.spawnCritParticles((Player)attacker, instance);
+//		}
 		return hasHit;
 	}
 
