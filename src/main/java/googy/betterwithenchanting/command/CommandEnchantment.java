@@ -15,6 +15,7 @@ import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.api.Enchantments;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.lang.I18n;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 
@@ -32,7 +33,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 
 	@Override
 	public void register(CommandDispatcher<CommandSource> commandDispatcher) {
-		NOT_APPLICABLE = new SimpleCommandExceptionType(new LiteralMessage(TRANSLATE.translateKey("enchantment.command.not.applicable")));
+		NOT_APPLICABLE = new SimpleCommandExceptionType(new LiteralMessage(I18n.getInstance().translateKey("enchantment.command.not.applicable")));
 		commandDispatcher.register(
 			ArgumentBuilderLiteral.<CommandSource>literal("enchant")
 				.then(ArgumentBuilderLiteral.<CommandSource>literal("list")

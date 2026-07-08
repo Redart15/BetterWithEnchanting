@@ -10,12 +10,12 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.core.entity.player.Player;
+import net.minecraft.core.lang.I18n;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.arguments.ArgumentTypeEntity;
 import net.minecraft.core.net.command.helpers.EntitySelector;
 
-import static googy.betterwithenchanting.BetterWithEnchanting.TRANSLATE;
 import static googy.betterwithenchanting.command.ReturnValues.*;
 
 public class CommandScore implements CommandManager.CommandRegistry {
@@ -25,7 +25,7 @@ public class CommandScore implements CommandManager.CommandRegistry {
 
 	@Override
 	public void register(CommandDispatcher<CommandSource> commandDispatcher) {
-		INVALID_ENTITY = new SimpleCommandExceptionType(new LiteralMessage(TRANSLATE.translateKey("score.command.not.applicable")));
+		INVALID_ENTITY = new SimpleCommandExceptionType(new LiteralMessage(I18n.getInstance().translateKey("score.command.not.applicable")));
 		commandDispatcher.register(ArgumentBuilderLiteral.<CommandSource>literal("score")
 			.then(ArgumentBuilderLiteral.<CommandSource>literal("add")
 				.requires(src -> src.hasAdmin() && src.getSender() != null)

@@ -98,6 +98,7 @@ enchantment.command.decreased= Decreased the level of %1$s from %2$d to %3$d.
 enchantment.command.no.change= No level were changed.
 enchantment.command.enchant= Enchanted %s.
 
+score.command.not.applicable= The command is not applicable to this entity.
 score.command.cannot= Invalid target.
 score.command.add= Added %2$d to %1$s.
 score.command.remove= Subtracted %1$s from %2$d.
