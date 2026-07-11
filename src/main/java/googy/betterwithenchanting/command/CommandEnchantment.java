@@ -116,29 +116,6 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 			);
 	}
 
-	private static int explainUpgrading(CommandContext<CommandSource> ctx) throws CommandSyntaxException{
-		final Player player = ctx.getSource().getSender();
-		if (player == null) {
-			throw NOT_APPLICABLE.create();
-		}
-		StringBuilder message = new StringBuilder("§r§a")
-			.append(TRANSLATE.translateKey("enchantment.command.upgrading.name"))
-			.append(":§r\n")
-			.append(TRANSLATE.translateKey("enchantment.command.upgrading.desc"))
-			.append("\n\n");
-		message.append("Example:\n")
-			.append("For example the process rolls two enchantments ")
-			.append("§r§9")
-			.append(new EnchantmentStack(Enchantments.BOTTLED_SCORE, 1).prettyToString())
-			.append("§r and §r§9")
-			.append(new EnchantmentStack(Enchantments.BOTTLED_SCORE, 2).prettyToString())
-			.append("§r than those level combine to §r§9")
-			.append(new EnchantmentStack(Enchantments.BOTTLED_SCORE, 3).prettyToString())
-			.append(".§r");
-		ctx.getSource().sendMessage(message.toString());
-		return Command.SINGLE_SUCCESS;
-	}
-
 	private static int listFullInfo(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
 		final Player player = ctx.getSource().getSender();
 		if (player == null) {
@@ -195,6 +172,29 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 			return  "§r§e";
 		}
 		return "";
+	}
+
+	private static int explainUpgrading(CommandContext<CommandSource> ctx) throws CommandSyntaxException{
+		final Player player = ctx.getSource().getSender();
+		if (player == null) {
+			throw NOT_APPLICABLE.create();
+		}
+		StringBuilder message = new StringBuilder("§r§a")
+			.append(TRANSLATE.translateKey("enchantment.command.upgrading.name"))
+			.append(":§r\n")
+			.append(TRANSLATE.translateKey("enchantment.command.upgrading.desc"))
+			.append("\n\n");
+		message.append("Example:\n")
+			.append("For example the process rolls two enchantments ")
+			.append("§r§9")
+			.append(new EnchantmentStack(Enchantments.BOTTLED_SCORE, 1).prettyToString())
+			.append("§r and §r§9")
+			.append(new EnchantmentStack(Enchantments.BOTTLED_SCORE, 2).prettyToString())
+			.append("§r than those level combine to §r§9")
+			.append(new EnchantmentStack(Enchantments.BOTTLED_SCORE, 3).prettyToString())
+			.append(".§r");
+		ctx.getSource().sendMessage(message.toString());
+		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int listInfo(CommandContext<CommandSource> ctx) throws CommandSyntaxException {

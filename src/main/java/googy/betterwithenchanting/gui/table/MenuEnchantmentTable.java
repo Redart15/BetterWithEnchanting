@@ -1,8 +1,8 @@
 package googy.betterwithenchanting.gui.table;
 
-import googy.betterwithenchanting.api.EnchantmentStack;
+import googy.betterwithenchanting.BetterWithEnchanting;
+import googy.betterwithenchanting.api.*;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
-import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.gui.slot.EnchantFuelSlot;
 import googy.betterwithenchanting.gui.slot.EnchantItemSlot;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -12,6 +12,7 @@ import net.minecraft.core.block.Block;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.crafting.ContainerListener;
 import net.minecraft.core.entity.player.Player;
+import net.minecraft.core.item.ItemFood;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.player.gamemode.Gamemodes;
 import net.minecraft.core.player.inventory.container.Container;
@@ -22,6 +23,7 @@ import net.minecraft.core.world.World;
 import net.minecraft.core.world.pos.TilePos;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -80,8 +82,43 @@ public class MenuEnchantmentTable extends MenuAbstract {
 			}
 		}
 		EnchantmentContainer.addEnchantments(enchantItem, enchantments);
+		this.checkEnchantments(player, enchantItem);
 		forceUpdateInventory();
 		return true;
+	}
+
+	private void checkEnchantments(Player player, ItemStack enchantItem) {
+		player.triggerAchievement(EnchantmentAchievements.ENCHANT_ITEM);
+		if(enchantItem.getItem() instanceof ItemFood){
+			player.triggerAchievement(EnchantmentAchievements.ENCHANTED_FOOD);
+		}
+		if (player.getStat(EnchantmentAchievements.FULL_ENCHANTED) != 0 && player.getStat(EnchantmentAchievements.HIGH_LEVEL_ENCHANT) != 0) {
+			return;
+		}
+		List<EnchantmentStack> stacks = EnchantmentContainer.getEnchantments(enchantItem);
+		if(player.getStat(EnchantmentAchievements.FULL_ENCHANTED) == 0){
+			int count = 0;
+			ItemStack controll = new ItemStack(enchantItem.getItem());
+			for (Enchantment enchantment : Enchantments.getInstance()) {
+				if (enchantment.canEnchant(controll)) {
+					count++;
+				}
+			}
+			if(count == stacks.size() && count > 2){
+				player.triggerAchievement(EnchantmentAchievements.FULL_ENCHANTED);
+			}
+		}
+		if (player.getStat(EnchantmentAchievements.HIGH_LEVEL_ENCHANT) == 0) {
+			for (EnchantmentStack stack : stacks) {
+				Enchantment enchantment = stack.getEnchantment();
+				int level = stack.getLevel();
+				int minScore = EnchantmentContainer.calcCostFromEnchantability(enchantment.getMinEnchantability(level), false);
+				if (minScore > BetterWithEnchanting.MAX_ENCHANTMENT_COST && level == enchantment.maxLevel()) {
+					player.triggerAchievement(EnchantmentAchievements.HIGH_LEVEL_ENCHANT);
+					break;
+				}
+			}
+		}
 	}
 
 

@@ -1,5 +1,6 @@
 package googy.betterwithenchanting.gui.slot;
 
+import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.player.inventory.container.Container;
 import net.minecraft.core.player.inventory.slot.Slot;
 
@@ -12,4 +13,5 @@ public class EnchantItemSlot extends Slot {
 	public int getMaxStackSize() {
 		return 1;
 	}
+
 }

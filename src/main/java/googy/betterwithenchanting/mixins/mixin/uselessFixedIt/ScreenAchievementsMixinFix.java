@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = ScreenAchievements.class, remap = false)
-public abstract class FixRenderingAchievement {
+public abstract class ScreenAchievementsMixinFix {
 
 	@WrapOperation(method = "drawAchievementIcons", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/model/ItemModel;renderGui(Lnet/minecraft/client/render/tessellator/TessellatorGeneral;Lnet/minecraft/core/entity/Entity;Lnet/minecraft/core/item/ItemStack;IIBF)V"))
 	private void renderFix(

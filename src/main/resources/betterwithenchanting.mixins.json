@@ -8,6 +8,7 @@
   "compatibilityLevel": "JAVA_${java}",
   "mixins": [
     "WorldFeatureLabyrinthMixinAddBottle",
+    "accessor.AchievementToastAccessor",
     "accessor.BlockLogicLeavesBaseAccessor",
     "accessor.ConsumedFoodAccessor",
     "accessor.EntityAccessor",
@@ -16,6 +17,8 @@
     "accessor.ParticleAccessor",
     "accessor.PlayerControllerAccessor",
     "accessor.ProjectileAccessor",
+    "accessor.SlotResultAccessor",
+    "achievement.SlotResultMixinEnchanter",
     "enchantment.BlockLogicMixinAlterationAndAdditions",
     "enchantment.ConsumedFoodMixinEnchantments",
     "enchantment.EntityAdditionalSaves",
@@ -39,7 +42,8 @@
     "render.ItemModelMixin",
     "render.ItemModelStandardMixinGlint",
     "render.TooltipElementMixin",
-    "uselessFixedIt.FixRenderingAchievement"
+    "uselessFixedIt.AchievementToastMixinFix",
+    "uselessFixedIt.ScreenAchievementsMixinFix"
   ],
   "server": [
     "net.PlayerServerMixin"
