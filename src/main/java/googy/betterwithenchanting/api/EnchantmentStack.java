@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+import static googy.betterwithenchanting.BetterWithEnchanting.TRANSLATE;
+
 public class EnchantmentStack {
 	private static final String SID_KEY = "sid";
 	private static final String LEVEL_KEY = "lvl";
@@ -118,6 +120,6 @@ public class EnchantmentStack {
 
 	public String prettyToString() {
 		String levelString = enchantment.maxLevel() > 1 ? String.format("(%s)", this.getLevel()) : "";
-		return String.format("%s %s", this.enchantment.translationKeyName(), levelString);
+		return String.format("%s %s", TRANSLATE.translateKey(this.enchantment.translationKeyName()), levelString);
 	}
 }

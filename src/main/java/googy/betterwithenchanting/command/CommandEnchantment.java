@@ -106,9 +106,37 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 					.executes(CommandEnchantment::listFullInfo)
 				)
 			)
+			.then(ArgumentBuilderLiteral.<CommandSource>literal("upgrading")
+				.then(ArgumentBuilderLiteral.<CommandSource>literal("verbose")
+					.executes(CommandEnchantment::explainUpgrading)
+				)
+			)
 			.then(ArgumentBuilderRequired.<CommandSource, Enchantment>argument("name", ArgumentTypeEnchantment.enchantments())
 				.executes(CommandEnchantment::listInfo)
 			);
+	}
+
+	private static int explainUpgrading(CommandContext<CommandSource> ctx) throws CommandSyntaxException{
+		final Player player = ctx.getSource().getSender();
+		if (player == null) {
+			throw NOT_APPLICABLE.create();
+		}
+		StringBuilder message = new StringBuilder("§r§9")
+			.append(TRANSLATE.translateKey("enchantment.command.upgrading.name"))
+			.append(":§r\n")
+			.append(TRANSLATE.translateKey("enchantment.command.upgrading.desc"))
+			.append("\n\n");
+		message.append("Example:\n")
+			.append("For example the process rolls two enchantments ")
+			.append("§r§9")
+			.append(new EnchantmentStack(Enchantments.BOTTLED_SCORE, 1).prettyToString())
+			.append("§r and §r§9")
+			.append(new EnchantmentStack(Enchantments.BOTTLED_SCORE, 2).prettyToString())
+			.append("§r than those level combine to §r§9")
+			.append(new EnchantmentStack(Enchantments.BOTTLED_SCORE, 3).prettyToString())
+			.append(".§r");
+		ctx.getSource().sendMessage(message.toString());
+		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int listFullInfo(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
