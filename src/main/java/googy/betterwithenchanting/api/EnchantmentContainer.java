@@ -51,7 +51,7 @@ public class EnchantmentContainer {
 	/// The function is responsible for checking if a given enchantment applies to the item or not, before calling the
 	/// raw version.
 	public static void addEnchantment(@NotNull ItemStack stack, @NotNull EnchantmentStack enchantmentStack) {
-		if (EnchantmentContainer.contains(stack, enchantmentStack.getEnchantment()) || enchantmentStack.canEnchant(stack)) {
+		if (EnchantmentContainer.contains(stack, enchantmentStack.getEnchantment()) || !enchantmentStack.canEnchant(stack)) {
 			return;
 		}
 		EnchantmentContainer.rawAddEnchantment(stack, enchantmentStack);

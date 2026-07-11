@@ -7,7 +7,6 @@
   "package": "googy.betterwithenchanting.mixins.mixin",
   "compatibilityLevel": "JAVA_${java}",
   "mixins": [
-    "accessor.ProjectileAccessor",
     "WorldFeatureLabyrinthMixinAddBottle",
     "accessor.BlockLogicLeavesBaseAccessor",
     "accessor.ConsumedFoodAccessor",
@@ -16,6 +15,7 @@
     "accessor.MobAccessor",
     "accessor.ParticleAccessor",
     "accessor.PlayerControllerAccessor",
+    "accessor.ProjectileAccessor",
     "enchantment.BlockLogicMixinAlterationAndAdditions",
     "enchantment.ConsumedFoodMixinEnchantments",
     "enchantment.EntityAdditionalSaves",
@@ -38,7 +38,8 @@
     "net.NetClientHandlerMixin",
     "render.ItemModelMixin",
     "render.ItemModelStandardMixinGlint",
-    "render.TooltipElementMixin"
+    "render.TooltipElementMixin",
+    "uselessFixedIt.FixRenderingAchievement"
   ],
   "server": [
     "net.PlayerServerMixin"

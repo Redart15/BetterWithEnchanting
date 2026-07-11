@@ -131,6 +131,20 @@ enchantment.target.shears=Shears
 # target consumable
 enchantment.target.food=Foods
 
+# achievements
+achievement.craft.enchantmenttable=Time to study!
+achievement.craft.enchantmenttable.desc=Craft an enchantment table.
+achievement.enchant.item=It's some kind of magic.
+achievement.enchant.item.desc=Enchant an item using the enchantment table.
+achievement.enchant.item.full=Ultimate Power
+achievement.enchant.item.full.desc=Enchant an item with all possible enchantments.
+achievement.enchant.food=A taste of magic.
+achievement.enchant.food.desc=Enchant some food.
+achievement.score=Goal!
+achievement.score.desc=Consume an bottle of score.
+achievement.lost.knowlegde=Study up!
+achievement.lost.knowlegde.desc=Enchant an item using an enchantment book.
+
 # ------------------------------------- currently not ingame -----------------------------------------------------------
 # enchantment that sounded cool but werent all that great
 enchantment.betterwithenchanting.thorn.name= Thorns

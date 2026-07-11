@@ -1,5 +1,6 @@
 package googy.betterwithenchanting;
 
+import googy.betterwithenchanting.api.EnchantmentAchievements;
 import googy.betterwithenchanting.command.CommandEnchantment;
 import googy.betterwithenchanting.command.CommandScore;
 import googy.betterwithenchanting.particle.ParticleCrit;
@@ -67,6 +68,7 @@ public class BetterWithEnchantingClient implements ClientModInitializer, ClientS
 	@Override
 	public void afterClientStart() {
 		GlyphRenderer.init();
+		EnchantmentAchievements.init();
 	}
 }
 

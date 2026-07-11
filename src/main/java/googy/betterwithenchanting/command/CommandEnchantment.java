@@ -121,7 +121,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		if (player == null) {
 			throw NOT_APPLICABLE.create();
 		}
-		StringBuilder message = new StringBuilder("§r§9")
+		StringBuilder message = new StringBuilder("§r§a")
 			.append(TRANSLATE.translateKey("enchantment.command.upgrading.name"))
 			.append(":§r\n")
 			.append(TRANSLATE.translateKey("enchantment.command.upgrading.desc"))
@@ -169,8 +169,9 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 				message.append("\n");
 			}
 			message.append("level ")
+				.append(extracted(colorRed))
 				.append(level)
-				.append(":[min= ")
+				.append("§r:[min= ")
 				.append(extracted(colorRed))
 				.append(padding(Integer.toString(Math.max(0, minScore)), 5, '_'))
 				.append("§r, max= ")
