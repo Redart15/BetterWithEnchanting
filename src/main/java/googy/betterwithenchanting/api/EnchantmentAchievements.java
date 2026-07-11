@@ -32,11 +32,9 @@ public class EnchantmentAchievements {
 		EnchantmentContainer.rawAddEnchantment(highEnchanted, Enchantments.CRIT.getDefaultStack());
 		ItemStack enchantedBread = new ItemStack(Items.FOOD_APPLE);
 		EnchantmentContainer.rawAddEnchantment(enchantedBread, Enchantments.NOURISHMENT.getDefaultStack());
-		ItemStack scoreBottle = new ItemStack(SCORE_BOTTLE);
-		EnchantmentContainer.rawAddEnchantment(scoreBottle, Enchantments.BOTTLED_SCORE.getDefaultStack());
 		ItemStack book = new ItemStack(Items.BOOK);
 		EnchantmentContainer.rawAddEnchantment(book, Enchantments.BOTTLED_SCORE.getDefaultStack());
-		ItemStack lapiz = new ItemStack(Items.DYE, 1, DyeColor.BLUE.itemMeta);
+		ItemStack lapiz = new ItemStack(Items.DYE, 64, DyeColor.BLUE.itemMeta);
 
 		CRAFT_ENCHANTER = new Achievement(
 			NamespaceID.fromPool(MOD_ID, "craft_enchantmenttable"),
@@ -66,7 +64,7 @@ public class EnchantmentAchievements {
 
 		SCORE = new Achievement(
 			NamespaceID.fromPool(MOD_ID, "score"),
-			"score", scoreBottle, null
+			"score", SCORE_BOTTLE, null
 		).registerAchievement();
 
 		LOST_KNOWLEDGE = new Achievement(

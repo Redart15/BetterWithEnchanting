@@ -3,8 +3,7 @@ package googy.betterwithenchanting.gui.table;
 import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.api.*;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
-import googy.betterwithenchanting.gui.slot.EnchantFuelSlot;
-import googy.betterwithenchanting.gui.slot.EnchantItemSlot;
+import googy.betterwithenchanting.gui.EnchantFuelSlot;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.InventoryAction;
@@ -23,7 +22,6 @@ import net.minecraft.core.world.World;
 import net.minecraft.core.world.pos.TilePos;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -39,7 +37,7 @@ public class MenuEnchantmentTable extends MenuAbstract {
 
 	public MenuEnchantmentTable(ContainerInventory inventoryplayer, TileEntityEnchantmentTable enchantmentTable) {
 		this.enchantmentTable = enchantmentTable;
-		addSlot(new EnchantItemSlot(enchantmentTable, 0, 15, 47));
+		addSlot(new Slot(enchantmentTable, 0, 15, 47));
 		addSlot(new EnchantFuelSlot(enchantmentTable, 1, 35, 47));
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {

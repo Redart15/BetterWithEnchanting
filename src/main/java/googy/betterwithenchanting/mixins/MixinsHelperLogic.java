@@ -251,8 +251,7 @@ public class MixinsHelperLogic {
 	public static void applyScore(Player player, ItemStack itemStack) {
 		int level = EnchantmentContainer.getLevel(itemStack, Enchantments.BOTTLED_SCORE);
 		if (level >= 0) {
-			player.score += level * 4000;
-			EnchantmentContainer.removeEnchantment(itemStack, Enchantments.BOTTLED_SCORE);
+			player.score += level * 400;
 		}
 	}
 

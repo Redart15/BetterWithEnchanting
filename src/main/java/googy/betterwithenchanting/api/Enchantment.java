@@ -2,6 +2,7 @@ package googy.betterwithenchanting.api;
 
 import googy.betterwithenchanting.item.EnchantingTags;
 import net.minecraft.core.item.Item;
+import net.minecraft.core.item.ItemFood;
 import net.minecraft.core.item.ItemStack;
 
 import java.util.Objects;
@@ -95,10 +96,7 @@ public class Enchantment {
 	}
 
 	public final boolean canEnchant(ItemStack itemStack) {
-		if (itemStack == null
-			|| itemStack.getItem().hasTag(EnchantingTags.UNECHANT)
-			|| itemStack.stackSize != 1
-		) {
+		if (itemStack == null || itemStack.getItem().hasTag(EnchantingTags.UNECHANT)) {
 			return false;
 		}
 		return this.canApply(itemStack.getItem());
