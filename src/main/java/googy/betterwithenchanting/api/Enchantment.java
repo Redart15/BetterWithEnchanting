@@ -19,6 +19,7 @@ public class Enchantment {
 	private Predicate<Item> target = (item -> true);
 	private IntUnaryOperator minEnchantability = level -> (level - 1) * 12;
 	private IntUnaryOperator maxEnchatability = level -> this.minEnchantability.applyAsInt(level) + 12;
+	private String[] targetDescKeys = {"none"};
 	private boolean hidden = false; // prevents the enchantment from appearing in table
 
 	/**
@@ -85,12 +86,19 @@ public class Enchantment {
 		return this.maxEnchatability.applyAsInt(level);
 	}
 
+	public String[] getTargetDescKeys() {
+		return targetDescKeys.clone();
+	}
+
 	public boolean hidden(){
 		return this.hidden;
 	}
 
 	public final boolean canEnchant(ItemStack itemStack) {
-		if (itemStack == null || itemStack.getItem().hasTag(EnchantingTags.UNECHANT) && itemStack.stackSize == 1) {
+		if (itemStack == null
+			|| itemStack.getItem().hasTag(EnchantingTags.UNECHANT)
+			|| itemStack.stackSize != 1
+		) {
 			return false;
 		}
 		return this.canApply(itemStack.getItem());
@@ -113,6 +121,11 @@ public class Enchantment {
 
 	Enchantment setTarget(Predicate<Item> target) {
 		this.target = target;
+		return this;
+	}
+
+	public Enchantment setTargetDesc(String[] targetDescKeys) {
+		this.targetDescKeys = targetDescKeys;
 		return this;
 	}
 

@@ -64,10 +64,10 @@ public class Enchantments extends Registry<Enchantment> {
 
 	/**
 	 * Rarities:
-	 * COMMON: 		10.0f,
+	 * COMMON: 			10.0f,
 	 * UNCOMMON: 		 5.0f,
 	 * RARE: 			 2.0f,
-	 * VERY_RARE: 	 1.0f;
+	 * VERY_RARE: 	 	 1.0f;
 	 */
 
 	private Enchantments() {
@@ -82,12 +82,16 @@ public class Enchantments extends Registry<Enchantment> {
 	static {
 		HASTE = new EnchantmentBuilder(new Enchantment(MOD_ID, "haste"), 1)
 			.setWeight(10.0f)
-			.setTarget(item ->
-				item instanceof ItemToolPickaxe
+			.setTarget(
+				item -> item instanceof ItemToolPickaxe
 				|| item instanceof ItemToolAxe
 				|| item instanceof ItemToolShovel
-				|| item.hasTag(ENCHANT_DIGGER)
+				|| item.hasTag(ENCHANT_PICKAXE)
+				|| item.hasTag(ENCHANT_AXE)
+				|| item.hasTag(ENCHANT_SHOVEL)
+				|| item.hasTag(ENCHANT_TOOL)
 			)
+			.setTargetDescriptions("pickaxe", "axe", "shovel", "tool")
 			.setMinEnchantability(level -> 10)
 			.setMaxEnchatability(level -> 60)
 			.build();
@@ -96,6 +100,7 @@ public class Enchantments extends Registry<Enchantment> {
 			.setWeight(10.0f)
 			.setMaxLevel(2)
 			.setTarget(Item::isDamagable)
+			.setTargetDescriptions("damageable")
 			.setEnchantability(0, 50, 0.5)
 			.build();
 
@@ -104,9 +109,11 @@ public class Enchantments extends Registry<Enchantment> {
 			.setMaxLevel(3)
 			.setTarget(item ->
 				item instanceof ItemToolSword
-				|| item instanceof ItemToolAxe
-				|| item.hasTag(ENCHANT_TOOL)
+					|| item instanceof ItemToolAxe
+					|| item.hasTag(ENCHANT_MELEE)
+					|| item.hasTag(ENCHANT_AXE)
 			)
+			.setTargetDescriptions("sword", "axe", "melee")
 			.setEnchantability(10, 50, 0.5)
 			.build();
 
@@ -114,6 +121,7 @@ public class Enchantments extends Registry<Enchantment> {
 			.setWeight(1.0f)
 			.setMaxLevel(5)
 			.setTarget(item -> item instanceof ItemToolSword || item instanceof ItemBow || item.hasTag(ENCHANT_WEAPON))
+			.setTargetDescriptions("sword", "bow", "meele", "ranged")
 			.setEnchantability(0, 50, 0.75, 4)
 			.build();
 
@@ -121,7 +129,8 @@ public class Enchantments extends Registry<Enchantment> {
 		BAIT = new EnchantmentBuilder(new Bait(MOD_ID, "bait"), 8)
 			.setWeight(2.0f)
 			.setMaxLevel(3)
-			.setTarget(ItemFishingRod.class::isInstance)
+			.setTarget(item -> item instanceof ItemFishingRod || item.hasTag(ENCHANT_ROD))
+			.setTargetDescriptions("rod")
 			.setEnchantability(0, 50, 0.5, 2)
 			.build();
 
@@ -129,7 +138,8 @@ public class Enchantments extends Registry<Enchantment> {
 		HAUL = new EnchantmentBuilder(new Enchantment(MOD_ID, "haul"))
 			.setWeight(1.0f)
 			.setMaxLevel(4)
-			.setTarget(ItemFishingRod.class::isInstance)
+			.setTarget(item -> item instanceof ItemFishingRod || item.hasTag(ENCHANT_ROD))
+			.setTargetDescriptions("rod")
 			.setEnchantability(0, 50, 0.5, 2)
 			.build();
 
@@ -137,24 +147,27 @@ public class Enchantments extends Registry<Enchantment> {
 		LASTING = new EnchantmentBuilder(new Enchantment(MOD_ID, "lasting"))
 			.setWeight(10.0f)
 			.setMaxLevel(5)
-			.setTarget(ItemFood.class::isInstance)
+			.setTarget(item -> item instanceof ItemFood || item.hasTag(ENCHANT_CONSUMABLES))
+			.setTargetDescriptions("food", "consumable")
 			.setEnchantability(10, 50, 0.5f, 3)
 			.build();
 
 		// increase regeneration speed
-		NOURISHMENT	= new EnchantmentBuilder(new Enchantment(MOD_ID, "nourishment"))
+		NOURISHMENT = new EnchantmentBuilder(new Enchantment(MOD_ID, "nourishment"))
 			.setWeight(5.0f)
 			.setMaxLevel(3)
-			.setTarget(ItemFood.class::isInstance)
-			.setEnchantability(0, 50, 1.0f)
+			.setTarget(item -> item instanceof ItemFood || item.hasTag(ENCHANT_CONSUMABLES))
+			.setTargetDescriptions("food", "consumable")
+			.setEnchantability(0, 50, 0.5f)
 			.build();
 
 		// increases the amount of health restored
 		FILLING = new EnchantmentBuilder(new Enchantment(MOD_ID, "filling"))
 			.setWeight(2.0f)
 			.setMaxLevel(2)
-			.setTarget(ItemFood.class::isInstance)
-			.setEnchantability(15, 65, 0.4f, 4)
+			.setTarget(item -> item instanceof ItemFood || item.hasTag(ENCHANT_CONSUMABLES))
+			.setTargetDescriptions("food", "consumable")
+			.setEnchantability(15, 65, 0.4f, 1)
 			.build();
 
 
@@ -162,27 +175,31 @@ public class Enchantments extends Registry<Enchantment> {
 			.setWeight(1.0f)
 			.setMaxLevel(4)
 			.setTarget(item -> item.id == BetterWithEnchanting.SCORE_BOTTLE.id || item instanceof ItemFood)
+			.setTargetDescriptions("food", "consumable")
 			.setEnchantability(0, 50, 0.75, 2)
 			.build();
 
 		CRIT = new EnchantmentBuilder(new Enchantment(MOD_ID, "crit"))
 			.setWeight(5.0f)
 			.setMaxLevel(3)
-			.setTarget(item -> item instanceof ItemToolSword || item.hasTag(ENCHANT_MEELE))
+			.setTarget(item -> item instanceof ItemToolSword || item.hasTag(ENCHANT_MELEE))
+			.setTargetDescriptions("sword", "melee")
 			.setEnchantability(0, 50, 0.5f)
 			.build();
 
 		SLAYER = new EnchantmentBuilder(new Enchantment(MOD_ID, "slayer"))
 			.setWeight(5.0f)
 			.setMaxLevel(3)
-			.setTarget(item -> item instanceof ItemToolSword || item.hasTag(ENCHANT_MEELE))
+			.setTarget(item -> item instanceof ItemToolSword || item.hasTag(ENCHANT_MELEE))
+			.setTargetDescriptions("sword", "melee")
 			.setEnchantability(0, 50, 0.5f)
 			.build();
 
 		LIFESTEAL = new EnchantmentBuilder(new Enchantment(MOD_ID, "lifesteal"))
 			.setWeight(1.0f)
 			.setMaxLevel(1)
-			.setTarget(item -> item instanceof ItemToolSword || item.hasTag(ENCHANT_MEELE))
+			.setTarget(item -> item instanceof ItemToolSword || item.hasTag(ENCHANT_MELEE))
+			.setTargetDescriptions("sword", "melee")
 			.setMinEnchantability(level -> 20)
 			.setMaxEnchatability(level -> 50)
 			.build();
@@ -190,14 +207,16 @@ public class Enchantments extends Registry<Enchantment> {
 		LOOTING = new EnchantmentBuilder(new Enchantment(MOD_ID, "looting"))
 			.setWeight(5.0f)
 			.setMaxLevel(5)
-			.setTarget(item -> item instanceof ItemToolSword || item.hasTag(ENCHANT_MEELE))
+			.setTarget(item -> item instanceof ItemToolSword || item.hasTag(ENCHANT_MELEE))
+			.setTargetDescriptions("sword", "melee")
 			.setEnchantability(0, 50, 0.5f, 4)
 			.build();
 
 		KNOCKBACK = new EnchantmentBuilder(new Enchantment(MOD_ID, "knockback"))
 			.setWeight(2.0f)
 			.setMaxLevel(1)
-			.setTarget(item -> item instanceof ItemToolSword || item.hasTag(ENCHANT_MEELE))
+			.setTarget(item -> item instanceof ItemToolSword || item.hasTag(ENCHANT_MELEE))
+			.setTargetDescriptions("sword", "melee")
 			.setMinEnchantability(level -> 10)
 			.setMaxEnchatability(level -> 60)
 			.build();
@@ -208,9 +227,11 @@ public class Enchantments extends Registry<Enchantment> {
 			.setMaxLevel(3)
 			.setTarget(
 				item -> item instanceof ItemBow
-				|| item instanceof ItemHandCannonUnloaded
-				|| item instanceof ItemHandCannonLoaded
-				|| item.hasTag(ENCHANT_RANGED))
+					|| item instanceof ItemHandCannonUnloaded
+					|| item instanceof ItemHandCannonLoaded
+					|| item.hasTag(ENCHANT_RANGED)
+			)
+			.setTargetDescriptions("bow", "handcanon", "ranged")
 			.setEnchantability(0, 50, 0.5f)
 			.build();
 
@@ -219,6 +240,7 @@ public class Enchantments extends Registry<Enchantment> {
 			.setWeight(2.0f)
 			.setMaxLevel(2)
 			.setTarget(item -> item instanceof ItemBow || item.hasTag(ENCHANT_RANGED))
+			.setTargetDescriptions("bow", "ranged")
 			.setEnchantability(10, 50, 0.25f)
 			.build();
 
@@ -227,21 +249,31 @@ public class Enchantments extends Registry<Enchantment> {
 			.setWeight(2.0f)
 			.setMaxLevel(2)
 			.setTarget(item -> item instanceof ItemBow || item.hasTag(ENCHANT_RANGED))
+			.setTargetDescriptions("bow", "ranged")
 			.setEnchantability(10, 50, 0.25f)
 			.build();
 
 		INSIGHT = new EnchantmentBuilder(new Enchantment(MOD_ID, "insight"))
 			.setWeight(10.0f)
 			.setMaxLevel(5)
-			.setTarget(item ->
-				item instanceof ItemToolPickaxe
+			.setTarget(item -> (
+					item instanceof ItemTool
+					|| item instanceof ItemToolPickaxe
 					|| item instanceof ItemToolAxe
 					|| item instanceof ItemToolShovel
 					|| item instanceof ItemFishingRod
 					|| item instanceof ItemToolHoe
 					|| item instanceof ItemToolShears
-					&& !item.hasTag(UNECHANT)
+					|| item.hasTag(ENCHANT_TOOL)
+					|| item.hasTag(ENCHANT_PICKAXE)
+					|| item.hasTag(ENCHANT_AXE)
+					|| item.hasTag(ENCHANT_SHOVEL)
+					|| item.hasTag(ENCHANT_ROD)
+					|| item.hasTag(ENCHANT_HOE)
+					|| item.hasTag(ENCHANT_SHEARS)
+				)
 			)
+			.setTargetDescriptions("pickaxe", "axe", "shovel", "rod", "hoe", "shears", "tool")
 			.setEnchantability(0, 50, 0.2f, 4)
 			.build();
 
@@ -249,7 +281,8 @@ public class Enchantments extends Registry<Enchantment> {
 		SCAVENGE = new EnchantmentBuilder(new Enchantment(MOD_ID, "scavenge"))
 			.setWeight(5.0f)
 			.setMaxLevel(1)
-			.setTarget(item -> item instanceof ItemToolShovel || item.hasTag(ENCHANT_DIGGER))
+			.setTarget(item -> item instanceof ItemToolShovel || item.hasTag(ENCHANT_SHOVEL))
+			.setTargetDescriptions("shovel")
 			.setMinEnchantability(level -> 10)
 			.setMaxEnchatability(level -> 60)
 			.build();
@@ -258,11 +291,15 @@ public class Enchantments extends Registry<Enchantment> {
 			.setWeight(2.0f)
 			.setMaxLevel(5)
 			.setTarget(item ->
-				item instanceof ItemToolPickaxe
+					item instanceof ItemToolPickaxe
 					|| item instanceof ItemToolAxe
 					|| item instanceof ItemToolShovel
-					|| item.hasTag(ENCHANT_DIGGER)
+					|| item.hasTag(ENCHANT_PICKAXE)
+					|| item.hasTag(ENCHANT_SHOVEL)
+					|| item.hasTag(ENCHANT_AXE)
+					|| item.hasTag(ENCHANT_TOOL)
 			)
+			.setTargetDescriptions("pickaxe", "axe", "shovel", "tool")
 			.setEnchantability(0, 50, 0.5f, 4)
 			.build();
 
@@ -272,8 +309,10 @@ public class Enchantments extends Registry<Enchantment> {
 			.setTarget(item ->
 				item instanceof ItemToolPickaxe
 					|| item instanceof ItemToolShovel
-					|| item.hasTag(ENCHANT_DIGGER)
+					|| item.hasTag(ENCHANT_PICKAXE)
+					|| item.hasTag(ENCHANT_SHOVEL)
 			)
+			.setTargetDescriptions("pickaxe", "shovel")
 			.setEnchantability(10, 50, 0.75f, 4)
 			.build();
 
@@ -283,7 +322,11 @@ public class Enchantments extends Registry<Enchantment> {
 			.setTarget(item -> item instanceof ItemToolPickaxe
 				|| item instanceof ItemToolAxe
 				|| item instanceof ItemToolShovel
-				|| item.hasTag(ENCHANT_DIGGER))
+				|| item.hasTag(ENCHANT_PICKAXE)
+				|| item.hasTag(ENCHANT_AXE)
+				|| item.hasTag(ENCHANT_SHOVEL)
+			)
+			.setTargetDescriptions("pickaxe", "axe", "shovel")
 			.setMinEnchantability(level -> 10)
 			.setMaxEnchatability(level -> 60)
 			.build();
@@ -293,6 +336,7 @@ public class Enchantments extends Registry<Enchantment> {
 			.setWeight(1.0f)
 			.setMaxLevel(1)
 			.setTarget(item -> item instanceof ItemToolPickaxe || item.hasTag(ENCHANT_PICKAXE))
+			.setTargetDescriptions("pickaxe")
 			.setMinEnchantability(level -> 10)
 			.setMaxEnchatability(level -> 60)
 			.build();
@@ -300,13 +344,15 @@ public class Enchantments extends Registry<Enchantment> {
 		// purely for commands
 		GLITCHCRAFT = new EnchantmentBuilder(new Enchantment(MOD_ID, "glitch"))
 			.setTarget(item -> false)
+			.setTargetDescriptions("all")
 			.setHidden(true)
 			.build();
 
 		// drops blocks as if mined with silktouch
 		SILKTOUCH = new EnchantmentBuilder(new Enchantment(MOD_ID, "silktouch"))
 			.setWeight(1.0f)
-			.setTarget( item -> (item instanceof ItemToolPickaxe || item.hasTag(ENCHANT_PICKAXE)) && !item.isSilkTouch())
+			.setTarget(item -> (item instanceof ItemToolPickaxe || item.hasTag(ENCHANT_PICKAXE)) && !item.isSilkTouch())
+			.setTargetDescriptions("pickaxe")
 			.setMinEnchantability(level -> 30)
 			.setMaxEnchatability(level -> 60)
 			.build();
@@ -314,17 +360,17 @@ public class Enchantments extends Registry<Enchantment> {
 		// tree capitator
 		FELLING = new EnchantmentBuilder(new Enchantment(MOD_ID, "felling"))
 			.setWeight(1.0f)
-			.setTarget(item -> item instanceof ItemToolAxe || item.hasTag(ENCHANT_ROD))
+			.setTarget(item -> item instanceof ItemToolAxe || item.hasTag(ENCHANT_AXE))
+			.setTargetDescriptions("axe")
 			.setMinEnchantability(level -> 15)
 			.setMaxEnchatability(level -> 30)
 			.build();
 
-		//------------------------------------------- lang missing --------------------------
-		// get more saplings, more stick and apples
 		FORAGING = new EnchantmentBuilder(new Enchantment(MOD_ID, "foraging"))
 			.setWeight(5.0f)
 			.setMaxLevel(4)
-			.setTarget(item -> item instanceof ItemToolShears || item.hasTag(ENCHANT_SHEAR))
+			.setTarget(item -> item instanceof ItemToolShears || item.hasTag(ENCHANT_SHEARS))
+			.setTargetDescriptions("shears")
 			.setEnchantability(10, 60, 0.25, 3)
 			.build();
 
@@ -332,14 +378,24 @@ public class Enchantments extends Registry<Enchantment> {
 		EXPLOSIVE = new EnchantmentBuilder(new Enchantment(MOD_ID, "explosive"))
 			.setWeight(5.0f)
 			.setMaxLevel(3)
-			.setTarget(item -> item instanceof ItemHandCannonLoaded || item instanceof ItemHandCannonUnloaded)
+			.setTarget(
+				item -> item instanceof ItemHandCannonLoaded
+				|| item instanceof ItemHandCannonUnloaded
+				|| item.hasTag(ENCHANT_RANGED)
+			)
+			.setTargetDescriptions("handcannon", "ranged")
 			.setEnchantability(20, 60, 0.8f)
 			.build();
 
 		// makes the explosion cause damage to the environment
 		VOLATILE = new EnchantmentBuilder(new Enchantment(MOD_ID, "volatile"))
 			.setWeight(2.0f)
-			.setTarget(item -> item instanceof ItemHandCannonLoaded || item instanceof ItemHandCannonUnloaded)
+			.setTarget(
+				item -> item instanceof ItemHandCannonLoaded
+				|| item instanceof ItemHandCannonUnloaded
+				|| item.hasTag(ENCHANT_RANGED)
+			)
+			.setTargetDescriptions("handcannon", "ranged")
 			.setMinEnchantability(level -> 25)
 			.setMaxEnchatability(level -> 35)
 			.build();
@@ -348,24 +404,35 @@ public class Enchantments extends Registry<Enchantment> {
 		PRECISE = new EnchantmentBuilder(new Enchantment(MOD_ID, "precise"))
 			.setWeight(1.0f)
 			.setMaxLevel(5)
-			.setTarget(item -> item instanceof ItemHandCannonLoaded || item instanceof ItemHandCannonUnloaded)
+			.setTarget(
+				item -> item instanceof ItemHandCannonLoaded
+				|| item instanceof ItemHandCannonUnloaded
+				|| item.hasTag(ENCHANT_RANGED)
+			)
+			.setTargetDescriptions("handcannon", "ranged")
 			.setEnchantability(10, 50, 0.8f, 3)
 			.build();
 
 		// cause fire
 		INCENDIARY = new EnchantmentBuilder(new Enchantment(MOD_ID, "incendiary"))
 			.setWeight(1.0f)
-			.setTarget(item -> item instanceof ItemHandCannonLoaded || item instanceof ItemHandCannonUnloaded)
+			.setTarget(item -> item instanceof ItemHandCannonLoaded
+				|| item instanceof ItemHandCannonUnloaded
+				|| item.hasTag(ENCHANT_RANGED)
+			)
+			.setTargetDescriptions("handcannon", "ranged")
 			.setMinEnchantability(level -> 25)
 			.setMaxEnchatability(level -> 35)
 			.build();
 
 		// TODO: implement them!
+		//------------------------------------------- lang missing --------------------------
 		// increase field
 		REAP = new EnchantmentBuilder(new Enchantment(MOD_ID, "reap"))
 			.setWeight(10.0f)
 			.setMaxLevel(2)
 			.setTarget(item -> item instanceof ItemToolHoe || item.hasTag(ENCHANT_HOE))
+			.setTargetDescriptions("hoe")
 			.setEnchantability(10, 50, 0.8f)
 			.setHidden()
 			.build();
@@ -376,6 +443,7 @@ public class Enchantments extends Registry<Enchantment> {
 			.setWeight(1.0f)
 			.setMaxLevel(2)
 			.setTarget(item -> item instanceof ItemFishingRod || item.hasTag(ENCHANT_ROD))
+			.setTargetDescriptions("hoe")
 			.setEnchantability(10, 50, 0.4f)
 			.setHidden()
 			.build();

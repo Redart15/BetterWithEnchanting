@@ -13,6 +13,7 @@ public class EnchantmentBuilder {
 	private Predicate<Item> target = (item -> true);
 	private IntUnaryOperator minEnchantability = level -> 1 + (level - 1) + 10;
 	private IntUnaryOperator maxEnchatability = level -> this.minEnchantability.applyAsInt(level) + 50;
+	private String[] targetDescKeys = {"none"};
 	private boolean hidden = false;
 
 	public EnchantmentBuilder(Enchantment enchantment) {
@@ -36,6 +37,14 @@ public class EnchantmentBuilder {
 
 	public EnchantmentBuilder setTarget(Predicate<Item> target) {
 		this.target = target;
+		return this;
+	}
+
+	// for the verbose description of enchantments
+	public EnchantmentBuilder setTargetDescriptions(String ... targetDescKeys) {
+		if(targetDescKeys != null && targetDescKeys.length > 0){
+			this.targetDescKeys = targetDescKeys;
+		}
 		return this;
 	}
 
@@ -93,6 +102,7 @@ public class EnchantmentBuilder {
 		this.enchantment
 			.setWeight(this.weight)
 			.setTarget(this.target)
+			.setTargetDesc(this.targetDescKeys)
 			.setMaxLevel(this.maxLevel)
 			.setMinLevel(this.minLevel)
 			.setHidden(this.hidden)

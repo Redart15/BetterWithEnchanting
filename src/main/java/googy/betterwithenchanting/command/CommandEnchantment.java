@@ -9,10 +9,15 @@ import com.mojang.brigadier.builder.ArgumentBuilderRequired;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.api.Enchantment;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.api.Enchantments;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.render.font.FontDefault;
+import net.minecraft.client.render.font.FontRendererDefault;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.lang.I18n;
@@ -36,51 +41,23 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		NOT_APPLICABLE = new SimpleCommandExceptionType(new LiteralMessage(I18n.getInstance().translateKey("enchantment.command.not.applicable")));
 		commandDispatcher.register(
 			ArgumentBuilderLiteral.<CommandSource>literal("enchant")
-				.then(ArgumentBuilderLiteral.<CommandSource>literal("list")
-					.then(ArgumentBuilderLiteral.<CommandSource>literal("all")
-						.executes(CommandEnchantment::listAllEnchantments)
-					)
-					.then(ArgumentBuilderLiteral.<CommandSource>literal("applicable")
-						.executes(CommandEnchantment::listApplicableEnchantments)
-					)
-				)
-				.then(ArgumentBuilderLiteral.<CommandSource>literal("info")
-					.then(ArgumentBuilderRequired.<CommandSource, Enchantment>argument("name", ArgumentTypeEnchantment.enchantments())
-						.executes(CommandEnchantment::listInfo)
-					)
-				)
-				.then(ArgumentBuilderLiteral.<CommandSource>literal("random")
-					.requires(src -> src.hasAdmin() && src.getSender() != null)
-					.then(ArgumentBuilderRequired.<CommandSource, Integer>argument("cost", ArgumentTypeInteger.integer())
-						.executes(CommandEnchantment::randomEnchant)
-					)
-				)
-				.then(ArgumentBuilderLiteral.<CommandSource>literal("add")
-					.requires(src -> src.hasAdmin() && src.getSender() != null)
-					.then(ArgumentBuilderRequired.<CommandSource, Enchantment>argument("name", ArgumentTypeEnchantment.enchantments())
-						.then(ArgumentBuilderRequired.<CommandSource, Integer>argument("level", ArgumentTypeInteger.integer())
-							.executes(ctx -> addEnchantment(ctx, 0))
-						)
-					)
-				)
-				.then(ArgumentBuilderLiteral.<CommandSource>literal("increase")
-					.requires(src -> src.hasAdmin() && src.getSender() != null)
-					.then(ArgumentBuilderRequired.<CommandSource, Enchantment>argument("name", ArgumentTypeEnchantment.enchantments())
-						.then(ArgumentBuilderRequired.<CommandSource, Integer>argument("level", ArgumentTypeInteger.integer())
-							.executes(ctx -> increaseEnchantmentLevel(ctx, 0))
-						)
-					)
-				)
-				.then(ArgumentBuilderLiteral.<CommandSource>literal("remove")
-					.requires(src -> src.hasAdmin() && src.getSender() != null)
-					.then(ArgumentBuilderLiteral.<CommandSource>literal("all")
-						.executes(CommandEnchantment::removeAllEnchantments)
-					)
-					.then(ArgumentBuilderRequired.<CommandSource, Enchantment>argument("name", ArgumentTypeEnchantment.enchantments())
-						.executes(CommandEnchantment::removeEnchantment)
-					)
-				)
+				.then(buildListCommand())
+				.then(buildInfoCommand())
+				.then(buildRandomEnchantmentCommand())
+				.then(buildAddCommand())
+				.then(buildIncreaseCommand())
+				.then(buildRemoveCommand())
 		);
+	}
+
+	private static ArgumentBuilderLiteral<CommandSource> buildListCommand() {
+		return ArgumentBuilderLiteral.<CommandSource>literal("list")
+			.then(ArgumentBuilderLiteral.<CommandSource>literal("all")
+				.executes(CommandEnchantment::listAllEnchantments)
+			)
+			.then(ArgumentBuilderLiteral.<CommandSource>literal("applicable")
+				.executes(CommandEnchantment::listApplicableEnchantments)
+			);
 	}
 
 	private static int listAllEnchantments(CommandContext<CommandSource> ctx) {
@@ -122,6 +99,75 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		return applicable.size();
 	}
 
+	private static ArgumentBuilderLiteral<CommandSource> buildInfoCommand() {
+		return ArgumentBuilderLiteral.<CommandSource>literal("info")
+			.then(ArgumentBuilderRequired.<CommandSource, Enchantment>argument("name", ArgumentTypeEnchantment.enchantments())
+				.then(ArgumentBuilderLiteral.<CommandSource>literal("verbose")
+					.executes(CommandEnchantment::listFullInfo)
+				)
+			)
+			.then(ArgumentBuilderRequired.<CommandSource, Enchantment>argument("name", ArgumentTypeEnchantment.enchantments())
+				.executes(CommandEnchantment::listInfo)
+			);
+	}
+
+	private static int listFullInfo(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+		final Player player = ctx.getSource().getSender();
+		if (player == null) {
+			throw NOT_APPLICABLE.create();
+		}
+		// TODO: Once Archiments are made check if the player can get this infomation.
+		final Enchantment enchantment = ctx.getArgument("name", Enchantment.class);
+		StringBuilder message = new StringBuilder()
+			.append("§r§n§9") // formating name
+			.append(TRANSLATE.translateKey(enchantment.translationKeyName()))
+			.append("(").append(enchantment.minLevel()).append("-").append(enchantment.maxLevel()).append(")")
+			.append("§r").append('\n')
+			.append(TRANSLATE.translateKey(enchantment.translationKeyDesc()))
+			.append("\n\n");
+
+		String[] targets = enchantment.getTargetDescKeys();
+		message.append("The following item can be enchanted:\n");
+		for(int i = 0; i < targets.length; i++){
+			message.append("- ").append(TRANSLATE.translateKey("enchantment.target." + targets[i])).append("\n");
+		}
+		message.append("\n");
+		message.append(TRANSLATE.translateKey("enchantment.command.info.upgrading")).append("\n");
+		for (int level = enchantment.minLevel(); level <= enchantment.maxLevel(); level++) {
+			int minScore = EnchantmentContainer.calcCostFromEnchantability(enchantment.getMinEnchantability(level), false);
+			int maxScore = EnchantmentContainer.calcCostFromEnchantability(enchantment.getMaxEnchantability(level), true);
+			boolean colorRed = minScore > BetterWithEnchanting.MAX_ENCHANTMENT_COST;
+			if (level > enchantment.minLevel()) {
+				message.append("\n");
+			}
+			message.append("level ")
+				.append(level)
+				.append(":[min= ")
+				.append(extracted(colorRed))
+				.append(padding(Integer.toString(Math.max(0, minScore)), 5, '_'))
+				.append("§r, max= ")
+				.append(extracted(colorRed))
+				.append(padding(Integer.toString(Math.max(0, maxScore)), 5, '_'))
+				.append("§r]");
+		}
+		ctx.getSource().sendMessage(message.toString());
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static String padding(String number, int lenth, char paddignChar){
+		if(number.length() >= lenth){
+			return number;
+		}
+		return String.valueOf(paddignChar).repeat(lenth - number.length()) + number;
+	}
+
+	private static String extracted(boolean colorRed) {
+		if(colorRed){
+			return  "§r§e";
+		}
+		return "";
+	}
+
 	private static int listInfo(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
 		final Player player = ctx.getSource().getSender();
 		if (player == null) {
@@ -133,7 +179,15 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static int randomEnchant(CommandContext<CommandSource> ctx) throws CommandSyntaxException{
+	private static ArgumentBuilderLiteral<CommandSource> buildRandomEnchantmentCommand() {
+		return ArgumentBuilderLiteral.<CommandSource>literal("random")
+			.requires(src -> src.hasAdmin() && src.getSender() != null)
+			.then(ArgumentBuilderRequired.<CommandSource, Integer>argument("cost", ArgumentTypeInteger.integer())
+				.executes(CommandEnchantment::randomEnchant)
+			);
+	}
+
+	private static int randomEnchant(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
 		Player player = ctx.getSource().getSender();
 		if (player == null) {
 			throw NOT_APPLICABLE.create();
@@ -143,18 +197,32 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		if (itemStack == null) {
 			throw NOT_APPLICABLE.create();
 		}
-		if(EnchantmentContainer.hasEnchantments(itemStack) || !EnchantmentContainer.hasApplicable(itemStack)) {
+		if (EnchantmentContainer.hasEnchantments(itemStack) || !EnchantmentContainer.hasApplicable(itemStack)) {
 			ctx.getSource().sendTranslatableMessage("enchantment.command.cannot");
 			return code(FAIL);
 		}
 		List<EnchantmentStack> enchantmentStackList = EnchantmentContainer.generateEnchantmentsList(RANDOM, itemStack, cost);
-		if(enchantmentStackList.isEmpty()){
+		if (enchantmentStackList.isEmpty()) {
 			ctx.getSource().sendTranslatableMessage("enchantment.command.none");
 			return code(FAIL);
 		}
 		EnchantmentContainer.addEnchantments(itemStack, enchantmentStackList);
 		ctx.getSource().sendTranslatableMessage("enchantment.command.enchant", itemStack.getDisplayName(), EnchantmentContainer.prettyPrint(itemStack));
 		return enchantmentStackList.size();
+	}
+
+	private static ArgumentBuilderLiteral<CommandSource> buildAddCommand() {
+		return ArgumentBuilderLiteral.<CommandSource>literal("add")
+			.requires(src -> src.hasAdmin() && src.getSender() != null)
+			.then(ArgumentBuilderRequired.<CommandSource, Enchantment>argument("name", ArgumentTypeEnchantment.enchantments())
+				.then(ArgumentBuilderRequired.<CommandSource, Integer>argument("level", ArgumentTypeInteger.integer())
+					.executes(CommandEnchantment::addEnchantment)
+				)
+			);
+	}
+
+	private static int addEnchantment(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+		return CommandEnchantment.addEnchantment(ctx, 0);
 	}
 
 	private static int addEnchantment(CommandContext<CommandSource> ctx, int counter) throws CommandSyntaxException {
@@ -178,6 +246,20 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		EnchantmentContainer.rawAddEnchantment(itemStack, new EnchantmentStack(enchantment, level));
 		ctx.getSource().sendTranslatableMessage("enchantment.command.add", TRANSLATE.translateKeyAndFormat(enchantment.translationKeyName()));
 		return Command.SINGLE_SUCCESS;
+	}
+
+	private static ArgumentBuilderLiteral<CommandSource> buildIncreaseCommand() {
+		return ArgumentBuilderLiteral.<CommandSource>literal("increase")
+			.requires(src -> src.hasAdmin() && src.getSender() != null)
+			.then(ArgumentBuilderRequired.<CommandSource, Enchantment>argument("name", ArgumentTypeEnchantment.enchantments())
+				.then(ArgumentBuilderRequired.<CommandSource, Integer>argument("level", ArgumentTypeInteger.integer())
+					.executes(CommandEnchantment::increaseEnchantmentLevel)
+				)
+			);
+	}
+
+	private static int increaseEnchantmentLevel(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+		return CommandEnchantment.increaseEnchantmentLevel(ctx, 0);
 	}
 
 	private static int increaseEnchantmentLevel(CommandContext<CommandSource> ctx, int counter) throws CommandSyntaxException {
@@ -215,6 +297,17 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		}
 		ctx.getSource().sendMessage(message);
 		return Command.SINGLE_SUCCESS;
+	}
+
+	private static ArgumentBuilderLiteral<CommandSource> buildRemoveCommand() {
+		return ArgumentBuilderLiteral.<CommandSource>literal("remove")
+			.requires(src -> src.hasAdmin() && src.getSender() != null)
+			.then(ArgumentBuilderLiteral.<CommandSource>literal("all")
+				.executes(CommandEnchantment::removeAllEnchantments)
+			)
+			.then(ArgumentBuilderRequired.<CommandSource, Enchantment>argument("name", ArgumentTypeEnchantment.enchantments())
+				.executes(CommandEnchantment::removeEnchantment)
+			);
 	}
 
 	private static int removeAllEnchantments(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
@@ -255,7 +348,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 			return code(FAIL);
 		}
 		final EnchantmentStack enchantmentStack = EnchantmentContainer.removeEnchantment(itemStack, enchantment);
-		if(enchantmentStack == null){
+		if (enchantmentStack == null) {
 			ctx.getSource().sendTranslatableMessage("enchantment.command.remove.cannot", TRANSLATE.translateKeyAndFormat(enchantment.translationKeyName()));
 			return code(FAIL);
 		}

@@ -79,14 +79,14 @@ disabled.desc= The current enchantment is disabled.
 
 # command messasges
 enchantment.command.not.applicable= The command is not applicable to this item.
-enchantment.command.invali= Enchantment is invalid.
+enchantment.command.invalid= Enchantment is invalid.
 enchantment.command.list.all= Available Enchantments:
 enchantment.command.list.applicable.single= Applicable Enchantment:
 enchantment.command.list.applicable.multi= Applicable Enchantments:
 enchantment.command.none= There are no applicable enchantments available.
 enchantment.command.cannot= This item cannot be enchanted.
 enchantment.command.not.enchanted= This item %s is not enchanted.
-enchantment.command.not.fir= This item %1$s was not enchanted with %2$s.
+enchantment.command.not.fit= This item %1$s was not enchanted with %2$s.
 enchantment.command.remove.single= Removed enchantment %s.
 enchantment.command.remove.all= Removed %1$d enchantments with a combined level of %$2d.
 enchantment.command.remove.cannot= The item is not enchanted with %s.
@@ -97,6 +97,7 @@ enchantment.command.increased= Increased the level of %1$s from %2$d to %3$d
 enchantment.command.decreased= Decreased the level of %1$s from %2$d to %3$d.
 enchantment.command.no.change= No level were changed.
 enchantment.command.enchant= Enchanted %s.
+enchantment.command.info.upgrading=In §r§ered§r are the upgrading levels.
 
 score.command.not.applicable= The command is not applicable to this entity.
 score.command.cannot= Invalid target.
@@ -104,6 +105,29 @@ score.command.add= Added %2$d to %1$s.
 score.command.remove= Subtracted %1$s from %2$d.
 score.command.info= Player %1$s has a score of %2$d.
 score.command.set= Set %1$s score to %2$d.
+
+# enchantment targets descriptons
+enchanment.target.all=All enchantable items
+enchantment.target.weapon=Weapons and items tagged as weapons
+enchantment.target.ranged=Ranged weapons and items tagged as ranged
+enchantment.target.tool=Tools and item tagged as tools
+enchantment.target.melee=Melee weapons and items tagged as melee
+enchantment.target.damageable=All damageable items
+enchantment.target.consumable=All consumable items
+enchantment.target.none=None
+# target weapons
+enchantment.target.bow=Bows
+enchantment.target.handcannon=Handcannons
+enchantment.target.sword=Swords
+# target tools
+enchantment.target.pickaxe=Pickaxes
+enchantment.target.axe=Axes
+enchantment.target.shovel=Shovels
+enchantment.target.hoe=Hoes
+enchantment.target.rod=Fishing Rods
+enchantment.target.shears=Shears
+# target consumable
+enchantment.target.food=Foods
 
 # ------------------------------------- currently not ingame -----------------------------------------------------------
 # enchantment that sounded cool but werent all that great

@@ -28,7 +28,7 @@ public class EnchantmentContainer {
 
 	public static void addEnchantments(@NotNull ItemStack stack, @NotNull List<EnchantmentStack> enchantments) {
 		for (EnchantmentStack enchantment : enchantments) {
-			if (EnchantmentContainer.contains(stack, enchantment.getEnchantment()) || !enchantment.getEnchantment().canEnchant(stack)) {
+			if (EnchantmentContainer.contains(stack, enchantment.getEnchantment()) || !enchantment.canEnchant(stack)) {
 				continue;
 			}
 			EnchantmentContainer.rawAddEnchantment(stack, enchantment);
@@ -51,7 +51,7 @@ public class EnchantmentContainer {
 	/// The function is responsible for checking if a given enchantment applies to the item or not, before calling the
 	/// raw version.
 	public static void addEnchantment(@NotNull ItemStack stack, @NotNull EnchantmentStack enchantmentStack) {
-		if (EnchantmentContainer.contains(stack, enchantmentStack.getEnchantment()) || enchantmentStack.getEnchantment().canEnchant(stack)) {
+		if (EnchantmentContainer.contains(stack, enchantmentStack.getEnchantment()) || enchantmentStack.canEnchant(stack)) {
 			return;
 		}
 		EnchantmentContainer.rawAddEnchantment(stack, enchantmentStack);

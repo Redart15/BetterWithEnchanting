@@ -11,16 +11,19 @@ import java.lang.reflect.Field;
 public class EnchantingTags {
 	public static final Tag<Item> ENCHANT_WEAPON = Tag.of("enchant_weapon");
 	public static final Tag<Item> ENCHANT_RANGED = Tag.of("enchant_ranged");
-	public static final Tag<Item> ENCHANT_MEELE = Tag.of("enchant_meele");
-	public static final Tag<Item> ENCHANT_DIGGER = Tag.of("enchant_digger");
+	public static final Tag<Item> ENCHANT_MELEE = Tag.of("enchant_melee");
+	// TOOLS
+	public static final Tag<Item> ENCHANT_TOOL = Tag.of("enchant_tool");
 	public static final Tag<Item> ENCHANT_PICKAXE = Tag.of("enchant_pickaxe");
 	public static final Tag<Item> ENCHANT_AXE = Tag.of("enchant_axe");
 	public static final Tag<Item> ENCHANT_SHOVEL = Tag.of("enchant_shovel");
 	public static final Tag<Item> ENCHANT_HOE = Tag.of("enchant_hoe");
 	public static final Tag<Item> ENCHANT_ROD = Tag.of("enchant_rod");
-	public static final Tag<Item> ENCHANT_SHEAR = Tag.of("enchant_shear");
-	public static final Tag<Item> ENCHANT_TOOL = Tag.of("enchant_tool");
-	public static final Tag<Item> ENCHANT_ARMOR = Tag.of("enchant_armor");
+	public static final Tag<Item> ENCHANT_SHEARS = Tag.of("enchant_shear");
+	// condumables
+	public static final Tag<Item> ENCHANT_CONSUMABLES = Tag.of("enchant_consumables");
+
+	// prohibit enchanting
 	public static final Tag<Item> UNECHANT = Tag.of("unechant");
 	private static boolean init = false;
 
