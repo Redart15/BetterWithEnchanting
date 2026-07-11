@@ -223,6 +223,35 @@ public class EnchantmentContainer {
 		return Math.max(1, Math.round(k * randBonusPercent));
 	}
 
+	public static int calcDeterministicEnchantability(double cost, boolean bestCase) {
+		// Normalize cost into percentage
+		double costPercentage = cost / MAX_ENCHANTMENT_COST;
+
+		// Compute base enchantability
+		int extra =  bestCase ? DEFAULT_ITEM_ENCHANTABILITY / 4 + 1 : 0;
+		int detEnchantability = 1 + extra + extra;
+		int k = (int) (costPercentage * (30 - 1) + 1) + detEnchantability;
+
+		// Apply random bonus (±15%)
+		float bonusPercent = bestCase ? 1.0f : -1.0f;
+		float randBonusPercent = 1 + bonusPercent * 0.15f;
+		return Math.max(1, Math.round(k * randBonusPercent));
+	}
+
+	public static int calcCostFromEnchantability(double enchatability, boolean isMax){
+		return isMax ? calcMaxCostFromEnchantability(enchatability) : calcMinCostFromEnchantability(enchatability);
+	}
+
+	public static int calcMinCostFromEnchantability(double enchantability) {
+		double minCost = ((enchantability / 1.15F) - 1.0F) * MAX_ENCHANTMENT_COST;
+		return (int)Math.floor(minCost / 29.0F);
+	}
+
+	public static int calcMaxCostFromEnchantability(double enchantability) {
+		double maxCost = ((enchantability / 0.85F) - DEFAULT_ITEM_ENCHANTABILITY / 2.0F - 4.0f) * MAX_ENCHANTMENT_COST;
+		return (int)Math.floor(maxCost / 29.0F);
+	}
+
 	public static String prettyPrint(@Nullable ItemStack itemStack) {
 		if (itemStack == null) {
 			return "";
