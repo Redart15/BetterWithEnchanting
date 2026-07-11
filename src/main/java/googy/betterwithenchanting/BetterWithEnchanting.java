@@ -54,13 +54,15 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 
 	static {
 		Properties prop = new Properties();
+		// not sure if I keep them or not
 		prop.setProperty("max_enchantment_cost", "12000");
-		prop.setProperty("enchantment_window_type_id", "24");
-		prop.setProperty("packet_enchant_id", "190");
+		prop.setProperty("default_item_enchantability", "15");
+		// functional
 		prop.setProperty("enchantment_table_id", "116");
 		prop.setProperty("bottled_score_id", "18444");
+		prop.setProperty("enchantment_window_type_id", "24");
 		prop.setProperty("expensive_crafting", "true");
-		prop.setProperty("default_item_enchantability", "15");
+		// cosmetic
 		prop.setProperty("use_illager_font", "true");
 		prop.setProperty("colored_particle", "false");
 		CONFIG_HANDLER = new ConfigHandler(MOD_ID, prop);
@@ -97,7 +99,6 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 	@Override public void afterGameStart() {
 		EnchantingTags.init();
 		Enchantments.init();
-		GlyphRenderer.init();
 		Registries.getInstance().register(MOD_ID + ":enchantments", Enchantments.getInstance());
 		TRANSLATE = I18n.getInstance();
 		LOG.info("Registered {} enchantments.", Enchantments.getInstance().size());

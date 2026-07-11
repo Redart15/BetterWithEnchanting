@@ -2,7 +2,9 @@
   "model_paths": [
     "/assets/betterwithenchanting/models/entity/book/book.geo.json"
   ],
-  "betterwithenchanting:book": {
-    "main": "geometry.book"
+  "renderers": {
+    "betterwithenchanting:enchantment_table": {
+      "main": "geometry.book"
+    }
   }
 }

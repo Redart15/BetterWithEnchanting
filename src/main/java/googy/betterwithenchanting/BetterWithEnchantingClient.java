@@ -4,6 +4,7 @@ import googy.betterwithenchanting.command.CommandEnchantment;
 import googy.betterwithenchanting.command.CommandScore;
 import googy.betterwithenchanting.particle.ParticleCrit;
 import googy.betterwithenchanting.particle.ParticleGlyph;
+import googy.betterwithenchanting.render.GlyphRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.render.particle.Particle;
 import net.minecraft.client.render.particle.ParticleDispatcher;
@@ -64,6 +65,8 @@ public class BetterWithEnchantingClient implements ClientModInitializer, ClientS
 	public void onInitializeClient() {/* no need */}
 
 	@Override
-	public void afterClientStart() {/* no need */}
+	public void afterClientStart() {
+		GlyphRenderer.init();
+	}
 }
 
