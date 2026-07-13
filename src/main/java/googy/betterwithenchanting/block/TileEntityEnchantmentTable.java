@@ -2,11 +2,16 @@ package googy.betterwithenchanting.block;
 
 import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
+import net.minecraft.core.Global;
+import net.minecraft.core.block.Block;
+import net.minecraft.core.block.Blocks;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.player.inventory.container.Container;
 import net.minecraft.core.util.helper.MathHelper;
+import net.minecraft.core.world.pos.TilePos;
+import net.minecraft.core.world.pos.TilePosc;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,6 +24,7 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 	protected ItemStack[] items = new ItemStack[2];
 	protected Random random = new Random();
 	private int ticks;
+	// book state
 	private float bookRot;
 	private float prevBookRot;
 	private float prevPageFlip;
@@ -26,13 +32,13 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 	private float bookSpread;
 	private float prevBookSpread;
 	private float itemRot;
-
 	private float flipT;
 	private float flipA;
 	private float tRot;
-
+	// label
 	public final int[] labelIndexes = new int[3];
-	public byte type = 0;
+	private byte type = 0;
+	private long convertionCoolDown = 0;
 
 	public void setRandomLabel() {
 		for (int i = 0; i < labelIndexes.length; i++) {
@@ -42,13 +48,13 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 		this.setChanged();
 	}
 
-	public int 	getNewLabel() {
+	public int getNewLabel() {
 		return random.nextInt(LABELS.length);
 	}
 
 	@Override
 	public void tick() {
-		if(worldObj == null){
+		if (worldObj == null) {
 			return;
 		}
 		this.ticks++;
@@ -64,6 +70,7 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 		this.bookSpread = MathHelper.clamp(this.bookSpread, 0.0F, 1.0F);
 		this.prevPageFlip = this.pageFlip;
 		this.setUpPageFlip();
+		this.enchantABookShelf();
 	}
 
 	private void setUpPageFlip() {
@@ -75,7 +82,7 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 
 	private float adjustRotationAngleBook() {
 		float f = this.tRot - this.bookRot;
-		for (;f >= (float) Math.PI; f -= (float) Math.PI * 2.0F);
+		for (; f >= (float) Math.PI; f -= (float) Math.PI * 2.0F) ;
 		while (f < -(float) Math.PI) f += ((float) Math.PI * 2.0F);
 		return f;
 	}
@@ -117,6 +124,55 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 		while (this.itemRot < -(float) Math.PI) this.itemRot += ((float) Math.PI * 2.0F);
 	}
 
+	private void enchantABookShelf() {
+		if (this.worldObj == null) {
+			return;
+		}
+		if(this.ticks - this.convertionCoolDown <= (20 * Global.TICKS_PER_SECOND)){
+			return;
+		}
+		class Cache { private static final @NotNull TilePos pos = new TilePos();}
+		int posX = this.tilePos.x();
+		int posY = this.tilePos.y();
+		int posZ = this.tilePos.z();
+		for(int sample = 3; sample > 0; sample--){
+			int xOff = (int) Math.round(boundGaussian(random) * 5.0f);
+			int yOff = (int) Math.round(boundGaussian(random) * 5.0f);
+			int zOff = (int) Math.round(boundGaussian(random) * 5.0f);
+			if(this.convertBookShelf(Cache.pos.set(posX + xOff, posY + yOff, posZ + zOff))){
+				break;
+			}
+		}
+		this.convertionCoolDown = ticks;
+	}
+
+	private static double boundGaussian(Random random) {
+		return Math.tanh(random.nextGaussian() / 1.5);
+	}
+
+	private boolean convertBookShelf(TilePosc tilepos) {
+		assert this.worldObj != null;
+		Block<?> blockType = this.worldObj.getBlockType(tilepos);
+		if (blockType.id() == Blocks.BOOKSHELF_PLANKS_OAK.id()) {
+			int metadata = this.worldObj.getBlockData(tilepos);
+			metadata = metadata << 2;
+			metadata += 1;
+			this.worldObj.setBlockTypeNotify(tilepos, EnchantmentBlocks.ENCHANTED_BOOKSHELF);
+			this.worldObj.setBlockDataNotify(tilepos, metadata);
+			return true;
+		}
+		if (blockType.id() == EnchantmentBlocks.ENCHANTED_BOOKSHELF.id()) {
+			int metadata = this.worldObj.getBlockData(tilepos);
+			if ((metadata & 0b11) == 3) {
+				return false;
+			}
+			metadata += 1;
+			this.worldObj.setBlockDataNotify(tilepos, metadata);
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public void setItem(int slot, @Nullable ItemStack stack) {
 		items[slot] = stack;
@@ -150,7 +206,7 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 
 	@Override
 	public @NotNull String getNameTranslationKey() {
-		return MOD_ID +  "contianer.enchantment.table.name";
+		return MOD_ID + "contianer.enchantment.table.name";
 	}
 
 	@Override
@@ -184,7 +240,7 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 					this.labelIndexes[i] = this.getNewLabel();
 				}
 			}
-		}else{
+		} else {
 			this.setRandomLabel();
 		}
 	}
@@ -231,12 +287,31 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 	}
 
 	///  getter for EnchantmentTableRenderer (tileentity renderer)
-	public int ticks() {return ticks;}
-	public float bookRot() {return bookRot;}
-	public float prevBookRot() {return prevBookRot;}
-	public float prevPageFlip() {return prevPageFlip;}
-	public float pageFlip() {return pageFlip;}
-	public float bookSpread() {return bookSpread;}
-	public float prevBookSpread() {return prevBookSpread;}
-	public float itemRot() {return itemRot;}
+	public int ticks() {
+		return this.ticks;
+	}
+	public float bookRot() {
+		return this.bookRot;
+	}
+	public float prevBookRot() {
+		return this.prevBookRot;
+	}
+	public float prevPageFlip() {
+		return this.prevPageFlip;
+	}
+	public float pageFlip() {
+		return this.pageFlip;
+	}
+	public float bookSpread() {
+		return this.bookSpread;
+	}
+	public float prevBookSpread() {
+		return this.prevBookSpread;
+	}
+	public float itemRot() {
+		return this.itemRot;
+	}
+	public byte type() {
+		return this.type;
+	}
 }
