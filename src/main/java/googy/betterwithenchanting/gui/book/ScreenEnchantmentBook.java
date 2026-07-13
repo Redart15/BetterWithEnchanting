@@ -1,28 +1,37 @@
 package googy.betterwithenchanting.gui.book;
 
+import googy.betterwithenchanting.api.Enchantment;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
+import googy.betterwithenchanting.api.Enchantments;
 import googy.betterwithenchanting.gui.ScreenFix;
 import googy.betterwithenchanting.render.GlyphRenderer;
 import net.minecraft.client.render.renderer.GLRenderer;
 import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.lang.I18n;
 import net.minecraft.core.player.inventory.container.ContainerInventory;
-import net.minecraft.core.world.World;
 
 import java.util.List;
 
 import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
 
 public class ScreenEnchantmentBook extends ScreenFix {
-	private static final int ACTIVE_BUTTON_OFFSET = 1;
-	private static final int DEACTIVATED_BUTTON_OFFSET = 2;
-	private static final int MOUSEOVER_BUTTON_OFFSET = 3;
+	// need to adjust
+	public static final int BUTTON_WIDTH = 69;
+	public static final int BUTTON_HEIGHT = 79;
+	private static final int ACTIVE_BUTTON_OFFSET = 0;
+	private static final int DEACTIVATED_BUTTON_OFFSET = ACTIVE_BUTTON_OFFSET + 69;
+	private static final int MOUSEOVER_BUTTON_OFFSET = DEACTIVATED_BUTTON_OFFSET + 69;
+	public static final int BUTTON_HEIGHT_OFFSET = 174;
+
+	String[] texts = {"", ""};
 
 	int mouseX = 0;
 	int mouseY = 0;
 
-	public ScreenEnchantmentBook(ContainerInventory inventory, World world) {
-		super(new MenuEnchantmentBook(inventory, world));
+	public ScreenEnchantmentBook(ContainerInventory inventory, ItemStack selfStack) {
+		super(new MenuEnchantmentBook(inventory, selfStack));
+		this.ySize = 174;
 	}
 
 	@Override
@@ -57,36 +66,52 @@ public class ScreenEnchantmentBook extends ScreenFix {
 		int y = (this.height - this.ySize) / 2;
 		// draw background
 		this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
-		int buttonWidth = 1; // need to adjust
-		int buttonHeight = 2;
-		this.renderButtons(x, y, buttonHeight, buttonWidth);
-		this.renderGlyphs(x, y, buttonHeight, buttonWidth);
+		this.renderButtons(x, y);
+		this.renderText(x, y);
 		GLRenderer.setColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
-	private void renderButtons(int x, int y, int buttonHeight, int buttonWidth) {
-		for (int i = 0; i < 3; i++) {
-			int buttonX = x + 60;
-			int buttonY = y + 14 + buttonHeight * i;
-			boolean canEnchant = ((MenuEnchantmentBook)this.inventorySlots).playerCanEnchant();
-			boolean isMouseOver = (this.mouseX > buttonX && this.mouseX < buttonX + buttonWidth) && (this.mouseY > buttonY && this.mouseY < buttonY + buttonHeight);
+	private void renderButtons(int x, int y) {
+		for (int i = 0; i < 2; i++) {
+			int minWidth = x + 7 + (BUTTON_WIDTH + 24) * i;
+			int minHeight = y + 6;
+			int maxHeight = minHeight + BUTTON_HEIGHT;
+			int maxWidth = minWidth + BUTTON_WIDTH;
+			boolean isMouseOver = (this.mouseX > minWidth && this.mouseX < maxWidth) && (this.mouseY > minHeight && this.mouseY < maxHeight);
+			boolean canEnchant = ((MenuEnchantmentBook)this.inventorySlots).playerCanEnchant(i);
 			int offset = DEACTIVATED_BUTTON_OFFSET;
 			if (canEnchant) {
 				offset = isMouseOver ? MOUSEOVER_BUTTON_OFFSET : ACTIVE_BUTTON_OFFSET;
 			}
-			this.drawTexturedModalRect(buttonX, buttonY, 0, offset, buttonWidth, buttonHeight);
+			this.drawTexturedModalRect(minWidth, minHeight, offset, BUTTON_HEIGHT_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT);
 		}
 	}
 
-	private void renderGlyphs(int x, int y, int buttonHeight, int buttonWidth) {
+	private void renderText(int x, int y) {
 		MenuEnchantmentBook menu = (MenuEnchantmentBook) this.inventorySlots;
 		for (int i = 0; i < 2; i++) {
-			List<EnchantmentStack> enchantmentStackList = menu.getOption(i);
-			boolean canEnchant = menu.playerCanEnchant();
+			int sx = x + 7 + (BUTTON_WIDTH + 24) * i + 5;
+			int sy = y + 6;
+			boolean canEnchant = menu.playerCanEnchant(i);
 			int color = canEnchant ? 16777088 : 6839882;
+			List<EnchantmentStack> enchantmentStackList = menu.getOption(i);
+			for(int k = 0; k < enchantmentStackList.size(); k++){
+				int ey = sy + k * 9 + 35;
+				EnchantmentStack enchantmentStack = enchantmentStackList.get(k);
+				GLRenderer.pushFrame();
+				GLRenderer.modelM4f().scaleAround(0.90f, sx, ey, this.zLevel);
+				if(canEnchant){
+					this.drawStringNoShadow(this.mc.font, enchantmentStack.prettyToString() , sx, ey, color);
+				}else{
+					this.drawStringNoShadow(this.mc.font, enchantmentStack.prettyToString() , sx, ey, color);
+				}
+				GLRenderer.popFrame();
+			}
+
+
 			String label = "";
 			boolean type = false;
-			GlyphRenderer.drawString(label, x + 80, y + 18 + buttonHeight * 9999, color, type, canEnchant);
+			GlyphRenderer.drawString(label, x + 80, y + 18 + BUTTON_HEIGHT * 9999, color, type, canEnchant);
 		}
 	}
 
@@ -97,4 +122,11 @@ public class ScreenEnchantmentBook extends ScreenFix {
 		}
 		return 0;
 	}
+
+	@Override
+	public void removed() {
+		super.removed();
+		this.inventorySlots.onCraftGuiClosed(this.mc.thePlayer);
+	}
+
 }

@@ -33,7 +33,7 @@
     "enchantment.ProjectileArrowMixinBowEnchantment",
     "enchantment.ProjectileCannonballMixinEnchantment",
     "enchantment.TreecapitatorMixinMoltenAxeFix",
-    "net.PlayerLocalMixin"
+    "net.PlayerLocalMixinAdditionalGui"
   ],
   "client": [
     "accessor.ScreenContainerAbstractAccessor",
@@ -46,7 +46,7 @@
     "uselessFixedIt.ScreenAchievementsMixinFix"
   ],
   "server": [
-    "net.PlayerServerMixin"
+    "net.PlayerServerMixinAdditionalGui"
   ],
   "injectors": {
     "defaultRequire": 1

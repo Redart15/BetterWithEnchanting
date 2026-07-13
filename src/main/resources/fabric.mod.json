@@ -20,13 +20,7 @@
   "environment": "*",
   "entrypoints": {
     "main": 							["googy.betterwithenchanting.BetterWithEnchanting"],
-		"beforeGameStart": 		["googy.betterwithenchanting.BetterWithEnchanting"],
-		"afterGameStart": 		["googy.betterwithenchanting.BetterWithEnchanting"],
-		"initModels": 				["googy.betterwithenchanting.BetterWithEnchantingModel"],
-		"recipesReady": 			["googy.betterwithenchanting.BetterWithEnchanting"],
 		"client": 						["googy.betterwithenchanting.BetterWithEnchantingClient"],
-		"beforeClientStart": 	["googy.betterwithenchanting.BetterWithEnchantingClient"],
-		"afterClientStart":		["googy.betterwithenchanting.BetterWithEnchantingClient"],
 		"server": 						["googy.betterwithenchanting.BetterWithEnchantingServer"],
 		"preLaunch": 					["googy.betterwithenchanting.compat.stardew.ModEntryPoint"]
 	},

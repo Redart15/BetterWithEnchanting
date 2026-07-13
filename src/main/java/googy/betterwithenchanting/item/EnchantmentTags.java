@@ -8,7 +8,7 @@ import net.minecraft.core.item.tag.ItemTags;
 
 import java.lang.reflect.Field;
 
-public class EnchantingTags {
+public class EnchantmentTags {
 	public static final Tag<Item> ENCHANT_WEAPON = Tag.of("enchant_weapon");
 	public static final Tag<Item> ENCHANT_RANGED = Tag.of("enchant_ranged");
 	public static final Tag<Item> ENCHANT_MELEE = Tag.of("enchant_melee");
@@ -28,7 +28,7 @@ public class EnchantingTags {
 	private static boolean init = false;
 
 	static {
-		for (Field field : EnchantingTags.class.getDeclaredFields()) {
+		for (Field field : EnchantmentTags.class.getDeclaredFields()) {
 			if (!field.getType().equals(Tag.class)) continue;
 			try {
 				@SuppressWarnings("unchecked")
@@ -45,7 +45,7 @@ public class EnchantingTags {
 		return tags;
 	}
 
-	private EnchantingTags(){}
+	private EnchantmentTags(){}
 
 	public static void init(){
 		if(init){

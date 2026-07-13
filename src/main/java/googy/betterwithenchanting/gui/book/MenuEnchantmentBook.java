@@ -2,41 +2,49 @@ package googy.betterwithenchanting.gui.book;
 
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
-import googy.betterwithenchanting.gui.slot.EnchantItemSlot;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.InventoryAction;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.player.inventory.container.Container;
 import net.minecraft.core.player.inventory.container.ContainerInventory;
+import net.minecraft.core.player.inventory.container.ContainerSimple;
 import net.minecraft.core.player.inventory.menu.MenuAbstract;
 import net.minecraft.core.player.inventory.slot.Slot;
-import net.minecraft.core.world.World;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static googy.betterwithenchanting.item.EnchantingTags.UNECHANT;
+import static googy.betterwithenchanting.item.EnchantmentTags.UNECHANT;
 
 public class MenuEnchantmentBook extends MenuAbstract {
-	private final @NotNull World world;
+	private final Container enchantSlot = new ContainerSimple("enchantmentSlot", 1);
+	private final ItemStack selfStack;
 
-	public MenuEnchantmentBook(@NotNull ContainerInventory inventory, @NotNull World world) {
-		this.world = world;
-		this.addSlot(new EnchantItemSlot(inventory ,0, 79, 39));
-
+	public MenuEnchantmentBook(@NotNull ContainerInventory inventory, ItemStack selfStack) {
+		this.selfStack = selfStack;
+		this.addSlot(new Slot(enchantSlot,0, 80, 40));
 		for(int y = 0; y < 3; ++y) {
 			for(int x = 0; x < 9; ++x) {
-				int id = x + y * 9 + 9;
-				int slotX = 7 + x * 18;
-				int slotY = 91 + y * 18;
-				this.addSlot(new Slot(inventory, id, slotX, slotY));
+				this.addSlot(new Slot(inventory, x + y * 9 + 9, 8 + x * 18, 92 + y * 18));
 			}
 		}
 		for(int i = 0; i < 9; ++i) {
-			this.addSlot(new Slot(inventory, i, 7 + i * 18, 150));
+			this.addSlot(new Slot(inventory, i, 8 + i * 18, 150));
 		}
+		this.broadcastChanges();
+	}
 
+	@Override
+	public void onCraftGuiClosed(@NotNull Player player) {
+		super.onCraftGuiClosed(player);
+		ItemStack itemstack = this.enchantSlot.getItem(0);
+		if (itemstack != null) {
+			this.storeOrDropItem(player, itemstack);
+			player.world.playSoundAtEntity(player, player, "random.insert", 0.1F, 1.0F);
+		}else{
+			this.enchantSlot.setItem(0, null);
+		}
 	}
 
 	@Override
@@ -81,16 +89,23 @@ public class MenuEnchantmentBook extends MenuAbstract {
 		}
 	}
 
-	public boolean playerCanEnchant() {
+	public boolean playerCanEnchant(int option) {
 		Slot slot = this.getSlot(0);
 		if(slot == null) 												{return false;}
 		ItemStack itemStack = slot.getItemStack();
 		if(itemStack == null) 											{return false;}
 		if(!EnchantmentContainer.getEnchantments(itemStack).isEmpty()) 	{return false;}
-		return !itemStack.getItem().hasTag(UNECHANT);
+		if(itemStack.getItem().hasTag(UNECHANT))						{return false;}
+		for(EnchantmentStack stack : EnchantmentContainer.getEnchantments(this.selfStack, option)){
+			if(stack.canEnchant(itemStack)){
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public List<EnchantmentStack> getOption(int i) {
-		return new ArrayList<>();
+		return EnchantmentContainer.getEnchantments(this.selfStack, i);
 	}
 }
