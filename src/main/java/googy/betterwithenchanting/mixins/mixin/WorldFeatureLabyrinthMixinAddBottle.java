@@ -1,8 +1,8 @@
 package googy.betterwithenchanting.mixins.mixin;
 
-import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.Enchantments;
+import googy.betterwithenchanting.item.EnchantmentItems;
 import net.minecraft.core.WeightedRandomBag;
 import net.minecraft.core.WeightedRandomLootObject;
 import net.minecraft.core.item.ItemStack;
@@ -23,7 +23,7 @@ public abstract class WorldFeatureLabyrinthMixinAddBottle {
 	@Inject(method = "place", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/WeightedRandomBag;addEntry(Ljava/lang/Object;D)V", ordinal = 7, shift = At.Shift.AFTER))
 	private void addCustomLoot(World world, Random random, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
 		for(int i = 0; i < Enchantments.BOTTLED_SCORE.maxLevel(); i++){
-			ItemStack bottle = BetterWithEnchanting.SCORE_BOTTLE.getDefaultStack();
+			ItemStack bottle = EnchantmentItems.SCORE_BOTTLE.getDefaultStack();
 			EnchantmentContainer.rawAddEnchantment(bottle, Enchantments.BOTTLED_SCORE.getDefaultStack().setLevel(i + 1));
 			this.chestLoot.addEntry(new WeightedRandomLootObject(bottle), 16.0F / Math.pow(2, i));
 		}

@@ -2,7 +2,7 @@ package googy.betterwithenchanting.mixins.mixin.net;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
-import googy.betterwithenchanting.mixins.interfaces.EntityPlayer;
+import googy.betterwithenchanting.mixins.interfaces.PlayerAdditionalGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.net.handler.PacketHandlerClient;
 import net.minecraft.core.net.packet.PacketContainerOpen;
@@ -25,7 +25,7 @@ public abstract class NetClientHandlerMixin {
 			return;
 		}
 		TileEntityEnchantmentTable tile = new TileEntityEnchantmentTable();
-		((EntityPlayer) mc.thePlayer).displayGUIEnchantmentTable(tile);
+		((PlayerAdditionalGui) mc.thePlayer).displayGuiEnchantmentTable(tile);
 		this.mc.thePlayer.containerMenu.containerId = packet.windowId;
 	}
 

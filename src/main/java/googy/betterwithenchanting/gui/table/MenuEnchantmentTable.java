@@ -25,9 +25,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Random;
 
-import static googy.betterwithenchanting.item.EnchantingTags.UNECHANT;
+import static googy.betterwithenchanting.BetterWithEnchanting.MAX_ENCHANTMENT_COST;
+import static googy.betterwithenchanting.item.EnchantmentTags.UNECHANT;
 
 public class MenuEnchantmentTable extends MenuAbstract {
+	public static final int START_COST_OFFSET = 5;
 	public final TileEntityEnchantmentTable enchantmentTable;
 	protected final int[] enchantCost = new int[3];
 	protected final int[] labelIndexes = new int[3];
@@ -37,8 +39,8 @@ public class MenuEnchantmentTable extends MenuAbstract {
 
 	public MenuEnchantmentTable(ContainerInventory inventoryplayer, TileEntityEnchantmentTable enchantmentTable) {
 		this.enchantmentTable = enchantmentTable;
-		addSlot(new Slot(enchantmentTable, 0, 15, 47));
-		addSlot(new EnchantFuelSlot(enchantmentTable, 1, 35, 47));
+		this.addSlot(new Slot(enchantmentTable, 0, 15, 47));
+		this.addSlot(new EnchantFuelSlot(enchantmentTable, 1, 35, 47));
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {
 				this.addSlot(new Slot(inventoryplayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
@@ -161,8 +163,14 @@ public class MenuEnchantmentTable extends MenuAbstract {
 		}
 		this.bookLevel = Math.min(this.bookLevel, 15);
 		for (int i = 0; i < 3; i++) {
-			this.enchantCost[i] = EnchantmentContainer.calcEnchantCost(i, this.bookLevel);
+			this.enchantCost[i] = calcEnchantCost(i, this.bookLevel);
 		}
+	}
+
+	public static int calcEnchantCost(int enchantOption, int bookshelfs) {
+		double percentage = (bookshelfs + START_COST_OFFSET) / (15.0 + START_COST_OFFSET);
+		percentage *= (enchantOption + 1) / 3.0;
+		return (int) Math.ceil(MAX_ENCHANTMENT_COST * percentage);
 	}
 
 	private void checkForBookShelf(Block<?> block) {
@@ -177,11 +185,11 @@ public class MenuEnchantmentTable extends MenuAbstract {
 				crafting.updateCraftingInventoryInfo(this, i, enchantCost[i]);
 				crafting.updateCraftingInventoryInfo(this, i + 4, this.enchantmentTable.labelIndexes[i]);
 			}
-			if (this.type != this.enchantmentTable.type) {
-				crafting.updateCraftingInventoryInfo(this, 3, this.enchantmentTable.type);
+			if (this.type != this.enchantmentTable.type()) {
+				crafting.updateCraftingInventoryInfo(this, 3, this.enchantmentTable.type());
 			}
 		}
-		this.type = this.enchantmentTable.type;
+		this.type = (byte) this.enchantmentTable.type();
 		System.arraycopy(this.enchantmentTable.labelIndexes, 0, this.labelIndexes, 0, labelIndexes.length);
 	}
 

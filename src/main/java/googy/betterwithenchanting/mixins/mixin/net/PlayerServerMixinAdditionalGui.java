@@ -2,10 +2,11 @@ package googy.betterwithenchanting.mixins.mixin.net;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
-import googy.betterwithenchanting.mixins.interfaces.EntityPlayer;
+import googy.betterwithenchanting.mixins.interfaces.PlayerAdditionalGui;
 import googy.betterwithenchanting.gui.table.MenuEnchantmentTable;
 import net.minecraft.core.crafting.ContainerListener;
 import net.minecraft.core.entity.player.Player;
+import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.net.packet.PacketContainerOpen;
 import net.minecraft.core.world.World;
 import net.minecraft.server.entity.player.PlayerServer;
@@ -14,7 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(value = PlayerServer.class, remap = false)
-public abstract class PlayerServerMixin extends Player implements EntityPlayer, ContainerListener {
+public abstract class PlayerServerMixinAdditionalGui extends Player implements PlayerAdditionalGui, ContainerListener {
 	@Shadow
 	protected abstract void getNextWindowId();
 
@@ -24,12 +25,12 @@ public abstract class PlayerServerMixin extends Player implements EntityPlayer, 
 	@Shadow
 	public PacketHandlerServer playerNetServerHandler;
 
-	private PlayerServerMixin(World world) {
+	private PlayerServerMixinAdditionalGui(World world) {
 		super(world);
 	}
 
 	@Override
-	public void displayGUIEnchantmentTable(TileEntityEnchantmentTable enchantmentTable) {
+	public void displayGuiEnchantmentTable(TileEntityEnchantmentTable enchantmentTable) {
 		this.getNextWindowId();
 
 		this.playerNetServerHandler.sendPacket(
@@ -46,5 +47,9 @@ public abstract class PlayerServerMixin extends Player implements EntityPlayer, 
 		this.containerMenu.addSlotListener(this);
 	}
 
+	@Override
+	public void displayGuiEnchantmentBook(ItemStack book) {
+		// send message
+	}
 }
 

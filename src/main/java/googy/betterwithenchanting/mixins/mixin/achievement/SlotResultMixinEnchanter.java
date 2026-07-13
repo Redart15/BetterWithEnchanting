@@ -1,7 +1,7 @@
 package googy.betterwithenchanting.mixins.mixin.achievement;
 
-import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.api.EnchantmentAchievements;
+import googy.betterwithenchanting.block.EnchantmentBlocks;
 import googy.betterwithenchanting.mixins.mixin.accessor.SlotResultAccessor;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
@@ -17,7 +17,7 @@ public abstract class SlotResultMixinEnchanter {
 	@Inject(method = "onTake", at = @At("TAIL"))
 	private void addEnchantmentTable(ItemStack itemStack, CallbackInfo ci){
 		Item item = itemStack.getItem();
-		if (item.id == BetterWithEnchanting.ENCHANTMENT_TABLE.id()) {
+		if (item.id == EnchantmentBlocks.ENCHANTMENT_TABLE.id()) {
 			((SlotResultAccessor) this).getThePlayer().addStat(EnchantmentAchievements.CRAFT_ENCHANTER, 1);
 		}
 

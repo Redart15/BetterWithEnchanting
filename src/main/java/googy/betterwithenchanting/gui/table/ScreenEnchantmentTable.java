@@ -16,20 +16,23 @@ import turniplabs.halplibe.helper.network.NetworkHandler;
 import static googy.betterwithenchanting.BetterWithEnchanting.*;
 
 public class ScreenEnchantmentTable extends ScreenFix {
+	public static final int BUTTON_WIDTH = 108;
+	public static final int BUTTON_HEIGHT = 19;
+	public static final int LEVEL_SIZE = 16;
 	private static final int ACTIVE_BUTTON_OFFSET = 166;
 	private static final int DEACTIVATED_BUTTON_OFFSET = 185;
 	private static final int MOUSEOVER_BUTTON_OFFSET = 204;
 	private static final int ACTIVE_LEVEL_OFFSET = 223;
 	private static final int DEACTIVATED_LEVEL_OFFSET = 239;
+	public static final int BUTTON_X_OFFSET = 60;
+	public static final int BUTTON_Y_OFFSET = 14;
 
-	TileEntityEnchantmentTable enchantmentTable;
 	MenuEnchantmentTable enchantmentTableContainer;
 	int mouseX = 0;
 	int mouseY = 0;
 
 	public ScreenEnchantmentTable(ContainerInventory inventory, TileEntityEnchantmentTable tileEntity) {
 		super(new MenuEnchantmentTable(inventory, tileEntity));
-		this.enchantmentTable = tileEntity;
 		this.enchantmentTableContainer = (MenuEnchantmentTable) inventorySlots;
 	}
 
@@ -46,11 +49,9 @@ public class ScreenEnchantmentTable extends ScreenFix {
 		int guiX = (width - xSize) / 2;
 		int guiY = (height - ySize) / 2;
 		for (int i = 0; i < 3; i++) {
-			int buttonWidth = 108;
-			int buttonHeight = 19;
-			int buttonX = guiX + 60;
-			int buttonY = guiY + 14 + buttonHeight * i;
-			boolean isMouseOver = (x > buttonX && x < buttonX + buttonWidth) && (y > buttonY && y < buttonY + buttonHeight);
+			int buttonX = guiX + BUTTON_X_OFFSET;
+			int buttonY = guiY + BUTTON_Y_OFFSET + BUTTON_HEIGHT * i;
+			boolean isMouseOver = (x > buttonX && x < buttonX + BUTTON_WIDTH) && (y > buttonY && y < buttonY + BUTTON_HEIGHT);
 			if (!isMouseOver) {
 				continue;
 			}
@@ -61,7 +62,7 @@ public class ScreenEnchantmentTable extends ScreenFix {
 				} else {
 					this.enchantmentTableContainer.enchantItem(this.mc.thePlayer, i);
 				}
-				this.enchantmentTable.setRandomLabel();
+				this.enchantmentTableContainer.enchantmentTable.setRandomLabel();
 			}
 		}
 		this.enchantmentTableContainer.broadcastChanges();
@@ -75,36 +76,33 @@ public class ScreenEnchantmentTable extends ScreenFix {
 		int y = (this.height - this.ySize) / 2;
 		// draw background
 		this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
-		int buttonWidth = 108;
-		int buttonHeight = 19;
-		int levelSize = 16;
-		this.renderEnchantButtons(x, y, buttonHeight, buttonWidth, levelSize);
-		this.renderCostAndGlyphs(x, y, buttonHeight);
+		this.renderEnchantButtons(x, y);
+		this.renderCostAndGlyphs(x, y);
 		this.renderScore(x, y);
 		GLRenderer.setColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	/// draw enchant buttons
-	private void renderEnchantButtons(int x, int y, int buttonHeight, int buttonWidth, int levelSize) {
+	private void renderEnchantButtons(int x, int y) {
 		for (int i = 0; i < 3; i++) {
-			int buttonX = x + 60;
-			int buttonY = y + 14 + buttonHeight * i;
+			int buttonX = x + BUTTON_X_OFFSET;
+			int buttonY = y + BUTTON_Y_OFFSET + BUTTON_HEIGHT * i;
 			boolean canEnchant = this.enchantmentTableContainer.playerCanEnchant(this.mc.thePlayer, i);
-			boolean isMouseOver = (this.mouseX > buttonX && this.mouseX < buttonX + buttonWidth) && (this.mouseY > buttonY && this.mouseY < buttonY + buttonHeight);
+			boolean isMouseOver = (this.mouseX > buttonX && this.mouseX < buttonX + BUTTON_WIDTH) && (this.mouseY > buttonY && this.mouseY < buttonY + BUTTON_HEIGHT);
 			int offset = DEACTIVATED_BUTTON_OFFSET;
 			if (canEnchant) {
 				offset = isMouseOver ? MOUSEOVER_BUTTON_OFFSET : ACTIVE_BUTTON_OFFSET;
 			}
-			this.drawTexturedModalRect(buttonX, buttonY, 0, offset, buttonWidth, buttonHeight);
+			this.drawTexturedModalRect(buttonX, buttonY, 0, offset, BUTTON_WIDTH, BUTTON_HEIGHT);
 			int levelOffset = DEACTIVATED_LEVEL_OFFSET;
 			if (canEnchant) {
 				levelOffset = ACTIVE_LEVEL_OFFSET;
 			}
-			this.drawTexturedModalRect(buttonX, buttonY, levelSize * i, levelOffset, levelSize, levelSize);
+			this.drawTexturedModalRect(buttonX, buttonY, LEVEL_SIZE * i, levelOffset, LEVEL_SIZE, LEVEL_SIZE);
 		}
 	}
 
-	private void renderCostAndGlyphs(int x, int y, int buttonHeight) {
+	private void renderCostAndGlyphs(int x, int y) {
 		Slot enchantmentSlot = this.enchantmentTableContainer.getSlot(0);
 		if (enchantmentSlot == null) {
 			return;
@@ -116,13 +114,13 @@ public class ScreenEnchantmentTable extends ScreenFix {
 			String costText = String.valueOf(this.enchantmentTableContainer.getCostAtIndex(i));
 			int costWidth = this.mc.font.stringWidth(costText) + 1;
 			if(canEnchant){
-				this.drawStringShadow(this.mc.font, costText, x + 166 - costWidth, y + 23 + buttonHeight * i, color);
+				this.drawStringShadow(this.mc.font, costText, x + 166 - costWidth, y + 23 + BUTTON_HEIGHT * i, color);
 			}
 			else {
-				this.drawStringNoShadow(this.mc.font, costText, x + 166 - costWidth, y + 23 + buttonHeight * i, color);
+				this.drawStringNoShadow(this.mc.font, costText, x + 166 - costWidth, y + 23 + BUTTON_HEIGHT * i, color);
 			}
 			String label = LABELS[this.enchantmentTableContainer.getLabelIndexAtIndex(i) % LABELS.length];
-			GlyphRenderer.drawString(label, x + 80, y + 18 + buttonHeight * i, color, this.enchantmentTableContainer.getType(i), canEnchant);
+			GlyphRenderer.drawString(label, x + 80, y + 18 + BUTTON_HEIGHT * i, color, this.enchantmentTableContainer.getType(i), canEnchant);
 		}
 	}
 
