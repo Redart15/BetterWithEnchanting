@@ -1,5 +1,7 @@
 package googy.betterwithenchanting.api;
 
+import googy.betterwithenchanting.block.EnchantmentBlocks;
+import googy.betterwithenchanting.item.EnchantmentItems;
 import net.minecraft.client.gui.achievements.data.AchievementPage;
 import net.minecraft.client.gui.achievements.data.AchievementPages;
 import net.minecraft.core.achievement.Achievement;
@@ -38,7 +40,7 @@ public class EnchantmentAchievements {
 
 		CRAFT_ENCHANTER = new Achievement(
 			NamespaceID.fromPool(MOD_ID, "craft_enchantmenttable"),
-			"craft.enchantmenttable", ENCHANTMENT_TABLE, Achievements.GET_DIAMONDS
+			"craft.enchantmenttable", EnchantmentBlocks.ENCHANTMENT_TABLE, Achievements.GET_DIAMONDS
 		).registerAchievement();
 
 		ENCHANT_ITEM = new Achievement(
@@ -64,7 +66,7 @@ public class EnchantmentAchievements {
 
 		SCORE = new Achievement(
 			NamespaceID.fromPool(MOD_ID, "score"),
-			"score", SCORE_BOTTLE, null
+			"score", EnchantmentItems.SCORE_BOTTLE, null
 		).registerAchievement();
 
 		LOST_KNOWLEDGE = new Achievement(

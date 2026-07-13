@@ -1,12 +1,13 @@
 package googy.betterwithenchanting.api;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
+import googy.betterwithenchanting.item.EnchantmentItems;
 import net.minecraft.core.data.registry.Registry;
 import net.minecraft.core.item.*;
 import net.minecraft.core.item.tool.*;
 
 import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
-import static googy.betterwithenchanting.item.EnchantingTags.*;
+import static googy.betterwithenchanting.item.EnchantmentTags.*;
 
 public class Enchantments extends Registry<Enchantment> {
 	// WEAPONS
@@ -174,7 +175,7 @@ public class Enchantments extends Registry<Enchantment> {
 		BOTTLED_SCORE = new EnchantmentBuilder(new Enchantment(MOD_ID, "score"))
 			.setWeight(1.0f)
 			.setMaxLevel(4)
-			.setTarget(item -> item.id == BetterWithEnchanting.SCORE_BOTTLE.id || item instanceof ItemFood)
+			.setTarget(item -> item.id == EnchantmentItems.SCORE_BOTTLE.id || item instanceof ItemFood)
 			.setTargetDescriptions("food", "consumable")
 			.setEnchantability(0, 50, 0.75, 2)
 			.build();

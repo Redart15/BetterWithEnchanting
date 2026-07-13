@@ -14,10 +14,6 @@ import googy.betterwithenchanting.api.Enchantment;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.api.Enchantments;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.render.font.FontDefault;
-import net.minecraft.client.render.font.FontRendererDefault;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.lang.I18n;
@@ -28,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static googy.betterwithenchanting.BetterWithEnchanting.TRANSLATE;
 import static googy.betterwithenchanting.command.ReturnValues.*;
 
 public class CommandEnchantment implements CommandManager.CommandRegistry {
@@ -122,6 +117,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 			throw NOT_APPLICABLE.create();
 		}
 		// TODO: Once Archiments are made check if the player can get this infomation.
+		final I18n TRANSLATE = I18n.getInstance();
 		final Enchantment enchantment = ctx.getArgument("name", Enchantment.class);
 		StringBuilder message = new StringBuilder()
 			.append("§r§n§9") // formating name
@@ -179,6 +175,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		if (player == null) {
 			throw NOT_APPLICABLE.create();
 		}
+		final I18n TRANSLATE = I18n.getInstance();
 		StringBuilder message = new StringBuilder("§r§a")
 			.append(TRANSLATE.translateKey("enchantment.command.upgrading.name"))
 			.append(":§r\n")
@@ -202,6 +199,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		if (player == null) {
 			throw NOT_APPLICABLE.create();
 		}
+		final I18n TRANSLATE = I18n.getInstance();
 		final Enchantment enchantment = ctx.getArgument("name", Enchantment.class);
 		String message = String.format("%s: %s", enchantment.prettyToString(), TRANSLATE.translateKey(enchantment.translationKeyDesc()));
 		ctx.getSource().sendMessage(message);
@@ -259,6 +257,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		if (player == null) {
 			throw NOT_APPLICABLE.create();
 		}
+		final I18n TRANSLATE = I18n.getInstance();
 		final Enchantment enchantment = ctx.getArgument("name", Enchantment.class);
 		final int level = ctx.getArgument("level", Integer.class);
 		final ItemStack itemStack = player.getHeldItem();
@@ -296,6 +295,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		if (player == null) {
 			throw NOT_APPLICABLE.create();
 		}
+		final I18n TRANSLATE = I18n.getInstance();
 		final Enchantment enchantment = ctx.getArgument("name", Enchantment.class);
 		final int level = ctx.getArgument("level", Integer.class);
 		final ItemStack itemStack = player.getHeldItem();
@@ -363,6 +363,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		if (player == null) {
 			throw NOT_APPLICABLE.create();
 		}
+		final I18n TRANSLATE = I18n.getInstance();
 		final Enchantment enchantment = ctx.getArgument("name", Enchantment.class);
 		final ItemStack itemStack = player.getHeldItem();
 		if (itemStack == null) {

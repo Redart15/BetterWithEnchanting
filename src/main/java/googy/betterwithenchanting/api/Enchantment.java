@@ -1,15 +1,13 @@
 package googy.betterwithenchanting.api;
 
-import googy.betterwithenchanting.item.EnchantingTags;
+import googy.betterwithenchanting.item.EnchantmentTags;
 import net.minecraft.core.item.Item;
-import net.minecraft.core.item.ItemFood;
 import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.lang.I18n;
 
 import java.util.Objects;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
-
-import static googy.betterwithenchanting.BetterWithEnchanting.TRANSLATE;
 
 public class Enchantment {
 	private final String id;
@@ -96,7 +94,7 @@ public class Enchantment {
 	}
 
 	public final boolean canEnchant(ItemStack itemStack) {
-		if (itemStack == null || itemStack.getItem().hasTag(EnchantingTags.UNECHANT)) {
+		if (itemStack == null || itemStack.getItem().hasTag(EnchantmentTags.UNECHANT)) {
 			return false;
 		}
 		return this.canApply(itemStack.getItem());
@@ -157,7 +155,7 @@ public class Enchantment {
 
 	public String prettyToString() {
 		String level = String.format(" %s", this.maxLevel() <= 1 ? "" : String.format("(%s)", this.maxLevel()));
-		return String.format("%s%s", TRANSLATE.translateKey(this.translationKeyName()), level);
+		return String.format("%s%s", I18n.getInstance().translateKey(this.translationKeyName()), level);
 	}
 
 	/**
