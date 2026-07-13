@@ -1,45 +1,48 @@
 package googy.betterwithenchanting;
 
 import googy.betterwithenchanting.api.Enchantments;
-import googy.betterwithenchanting.block.BlockEnchantmentTable;
+import googy.betterwithenchanting.block.EnchantmentBlocks;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
-import googy.betterwithenchanting.item.EnchantingTags;
-import googy.betterwithenchanting.item.ItemEnchantmentBottle;
+import googy.betterwithenchanting.item.EnchantmentItems;
+import googy.betterwithenchanting.item.EnchantmentTags;
 import googy.betterwithenchanting.network.MessageEnchantItem;
-import googy.betterwithenchanting.render.GlyphRenderer;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.core.block.Block;
 import net.minecraft.core.block.Blocks;
-import net.minecraft.core.block.tag.BlockTags;
 import net.minecraft.core.data.registry.Registries;
-import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
-import net.minecraft.core.item.tag.ItemTags;
-import net.minecraft.core.lang.I18n;
-import net.minecraft.core.sound.BlockSound;
 import net.minecraft.core.util.collection.NamespaceID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.HalpLibe;
+import turniplabs.halplibe.event.defs.CommonEvents;
 import turniplabs.halplibe.helper.*;
 import turniplabs.halplibe.helper.network.NetworkHandler;
 import turniplabs.halplibe.util.*;
+import turniplabs.halplibe.util.dependency.Key;
+import turniplabs.halplibe.util.toml.Toml;
 
-import java.util.Properties;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 
-public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, GameStartEntrypoint{
+public class BetterWithEnchanting implements ModInitializer{
 	public static final String MOD_ID = HalpLibe.registerMod("betterwithenchanting");
 	public static final Logger LOG = LoggerFactory.getLogger(MOD_ID);
-	public static final ConfigHandler CONFIG_HANDLER;
-	public static final int START_COST_OFFSET = 5;
+
+	public static final int MAX_ENCHANTMENT_COST = 12000;
+	public static final int DEFAULT_ITEM_ENCHANTABILITY = 15;
+	private static final TomlConfigHandler CONFIG_HANDLER;
+	private static final String GENERAL_CATEGORY = "General.";
+	public static final int BLOCK_ID;
+	public static final int ITEM_ID;
+
 	public static final boolean COLORED_PARTICLE;
 	public static final boolean ILLAGER_FONT;
-	public static final int MAX_ENCHANTMENT_COST;
-	public static final int DEFAULT_ITEM_ENCHANTABILITY;
 	public static final int WINDOW_ID;
-	@SuppressWarnings({"java:S1104", "java:S1444", "java:S3008"}) public static I18n TRANSLATE;
+	public static final boolean DESTRCTABLE;
 
 	/// cant be client side, needs to be core
 	public static final String[] LABELS = new String[]{
@@ -53,72 +56,90 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 	};
 
 	static {
-		Properties prop = new Properties();
-		// not sure if I keep them or not
-		prop.setProperty("max_enchantment_cost", "12000");
-		prop.setProperty("default_item_enchantability", "15");
-		// functional
-		prop.setProperty("enchantment_table_id", "116");
-		prop.setProperty("bottled_score_id", "18444");
-		prop.setProperty("enchantment_window_type_id", "24");
-		prop.setProperty("expensive_crafting", "true");
-		// cosmetic
-		prop.setProperty("use_illager_font", "true");
-		prop.setProperty("colored_particle", "false");
-		CONFIG_HANDLER = new ConfigHandler(MOD_ID, prop);
-
-		WINDOW_ID = CONFIG_HANDLER.getInt("enchantment_window_type_id");
-		ILLAGER_FONT = CONFIG_HANDLER.getBoolean("use_illager_font");
-		COLORED_PARTICLE = CONFIG_HANDLER.getBoolean("colored_particle");
-		MAX_ENCHANTMENT_COST = CONFIG_HANDLER.getInt("max_enchantment_cost");
-		DEFAULT_ITEM_ENCHANTABILITY = CONFIG_HANDLER.getInt("default_item_enchantability");
+		LOG.info("Better with Enchanting loading properties.");
+		LOG.info("Initializing config.");
+		Toml properties = new Toml("Better with Enchanting config");
+		properties.addCategory("General")
+			.addEntry("BLOCK_ID", 116)
+			.addEntry("ITEM_ID", 18444)
+			.addEntry("ENCHANTING_TABLE_SCREEN_ID", 24)
+			.addEntry("USE_ILLAGER_FONT", true)
+			.addEntry("USE_COLORED_PARTICLES", false)
+			.addEntry("DESTRCTABLE", true);
+		CONFIG_HANDLER = new TomlConfigHandler(MOD_ID, properties);
+		File configFile = CONFIG_HANDLER.getConfigFile();
+		if(configFile.exists()){
+			LOG.info("Loading config.");
+			try{
+				CONFIG_HANDLER.loadConfig();
+			}catch (Exception e){
+				LOG.error("Failed to load config, creating a new one.", e);
+				try {
+					Files.move(
+						configFile.toPath(),
+						configFile.toPath().resolveSibling("enchant.bak"),
+						StandardCopyOption.REPLACE_EXISTING
+					);
+					CONFIG_HANDLER.writeConfig();
+				}catch (IOException io){
+					throw new RuntimeException("Failed to replace corrupt config.", io);
+				}
+			}
+		}else {
+			try{
+				LOG.info("Creating config.");
+				if(!configFile.createNewFile()){
+					throw new IOException("Could not create config file");
+				}
+				LOG.info("Write to config");
+				CONFIG_HANDLER.writeConfig();
+			}
+			catch (IOException e){
+				throw new RuntimeException("Failed to create config.", e);
+			}
+		}
+		BLOCK_ID = CONFIG_HANDLER.getInt(GENERAL_CATEGORY + "BLOCK_ID");
+		ITEM_ID = CONFIG_HANDLER.getInt(GENERAL_CATEGORY + "ITEM_ID");
+		WINDOW_ID = CONFIG_HANDLER.getInt(GENERAL_CATEGORY + "ENCHANTING_TABLE_SCREEN_ID");
+		ILLAGER_FONT = CONFIG_HANDLER.getBoolean(GENERAL_CATEGORY + "USE_ILLAGER_FONT");
+		COLORED_PARTICLE = CONFIG_HANDLER.getBoolean(GENERAL_CATEGORY + "USE_COLORED_PARTICLES");
+		DESTRCTABLE = CONFIG_HANDLER.getBoolean(GENERAL_CATEGORY + "DESTRCTABLE");
 	}
-	public static final Block<?> ENCHANTMENT_TABLE = new BlockBuilder(MOD_ID)
-		.setBlockSound(new BlockSound("step.stone", "step.stone", 1.0f, 1.0f))
-		.setHardness(5)
-		.setResistance(1200)
-		.setLuminance(7)
-		.setTags(BlockTags.MINEABLE_BY_PICKAXE)
-		.build("enchantment.table", "enchantment_table", CONFIG_HANDLER.getInt("enchantment_table_id"), BlockEnchantmentTable::new);
-
-	public static final Item SCORE_BOTTLE = new ItemBuilder(MOD_ID)
-		.addTags(ItemTags.NOT_IN_CREATIVE_MENU)
-		.build(new ItemEnchantmentBottle("bottle.score", MOD_ID + ":item/bottle_score", CONFIG_HANDLER.getInt("bottled_score_id")));
 
 	@Override
 	public void onInitialize() {
 		NetworkHandler.registerNetworkMessage(MessageEnchantItem::new);
 		LOG.info("BetterWithEnchanting initialized!");
+		CommonEvents.BEFORE_GAME_START.listen(Key.of(MOD_ID), BetterWithEnchanting::beforeGameStart);
+		CommonEvents.AFTER_GAME_START.listen(Key.of(MOD_ID), BetterWithEnchanting::afterGameStart);
+		CommonEvents.RECIPES_NAMESPACE_INIT.listen(Key.of(MOD_ID), BetterWithEnchanting::initNamespaces);
+		CommonEvents.RECIPES_READY.listen(Key.of(MOD_ID), BetterWithEnchanting::onRecipesReady);
+		CommonEvents.AFTER_BLOCK_INIT.listen(Key.of(MOD_ID), EnchantmentBlocks::afterBlockInit);
+		CommonEvents.AFTER_ITEM_INIT.listen(Key.of(MOD_ID), EnchantmentItems::afterItemInit);
 	}
 
-	@Override
-	public void beforeGameStart() {
+
+	public static void beforeGameStart() {
 		EntityHelper.addMapping(TileEntityEnchantmentTable.class, NamespaceID.getPermanent(MOD_ID, "enchantment_table"));
 	}
 
-	@Override public void afterGameStart() {
-		EnchantingTags.init();
+	public static void afterGameStart() {
+		EnchantmentTags.init();
 		Enchantments.init();
 		Registries.getInstance().register(MOD_ID + ":enchantments", Enchantments.getInstance());
-		TRANSLATE = I18n.getInstance();
 		LOG.info("Registered {} enchantments.", Enchantments.getInstance().size());
 	}
 
-	@Override
-	public void onRecipesReady() {
-		RecipeBuilder.Shaped(MOD_ID, " B ", "DCD", "CCC")
+	public static void onRecipesReady() {
+		RecipeBuilder.Shaped(MOD_ID, "CBC", "DOD", "OOO")
+			.addInput('C', Items.CLOTH)
 			.addInput('B', Items.BOOK)
-			.addInput('C', Blocks.OBSIDIAN)
-			.addInput('D', CONFIG_HANDLER.getBoolean("expensive_crafting") ? Blocks.BLOCK_DIAMOND : Items.DIAMOND)
-			.create("enchantingtable", new ItemStack(ENCHANTMENT_TABLE));
-
-		RecipeBuilder.Shaped(MOD_ID, " D ", "C C", " C ")
-			.addInput('D', "minecraft:planks")
-			.addInput('C', Blocks.GLASS)
-			.create("score_bottle", new ItemStack(ENCHANTMENT_TABLE));
+			.addInput('O', Blocks.OBSIDIAN)
+			.addInput('D', Items.DIAMOND)
+			.create("enchantingtable", new ItemStack(EnchantmentBlocks.ENCHANTMENT_TABLE));
 	}
 
-	@Override public void initNamespaces() {
+	public static void initNamespaces() {
 		RecipeBuilder.initNameSpace(MOD_ID);
 	}
 
