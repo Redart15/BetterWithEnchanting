@@ -15,6 +15,7 @@ import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.api.Enchantments;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.lang.I18n;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 
@@ -22,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static googy.betterwithenchanting.BetterWithEnchanting.TRANSLATE;
 import static googy.betterwithenchanting.command.ReturnValues.*;
 
 public class CommandEnchantment implements CommandManager.CommandRegistry {
@@ -32,7 +32,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 
 	@Override
 	public void register(CommandDispatcher<CommandSource> commandDispatcher) {
-		NOT_APPLICABLE = new SimpleCommandExceptionType(new LiteralMessage(TRANSLATE.translateKey("enchantment.command.not.applicable")));
+		NOT_APPLICABLE = new SimpleCommandExceptionType(new LiteralMessage(I18n.getInstance().translateKey("enchantment.command.not.applicable")));
 		commandDispatcher.register(
 			ArgumentBuilderLiteral.<CommandSource>literal("enchant")
 				.then(ArgumentBuilderLiteral.<CommandSource>literal("list")
@@ -126,6 +126,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		if (player == null) {
 			throw NOT_APPLICABLE.create();
 		}
+		final I18n TRANSLATE = I18n.getInstance();
 		final Enchantment enchantment = ctx.getArgument("name", Enchantment.class);
 		String message = String.format("%s: %s", enchantment.prettyToString(), TRANSLATE.translateDescKey(enchantment.translationKey()));
 		ctx.getSource().sendMessage(message);
@@ -161,6 +162,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		if (player == null) {
 			throw NOT_APPLICABLE.create();
 		}
+		final I18n TRANSLATE = I18n.getInstance();
 		final Enchantment enchantment = ctx.getArgument("name", Enchantment.class);
 		final int level = ctx.getArgument("level", Integer.class);
 		final ItemStack itemStack = player.getHeldItem();
@@ -184,6 +186,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		if (player == null) {
 			throw NOT_APPLICABLE.create();
 		}
+		final I18n TRANSLATE = I18n.getInstance();
 		final Enchantment enchantment = ctx.getArgument("name", Enchantment.class);
 		final int level = ctx.getArgument("level", Integer.class);
 		final ItemStack itemStack = player.getHeldItem();
@@ -242,6 +245,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		}
 		final Enchantment enchantment = ctx.getArgument("name", Enchantment.class);
 		final ItemStack itemStack = player.getHeldItem();
+		final I18n TRANSLATE = I18n.getInstance();
 		if (itemStack == null) {
 			throw NOT_APPLICABLE.create();
 		}

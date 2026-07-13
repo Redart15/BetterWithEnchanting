@@ -37,7 +37,7 @@ public class BetterWithEnchanting implements ModInitializer, RecipeEntrypoint, G
 	public static final int MAX_ENCHANTMENT_COST;
 	public static final int DEFAULT_ITEM_ENCHANTABILITY;
 	public static final int WINDOW_ID;
-	@SuppressWarnings({"java:S1104", "java:S1444", "java:S3008"}) public static I18n TRANSLATE;
+	@SuppressWarnings({"java:S1104", "java:S1444", "java:S3008"}) private static I18n TRANSLATE;
 
 	/// cant be client side, needs to be core
 	public static final String[] LABELS = new String[]{

@@ -3,12 +3,11 @@ package googy.betterwithenchanting.api;
 import googy.betterwithenchanting.item.EnchantingTags;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.lang.I18n;
 
 import java.util.Objects;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
-
-import static googy.betterwithenchanting.BetterWithEnchanting.TRANSLATE;
 
 public class Enchantment {
 	private final String id;
@@ -138,7 +137,7 @@ public class Enchantment {
 
 	public String prettyToString() {
 		String level = String.format(" %s", this.maxLevel() <= 1 ? "" : String.format("(%s)", this.maxLevel()));
-		return String.format("%s%s", TRANSLATE.translateNameKey(this.translationKey()), level);
+		return String.format("%s%s", I18n.getInstance().translateNameKey(this.translationKey()), level);
 	}
 
 	/**
