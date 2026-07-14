@@ -86,8 +86,12 @@ public class GlyphRenderer {
 		t.startDrawingQuads();
 		float sy = 7.99F;
 		float ex = x;
-		for (int i = 0; i < text.length(); i++) {
+		int i = 0;
+		for (; i < text.length(); i++) {
 			char c = text.charAt(i);
+			if(Math.abs(ex - x) > length){
+				break;
+			}
 			int index = GlyphRenderer.getIndex(c, useIllager);
 			if (c == ' ' || index < 0) {
 				ex += 4.0f;
@@ -108,14 +112,11 @@ public class GlyphRenderer {
 			t.addVertexWithUV(ex + len, y, 0, uMax, vMin);
 			ex += (float) (len);
 			ex += 1.0f;
-			if(Math.abs(ex - x) > GlyphRenderer.MAX_STRING_LENGTH){
-				break;
-			}
 		}
 		t.draw();
 		GLRenderer.disableState(State.DEPTH_TEST);
 		GLRenderer.setColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		return (int) ex;
+		return i;
 	}
 
 	public static int getIndex(char c, boolean useIllager) {

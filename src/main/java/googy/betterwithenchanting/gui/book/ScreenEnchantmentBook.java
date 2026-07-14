@@ -24,7 +24,38 @@ public class ScreenEnchantmentBook extends ScreenFix {
 	private static final int MOUSEOVER_BUTTON_OFFSET = DEACTIVATED_BUTTON_OFFSET + 69;
 	public static final int BUTTON_HEIGHT_OFFSET = 174;
 
-	String[] texts = {"", ""};
+	// Release Wizard rant
+	String[] texts = {
+		"Knowledge is power",
+		"Where there is no struggle there is no strength",
+		"Loyalty is rare if you find it keep it",
+		"The greates wealth is health",
+		"To endure wehat is unendurable is true endurance",
+		"Your focus determins your reality",
+		"That which does not kill us makes us stronger",
+		"Your direction is more important than your speed",
+		"Never mistake knowledge for wisdom",
+		"The keen spirit seizes the prompt occasion",
+		"Every challange you face is an opportunity to grow",
+		"Accustom yourself to tireless activity",
+		"Beauty maybe dangerous but intelligence is lethal",
+		"To the pure all things are pure",
+		"Be exalted",
+		"Though hope is frail its hard to kill",
+		"A feeble body weakens the mind",
+		"Cursed is the man who dies but the evil done by him survives",
+		"Too much wit makes the world rotten",
+		"Vulnerability is not weakness its our most accurate measure of courage",
+		"Once exposed a secret loses all its power",
+		"Its the flaw that brings out our beauty",
+		"Uncertainty is most stressfull feeling",
+		"Underneath all reason lies delicium and drift",
+		"The strongest have their moment of fatigue",
+		"Two can keep secret if one of them is dead",
+		"Suppresed emotions eventually erupt",
+		""
+
+	};
 
 	int mouseX = 0;
 	int mouseY = 0;
@@ -89,29 +120,38 @@ public class ScreenEnchantmentBook extends ScreenFix {
 
 	private void renderText(int x, int y) {
 		MenuEnchantmentBook menu = (MenuEnchantmentBook) this.inventorySlots;
+		int sy = y + 6;
 		for (int i = 0; i < 2; i++) {
-			int sx = x + 7 + (BUTTON_WIDTH + 24) * i + 5;
-			int sy = y + 6;
+			int sx = x + 7 + (BUTTON_WIDTH + 24) * i + 3;
 			boolean canEnchant = menu.playerCanEnchant(i);
 			int color = canEnchant ? 16777088 : 6839882;
 			List<EnchantmentStack> enchantmentStackList = menu.getOption(i);
+			int count = 0;
+			int totalength = 36 - 9 * enchantmentStackList.size();
 			for(int k = 0; k < enchantmentStackList.size(); k++){
-				int ey = sy + k * 9 + 35;
+				int ey = sy + k * 9 + 40 + totalength / 2;
 				EnchantmentStack enchantmentStack = enchantmentStackList.get(k);
+				count += enchantmentStack.getLevel();
+				boolean noLevel = enchantmentStack.minLevel() == enchantmentStack.maxLevel();
+				String level = noLevel ? "" : String.valueOf(enchantmentStack.getLevel());
+				String name = I18n.getInstance().translateKey(enchantmentStack.getEnchantment().translationKeyName());
+				String enchantmentString = String.format("%s %s", name, level);
 				GLRenderer.pushFrame();
-				GLRenderer.modelM4f().scaleAround(0.90f, sx, ey, this.zLevel);
+				GLRenderer.modelM4f().scaleAround(0.94f, sx, ey, this.zLevel);
 				if(canEnchant){
-					this.drawStringNoShadow(this.mc.font, enchantmentStack.prettyToString() , sx, ey, color);
+					this.drawStringShadow(this.mc.font, enchantmentString , sx, ey, color);
 				}else{
-					this.drawStringNoShadow(this.mc.font, enchantmentStack.prettyToString() , sx, ey, color);
+					this.drawStringNoShadow(this.mc.font, enchantmentString , sx, ey, color);
 				}
 				GLRenderer.popFrame();
 			}
+			// TODO figure out how to do this differently
+			String label = this.texts[count % this.texts.length];
+			for(int lines = 0; lines < 3 ; lines++){
+				int index = GlyphRenderer.drawString(label, sx, sy + 2 + lines * 9, color, 60 , (i % 2) == 1, canEnchant);
+				label = label.substring(index);
+			}
 
-
-			String label = "";
-			boolean type = false;
-			GlyphRenderer.drawString(label, x + 80, y + 18 + BUTTON_HEIGHT * 9999, color, type, canEnchant);
 		}
 	}
 

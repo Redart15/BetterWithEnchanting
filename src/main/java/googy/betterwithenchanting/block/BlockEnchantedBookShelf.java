@@ -53,14 +53,15 @@ public class BlockEnchantedBookShelf extends BlockLogic {
 		for (Enchantment enchantment : Enchantments.getInstance()) {
 			if (!enchantment.hidden()) {
 				for (int i = enchantment.minLevel(); i < enchantment.maxLevel() - enchantment.minLevel(); i++) {
-					bag.addEntry(new EnchantmentStack(enchantment, i), enchantment.getWeight(i));
+					bag.addEntry(new EnchantmentStack(enchantment, i), 1);
 				}
 			}
 		}
 		ListTag listTag = new ListTag();
 		for (int option = 0; option < 2; option++) {
 			optionList.clear();
-			for (int i = world.rand.nextInt(4) + 1; i > 0; i--) {
+			int random = world.rand.nextInt(3);
+			for (int i = random + 1; i > 0; i--) {
 				EnchantmentStack addStack = bag.getRandom(world.rand);
 				if (EnchantmentContainer.adjustsLevel(optionList, addStack)) {
 					continue;
