@@ -2,6 +2,7 @@ package googy.betterwithenchanting.gui.book;
 
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
+import googy.betterwithenchanting.mixins.interfaces.ContainerHotbarLocking;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.InventoryAction;
 import net.minecraft.core.entity.player.Player;
@@ -44,6 +45,10 @@ public class MenuEnchantmentBook extends MenuAbstract {
 			player.world.playSoundAtEntity(player, player, "random.insert", 0.1F, 1.0F);
 		}else{
 			this.enchantSlot.setItem(0, null);
+		}
+		ContainerHotbarLocking inventory = (ContainerHotbarLocking) player.inventory;
+		if(inventory.enchanted$isLocked(player.inventory.getCurrentSlot())){
+			inventory.enchanted$lockSlot(player.inventory.getCurrentSlot(), false);
 		}
 	}
 

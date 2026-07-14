@@ -19,6 +19,7 @@
     "accessor.ProjectileAccessor",
     "accessor.SlotResultAccessor",
     "achievement.SlotResultMixinEnchanter",
+    "enchanted_book.ContainerInventoryMixinLock",
     "enchantment.BlockLogicMixinAlterationAndAdditions",
     "enchantment.ConsumedFoodMixinEnchantments",
     "enchantment.EntityAdditionalSaves",
@@ -37,6 +38,7 @@
   ],
   "client": [
     "accessor.ScreenContainerAbstractAccessor",
+    "enchanted_book.HudComponentHotbarMixinLockSlot",
     "enchantment.PlayerControllerMixinQuickStrikeMining",
     "net.NetClientHandlerMixin",
     "render.ItemModelMixin",

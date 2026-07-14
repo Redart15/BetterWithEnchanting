@@ -1,6 +1,9 @@
 package googy.betterwithenchanting.item;
 
+import googy.betterwithenchanting.mixins.interfaces.ContainerHotbarLocking;
 import googy.betterwithenchanting.mixins.interfaces.PlayerAdditionalGui;
+import net.minecraft.core.block.motion.CarriedBlock;
+import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
@@ -19,6 +22,8 @@ public class ItemEnchantedBook extends Item {
 	public @Nullable ItemStack onUse(@NotNull ItemStack selfStack, @NotNull World world, @NotNull Player player) {
 		if(!world.isClientSide){
 			((PlayerAdditionalGui)player).displayGuiEnchantmentBook(selfStack);
+			player.inventory.locked(player.inventory.getCurrentSlot());
+			((ContainerHotbarLocking)player.inventory).enchanted$lockSlot(player.inventory.getCurrentSlot(), true);
 		}
 		return selfStack;
 	}
