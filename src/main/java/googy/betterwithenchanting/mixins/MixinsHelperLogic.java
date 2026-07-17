@@ -5,10 +5,12 @@ import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.api.Enchantments;
+import googy.betterwithenchanting.block.EnchantmentBlocks;
 import googy.betterwithenchanting.mixins.interfaces.EnchantmentCannonball;
 import googy.betterwithenchanting.mixins.mixin.accessor.BlockLogicLeavesBaseAccessor;
 import googy.betterwithenchanting.mixins.mixin.accessor.ConsumedFoodAccessor;
 import googy.betterwithenchanting.mixins.mixin.accessor.ProjectileAccessor;
+import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.WeightedRandomBag;
 import net.minecraft.core.WeightedRandomLootObject;
@@ -42,6 +44,7 @@ public class MixinsHelperLogic {
 	private MixinsHelperLogic() {}
 
 	protected static WeightedRandomBag<WeightedRandomLootObject> fortuneBag = new WeightedRandomBag<>();
+	protected static WeightedRandomBag<ObjectIntImmutablePair<Block<?>>> blockdata = new WeightedRandomBag<>();
 
 	static {
 		// fortune bag and its filling
@@ -57,6 +60,22 @@ public class MixinsHelperLogic {
 		fortuneBag.addEntry(new WeightedRandomLootObject(Items.DIAMOND.getDefaultStack()), 16);
 		// bizzare
 		fortuneBag.addEntry(new WeightedRandomLootObject(Items.DUST_GLOWSTONE.getDefaultStack()), 8);
+	}
+
+	static {
+		int rarity = 20;
+		for(DyeColor color : DyeColor.values()){
+			blockdata.addEntry(new ObjectIntImmutablePair<>(Blocks.BOOKSHELF_PLANKS_OAK, color.itemMeta), 1);
+			for(int i = 0; i < 4; i++){
+				int metadata = (color.blockMeta << 2 + i) & 0b0111_1111;
+				double weight = 12f/(25.0f * rarity *(i + 1));
+				blockdata.addEntry(new ObjectIntImmutablePair<>(EnchantmentBlocks.ENCHANTED_BOOKSHELF_ACTIVE, metadata), weight);
+			}
+		}
+	}
+
+	public static ObjectIntImmutablePair<Block<?>> getRandomBlockData(Random random){
+		return blockdata.getRandom(random);
 	}
 
 	public static void devLog(String message) {
