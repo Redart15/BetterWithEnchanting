@@ -6,13 +6,13 @@ import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.command.CommandEnchantment;
 import googy.betterwithenchanting.command.CommandScore;
 import googy.betterwithenchanting.item.EnchantmentItems;
+import googy.betterwithenchanting.mixins.mixin.accessor.DispatcherAccessor;
 import googy.betterwithenchanting.particle.ParticleCrit;
 import googy.betterwithenchanting.particle.ParticleGlyph;
-import googy.betterwithenchanting.render.EnchantmentTableRenderer;
-import googy.betterwithenchanting.render.GlyphRenderer;
-import googy.betterwithenchanting.render.ItemModelEnchantmentTable;
+import googy.betterwithenchanting.render.*;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.render.TileEntityRenderDispatcher;
+import net.minecraft.client.render.block.model.BlockModel;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
 import net.minecraft.client.render.block.model.BlockModelStandard;
 import net.minecraft.client.render.item.model.ItemModelDispatcher;
@@ -22,6 +22,8 @@ import net.minecraft.client.render.particle.ParticleDispatcher;
 import net.minecraft.client.render.particle.ParticleEntry;
 import net.minecraft.client.render.texture.stitcher.AtlasStitcher;
 import net.minecraft.client.render.texture.stitcher.TextureRegistry;
+import net.minecraft.core.block.Block;
+import net.minecraft.core.block.Blocks;
 import net.minecraft.core.item.block.ItemBlock;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.util.helper.Side;
@@ -31,7 +33,10 @@ import turniplabs.halplibe.event.defs.ClientEvents;
 import turniplabs.halplibe.helper.TextureHelper;
 import turniplabs.halplibe.util.dependency.Key;
 
+import java.util.Map;
+
 import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
+import static net.minecraft.client.render.block.model.BlockModelDispatcher.loadDataModel;
 
 public class BetterWithEnchantingClient implements ClientModInitializer {
 
@@ -101,17 +106,21 @@ public class BetterWithEnchantingClient implements ClientModInitializer {
 			.setTex(BLOCK_DIR + "enchanter/side", SIDES)
 		);
 
-		dispatcher.addDispatch(new BlockModelStandard<>(EnchantmentBlocks.ENCHANTED_BOOKSHELF)
+		dispatcher.addDispatch(new BlockModelStandard<>(EnchantmentBlocks.ENCHANTED_BOOKSHELF_ACTIVE)
 			.setTex(BLOCK_DIR + "enchanted_book_shelf/top", Side.TOP)
 			.setTex(BLOCK_DIR + "enchanted_book_shelf/top", Side.BOTTOM)
 			.setTex(BLOCK_DIR + "enchanted_book_shelf/side", SIDES)
 		);
+		// reassign models
+		@SuppressWarnings("unchecked") Map<Block<?>, BlockModel<?>> dispatches = ((DispatcherAccessor<Block<?>, BlockModel<?>>) (Object) dispatcher).getDispatches();
+		dispatches.put(Blocks.BOOKSHELF_PLANKS_OAK, new BlockModelBookShelf<>(Blocks.BOOKSHELF_PLANKS_OAK, loadDataModel(MOD_ID + ":block/bookshelf"), ":block/bookshelf/"));
+		dispatcher.addDispatch(new BlockModelBookShelf<>(EnchantmentBlocks.ENCHANTED_BOOKSHELF, loadDataModel(MOD_ID + ":block/bookshelf"), ":block/bookshelf/"));
 	}
 
 	public static void initItemModels(ItemModelDispatcher dispatcher) {
 		dispatcher.addDispatch(new ItemModelStandard(EnchantmentItems.SCORE_BOTTLE, true).setIcon(ITEM_DIR + "score_bottle1"));
 		dispatcher.addDispatch(new ItemModelEnchantmentTable((ItemBlock<?>) EnchantmentBlocks.ENCHANTMENT_TABLE.asItem()));
-		dispatcher.addDispatch(new ItemModelStandard( EnchantmentItems.ENCHANTED_BOOK, true).setIcon(ITEM_DIR + "enchanted_book"));
+		dispatcher.addDispatch(new ItemModelEnchantedBook( EnchantmentItems.ENCHANTED_BOOK));
 	}
 
 	public static void initTileEntityModels(TileEntityRenderDispatcher dispatcher) {
