@@ -82,12 +82,12 @@ public class MenuEnchantmentTable extends MenuAbstract {
 			}
 		}
 		EnchantmentContainer.addEnchantments(enchantItem, enchantments);
-		this.checkEnchantments(player, enchantItem);
-		forceUpdateInventory();
+		MenuEnchantmentTable.checkAchievements(player, enchantItem);
+		this.forceUpdateInventory();
 		return true;
 	}
 
-	private void checkEnchantments(Player player, ItemStack enchantItem) {
+	public static void checkAchievements(Player player,@NotNull ItemStack enchantItem) {
 		player.triggerAchievement(EnchantmentAchievements.ENCHANT_ITEM);
 		if(enchantItem.getItem() instanceof ItemFood){
 			player.triggerAchievement(EnchantmentAchievements.ENCHANTED_FOOD);

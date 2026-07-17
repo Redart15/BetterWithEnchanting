@@ -1,7 +1,7 @@
 package googy.betterwithenchanting.block;
 
 import net.minecraft.core.block.Block;
-import net.minecraft.core.block.BlockLogic;
+import net.minecraft.core.block.BlockLogicBookshelf;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.block.material.Materials;
 import net.minecraft.core.block.tag.BlockTags;
@@ -15,6 +15,7 @@ import static googy.betterwithenchanting.BetterWithEnchanting.*;
 
 public class EnchantmentBlocks{
 	public static Block<?> ENCHANTMENT_TABLE;
+	public static Block<?> ENCHANTED_BOOKSHELF_ACTIVE;
 	public static Block<?> ENCHANTED_BOOKSHELF;
 
 	private static Block<?> addBlock(Block<?> block) {
@@ -49,12 +50,23 @@ public class EnchantmentBlocks{
 				.withLightEmission(7)
 				.withTags(BlockTags.MINEABLE_BY_PICKAXE));
 
+		ENCHANTED_BOOKSHELF_ACTIVE = addBlock(
+			Blocks.register(
+					formatTranslationKey("enchanted.bookshelf.active"),
+					formatName("enchanted_bookshelf_active"),
+					startingId++,
+					block -> new BlockEnchantedBookShelf(block, Materials.WOOD)
+				)
+				.withSound(BlockSounds.WOOD)
+				.withHardness(1.5F)
+				.withTags(new Tag[]{BlockTags.FENCES_CONNECT, BlockTags.MINEABLE_BY_AXE}));
+
 		ENCHANTED_BOOKSHELF = addBlock(
 			Blocks.register(
 					formatTranslationKey("enchanted.bookshelf"),
 					formatName("enchanted_bookshelf"),
 					startingId++,
-					block -> new BlockEnchantedBookShelf(block, Materials.WOOD)
+					block -> new BlockLogicBookshelf(block, Materials.WOOD)
 				)
 				.withSound(BlockSounds.WOOD)
 				.withHardness(1.5F)

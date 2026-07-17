@@ -38,7 +38,6 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 	// label
 	public final int[] labelIndexes = new int[3];
 	private byte type = 0;
-	private long convertionCoolDown = 0;
 
 	public void setRandomLabel() {
 		for (int i = 0; i < labelIndexes.length; i++) {
@@ -70,7 +69,6 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 		this.bookSpread = MathHelper.clamp(this.bookSpread, 0.0F, 1.0F);
 		this.prevPageFlip = this.pageFlip;
 		this.setUpPageFlip();
-		this.enchantABookShelf();
 	}
 
 	private void setUpPageFlip() {
@@ -124,54 +122,7 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 		while (this.itemRot < -(float) Math.PI) this.itemRot += ((float) Math.PI * 2.0F);
 	}
 
-	private void enchantABookShelf() {
-		if (this.worldObj == null) {
-			return;
-		}
-		if(this.ticks - this.convertionCoolDown <= (20 * Global.TICKS_PER_SECOND)){
-			return;
-		}
-		class Cache { private static final @NotNull TilePos pos = new TilePos();}
-		int posX = this.tilePos.x();
-		int posY = this.tilePos.y();
-		int posZ = this.tilePos.z();
-		for(int sample = 3; sample > 0; sample--){
-			int xOff = (int) Math.round(boundGaussian(random) * 5.0f);
-			int yOff = (int) Math.round(boundGaussian(random) * 5.0f);
-			int zOff = (int) Math.round(boundGaussian(random) * 5.0f);
-			if(this.convertBookShelf(Cache.pos.set(posX + xOff, posY + yOff, posZ + zOff))){
-				break;
-			}
-		}
-		this.convertionCoolDown = ticks;
-	}
 
-	private static double boundGaussian(Random random) {
-		return Math.tanh(random.nextGaussian() / 1.5);
-	}
-
-	private boolean convertBookShelf(TilePosc tilepos) {
-		assert this.worldObj != null;
-		Block<?> blockType = this.worldObj.getBlockType(tilepos);
-		if (blockType.id() == Blocks.BOOKSHELF_PLANKS_OAK.id()) {
-			int metadata = this.worldObj.getBlockData(tilepos);
-			metadata = metadata << 2;
-			metadata += 1;
-			this.worldObj.setBlockTypeNotify(tilepos, EnchantmentBlocks.ENCHANTED_BOOKSHELF);
-			this.worldObj.setBlockDataNotify(tilepos, metadata);
-			return true;
-		}
-		if (blockType.id() == EnchantmentBlocks.ENCHANTED_BOOKSHELF.id()) {
-			int metadata = this.worldObj.getBlockData(tilepos);
-			if ((metadata & 0b11) == 3) {
-				return false;
-			}
-			metadata += 1;
-			this.worldObj.setBlockDataNotify(tilepos, metadata);
-			return true;
-		}
-		return false;
-	}
 
 	@Override
 	public void setItem(int slot, @Nullable ItemStack stack) {
