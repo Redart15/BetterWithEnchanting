@@ -1,12 +1,18 @@
 package googy.betterwithenchanting.gui.book;
 
+import googy.betterwithenchanting.api.EnchantmentAchievements;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
+import googy.betterwithenchanting.gui.table.MenuEnchantmentTable;
 import googy.betterwithenchanting.mixins.interfaces.ContainerHotbarLocking;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.minecraft.client.entity.player.PlayerLocal;
 import net.minecraft.core.InventoryAction;
 import net.minecraft.core.entity.player.Player;
+import net.minecraft.core.item.ItemFood;
 import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.player.gamemode.Gamemode;
+import net.minecraft.core.player.gamemode.Gamemodes;
 import net.minecraft.core.player.inventory.container.Container;
 import net.minecraft.core.player.inventory.container.ContainerInventory;
 import net.minecraft.core.player.inventory.container.ContainerSimple;
@@ -19,22 +25,76 @@ import java.util.List;
 import static googy.betterwithenchanting.item.EnchantmentTags.UNECHANT;
 
 public class MenuEnchantmentBook extends MenuAbstract {
+	public static final int SLOT_SIZE = 18;
 	private final Container enchantSlot = new ContainerSimple("enchantmentSlot", 1);
+	private int optioChoosen;
 	private final ItemStack selfStack;
 
 	public MenuEnchantmentBook(@NotNull ContainerInventory inventory, ItemStack selfStack) {
 		this.selfStack = selfStack;
-		this.addSlot(new Slot(enchantSlot,0, 80, 40));
-		for(int y = 0; y < 3; ++y) {
-			for(int x = 0; x < 9; ++x) {
-				this.addSlot(new Slot(inventory, x + y * 9 + 9, 8 + x * 18, 92 + y * 18));
+		this.optioChoosen = -1;
+		this.addSlot(new Slot(enchantSlot, 0, 80, 40 + 7));
+		for (int y = 0; y < 3; ++y) {
+			for (int x = 0; x < 9; ++x) {
+				int id = x + y * 9 + 9;
+				int ix = x * SLOT_SIZE + 8;
+				int iy = y * SLOT_SIZE + 112;
+				this.addSlot(new Slot(inventory, id, ix, iy));
 			}
 		}
-		for(int i = 0; i < 9; ++i) {
-			this.addSlot(new Slot(inventory, i, 8 + i * 18, 150));
+		for (int i = 0; i < 9; ++i) {
+			this.addSlot(new Slot(inventory, i, 8 + i * SLOT_SIZE, 150 + 20));
 		}
 		this.broadcastChanges();
 	}
+
+	public boolean playerCanEnchant(int option) {
+		Slot slot = this.getSlot(0);
+		if (slot == null) {
+			return false;
+		}
+		ItemStack itemStack = slot.getItemStack();
+		if (itemStack == null) {
+			return false;
+		}
+		if (!EnchantmentContainer.getEnchantments(itemStack).isEmpty()) {
+			return false;
+		}
+		if (itemStack.getItem().hasTag(UNECHANT)) {
+			return false;
+		}
+		for (EnchantmentStack stack : EnchantmentContainer.getEnchantments(this.selfStack, option)) {
+			if (stack.canEnchant(itemStack)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public boolean enchantItem(Player player, int i) {
+		Slot slot = this.getSlot(0);
+		if (slot == null || slot.getItemStack() == null) {
+			return false;
+		}
+		ItemStack enchantItem = slot.getItemStack();
+		List<EnchantmentStack> enchantmentStackList = this.getOption(i);
+		if (enchantmentStackList.isEmpty()) {
+			return false;
+		}
+		if (player.gamemode != Gamemodes.CREATIVE) {
+			this.optioChoosen = i;
+		}
+		for (EnchantmentStack enchantmentStack : enchantmentStackList) {
+			if (enchantmentStack.canEnchant(enchantItem)) {
+				EnchantmentContainer.addEnchantment(enchantItem, enchantmentStack);
+			}
+		}
+		player.triggerAchievement(EnchantmentAchievements.LOST_KNOWLEDGE);
+		MenuEnchantmentTable.checkAchievements(player, enchantItem);
+		return true;
+	}
+
 
 	@Override
 	public void onCraftGuiClosed(@NotNull Player player) {
@@ -43,13 +103,27 @@ public class MenuEnchantmentBook extends MenuAbstract {
 		if (itemstack != null) {
 			this.storeOrDropItem(player, itemstack);
 			player.world.playSoundAtEntity(player, player, "random.insert", 0.1F, 1.0F);
-		}else{
+		} else {
 			this.enchantSlot.setItem(0, null);
 		}
 		ContainerHotbarLocking inventory = (ContainerHotbarLocking) player.inventory;
-		if(inventory.enchanted$isLocked(player.inventory.getCurrentSlot())){
+		if (inventory.enchanted$isLocked(player.inventory.getCurrentSlot())) {
 			inventory.enchanted$lockSlot(player.inventory.getCurrentSlot(), false);
 		}
+		if (this.enchantmentWasUsed()) {
+			if (this.selfStack.stackSize <= 0) {
+				return;
+			}
+			this.selfStack.stackSize--;
+			if (this.selfStack.stackSize == 0) {
+				player.inventory.setItem(player.inventory.getCurrentSlot(), null);
+			} else {
+				player.inventory.setItem(player.inventory.getCurrentSlot(), this.selfStack);
+			}
+		} else {
+			player.inventory.setItem(player.inventory.getCurrentSlot(), this.selfStack);
+		}
+
 	}
 
 	@Override
@@ -78,7 +152,7 @@ public class MenuEnchantmentBook extends MenuAbstract {
 	public IntList getTargetSlots(@NotNull InventoryAction action, Slot slot, int target, Player entityPlayer) {
 		if (slot.index >= 3 && slot.index <= 39) {
 			if (action != InventoryAction.MOVE_ALL && target == 1) {
-					return this.getSlots(0, 1, false);
+				return this.getSlots(0, 1, false);
 			}
 			if (slot.index < 30) {
 				return this.getSlots(30, 9, false);
@@ -94,23 +168,19 @@ public class MenuEnchantmentBook extends MenuAbstract {
 		}
 	}
 
-	public boolean playerCanEnchant(int option) {
-		Slot slot = this.getSlot(0);
-		if(slot == null) 												{return false;}
-		ItemStack itemStack = slot.getItemStack();
-		if(itemStack == null) 											{return false;}
-		if(!EnchantmentContainer.getEnchantments(itemStack).isEmpty()) 	{return false;}
-		if(itemStack.getItem().hasTag(UNECHANT))						{return false;}
-		for(EnchantmentStack stack : EnchantmentContainer.getEnchantments(this.selfStack, option)){
-			if(stack.canEnchant(itemStack)){
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	public List<EnchantmentStack> getOption(int i) {
 		return EnchantmentContainer.getEnchantments(this.selfStack, i);
+	}
+
+	public int enchantmentChoosenOption() {
+		return this.optioChoosen;
+	}
+
+	public boolean enchantmentWasUsed() {
+		return this.optioChoosen != -1;
+	}
+
+	public ItemStack selfStack() {
+		return this.selfStack.copy();
 	}
 }

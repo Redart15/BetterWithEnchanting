@@ -39,11 +39,6 @@ public class ContainerInventoryMixinLock implements ContainerHotbarLocking {
 		return ((this.lock & 0b1111_1111_1) >>> slotID) & 1;
 	}
 
-	@WrapMethod(method = "locked")
-	private boolean improvedLock(int slot, Operation<Boolean> original){
-		return original.call(slot) && this.enchanted$isLocked(slot);
-	}
-
 
 	@WrapMethod(method = "currentSlotLocked")
 	private boolean improvedCurrentSlotLock(Operation<Boolean> original){

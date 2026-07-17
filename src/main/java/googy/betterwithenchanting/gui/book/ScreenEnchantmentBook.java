@@ -1,15 +1,18 @@
 package googy.betterwithenchanting.gui.book;
 
-import googy.betterwithenchanting.api.Enchantment;
+import com.mojang.nbt.tags.CompoundTag;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
-import googy.betterwithenchanting.api.Enchantments;
 import googy.betterwithenchanting.gui.ScreenFix;
+import googy.betterwithenchanting.network.MessageEnchantItem;
 import googy.betterwithenchanting.render.GlyphRenderer;
+import net.minecraft.client.entity.player.PlayerLocalMultiplayer;
 import net.minecraft.client.render.renderer.GLRenderer;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.player.inventory.container.ContainerInventory;
+import net.minecraft.core.player.inventory.slot.Slot;
+import turniplabs.halplibe.helper.network.NetworkHandler;
 
 import java.util.List;
 
@@ -17,12 +20,20 @@ import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
 
 public class ScreenEnchantmentBook extends ScreenFix {
 	// need to adjust
-	public static final int BUTTON_WIDTH = 69;
-	public static final int BUTTON_HEIGHT = 79;
+	public static final int BUTTON_WIDTH = 68;
+	public static final int BUTTON_HEIGHT = 93;
+	public static final int BUTTON_WIDTH_OFFSET = 20;
+	public static final int BUTTON_HEIGHT_OFFSET = 9;
+	public static final float SCALE_U = 1.0F / 512F;
+	public static final float SCALE_V = 1.0F / 512F;
+
+	private static final int[] BUTTONS_HEIGHT_OFFSET = new int[]{194, 287};
 	private static final int ACTIVE_BUTTON_OFFSET = 0;
-	private static final int DEACTIVATED_BUTTON_OFFSET = ACTIVE_BUTTON_OFFSET + 69;
-	private static final int MOUSEOVER_BUTTON_OFFSET = DEACTIVATED_BUTTON_OFFSET + 69;
-	public static final int BUTTON_HEIGHT_OFFSET = 174;
+	private static final int DEACTIVATED_BUTTON_OFFSET = ACTIVE_BUTTON_OFFSET + BUTTON_WIDTH;
+	private static final int MOUSEOVER_BUTTON_OFFSET = DEACTIVATED_BUTTON_OFFSET + BUTTON_WIDTH;
+	private static final int CHOOSEN_BUTTON_OFFSET = MOUSEOVER_BUTTON_OFFSET + BUTTON_WIDTH;
+	public static final int LETTER_SIZE = 9;
+
 
 	// Release Wizard rant
 	String[] texts = {
@@ -59,44 +70,62 @@ public class ScreenEnchantmentBook extends ScreenFix {
 
 	int mouseX = 0;
 	int mouseY = 0;
+	private final MenuEnchantmentBook menu;
+	private final int[] textIndex = new int[2];
 
 	public ScreenEnchantmentBook(ContainerInventory inventory, ItemStack selfStack) {
 		super(new MenuEnchantmentBook(inventory, selfStack));
-		this.ySize = 174;
+		this.ySize = 194;
+		this.menu = (MenuEnchantmentBook) this.inventorySlots;
+		this.textIndex[0] = 0;
+		this.textIndex[1] = 1;
 	}
 
 	@Override
-	public void render(int x, int y, float renderPartialTicks) {
-		this.mouseX = x;
-		this.mouseY = y;
-		super.render(x, y, renderPartialTicks);
+	public void render(int mouseX, int mouseY, float renderPartialTicks) {
+		this.mouseX = mouseX;
+		this.mouseY = mouseY;
+		super.render(mouseX, mouseY, renderPartialTicks);
 	}
 
 	@Override
-	public void mouseClicked(int x, int y, int mouseButton) {
-		super.mouseClicked(x, y, mouseButton);
-		int guiX = (width - xSize) / 2;
-		int guiY = (height - ySize) / 2;
-		for (int i = 0; i < 3; i++) {
-			int buttonWidth = 1;
-			int buttonHeight = 2;
-			int buttonX = guiX + 60;
-			int buttonY = guiY + 14 + buttonHeight * i;
-			boolean isMouseOver = (x > buttonX && x < buttonX + buttonWidth) && (y > buttonY && y < buttonY + buttonHeight);
-			if (!isMouseOver) {
+	public void mouseClicked(int clickedX, int clickedY, int mouseButton) {
+		super.mouseClicked(clickedX, clickedY, mouseButton);
+		if(this.menu.enchantmentWasUsed()){
+			return;
+		}
+		int x = (width - xSize) / 2;
+		int y = (height - ySize) / 2;
+		for (int i = 0; i < 2; i++) {
+			int minWidth = x + BUTTON_WIDTH_OFFSET + BUTTON_WIDTH * i;
+			int minHeight = y + BUTTON_HEIGHT_OFFSET;
+			if ((clickedX <= minWidth || clickedX >= minWidth + BUTTON_WIDTH) || (clickedY <= minHeight || clickedY >= minHeight + BUTTON_HEIGHT)) {
 				continue;
 			}
+			if(this.menu.playerCanEnchant(i)){
+				if(this.mc.thePlayer instanceof PlayerLocalMultiplayer){
+//					NetworkHandler.sendToServer(new MessageEnchantItem());
+				}else{
+					this.menu.enchantItem(this.mc.thePlayer, i);
+				}
+			}
 		}
+		this.menu.broadcastChanges();
+	}
+
+	private boolean isIsMouseOver(int minWidth, int maxWidth, int minHeight, int maxHeight) {
+		boolean hoverEnchantSlot = this.getIsMouseOverSlot(this.inventorySlots.getSlot(0), this.mouseX, this.mouseY);
+		boolean mouseOverOption = (this.mouseX > minWidth && this.mouseX < maxWidth) && (this.mouseY > minHeight && this.mouseY < maxHeight);
+		return mouseOverOption && !hoverEnchantSlot;
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float delta) {
 		GLRenderer.setColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.textureManager.loadTexture("/assets/" + MOD_ID + "/gui/" + "enchantment_book.png").bind();
+		this.mc.textureManager.loadTexture("/assets/" + MOD_ID + "/gui/" + "enchantment_book2.png").bind();
 		int x = (this.width - this.xSize) / 2;
 		int y = (this.height - this.ySize) / 2;
-		// draw background
-		this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
+		this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize, SCALE_U, SCALE_V);
 		this.renderButtons(x, y);
 		this.renderText(x, y);
 		GLRenderer.setColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -104,54 +133,72 @@ public class ScreenEnchantmentBook extends ScreenFix {
 
 	private void renderButtons(int x, int y) {
 		for (int i = 0; i < 2; i++) {
-			int minWidth = x + 7 + (BUTTON_WIDTH + 24) * i;
-			int minHeight = y + 6;
-			int maxHeight = minHeight + BUTTON_HEIGHT;
-			int maxWidth = minWidth + BUTTON_WIDTH;
-			boolean isMouseOver = (this.mouseX > minWidth && this.mouseX < maxWidth) && (this.mouseY > minHeight && this.mouseY < maxHeight);
-			boolean canEnchant = ((MenuEnchantmentBook)this.inventorySlots).playerCanEnchant(i);
+			int heightOffset = BUTTONS_HEIGHT_OFFSET[i];
+			int minWidth = x + BUTTON_WIDTH_OFFSET + BUTTON_WIDTH * i;
+			int minHeight = y + BUTTON_HEIGHT_OFFSET;
+			boolean isIsMouseOver = this.isIsMouseOver(minWidth, minWidth + BUTTON_WIDTH, minHeight, minHeight + BUTTON_HEIGHT);
+			boolean canEnchant = this.menu.playerCanEnchant(i);
 			int offset = DEACTIVATED_BUTTON_OFFSET;
-			if (canEnchant) {
-				offset = isMouseOver ? MOUSEOVER_BUTTON_OFFSET : ACTIVE_BUTTON_OFFSET;
+			if (this.menu.enchantmentWasUsed()) {
+				offset = this.menu.enchantmentChoosenOption() == i ? CHOOSEN_BUTTON_OFFSET : DEACTIVATED_BUTTON_OFFSET;
+			} else {
+				if (canEnchant) {
+					offset = isIsMouseOver ? MOUSEOVER_BUTTON_OFFSET : ACTIVE_BUTTON_OFFSET;
+				}
 			}
-			this.drawTexturedModalRect(minWidth, minHeight, offset, BUTTON_HEIGHT_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT);
+			this.drawTexturedModalRect(minWidth, minHeight, offset, heightOffset, BUTTON_WIDTH, BUTTON_HEIGHT, SCALE_U, SCALE_V);
 		}
 	}
 
 	private void renderText(int x, int y) {
-		MenuEnchantmentBook menu = (MenuEnchantmentBook) this.inventorySlots;
-		int sy = y + 6;
-		for (int i = 0; i < 2; i++) {
-			int sx = x + 7 + (BUTTON_WIDTH + 24) * i + 3;
+		ItemStack selfStack = menu.selfStack();
+		CompoundTag tag = selfStack.getData();
+		boolean conTains = tag.containsKey("id");
+		Slot enchantItemSlot = this.menu.getSlot(0);
+		ItemStack stackInSlot = null;
+		if(enchantItemSlot != null){
+			stackInSlot = enchantItemSlot.getItemStack();
+		}
+		for(int i = 0; i < 2; i++){
+			int sx = x + BUTTON_WIDTH_OFFSET + 2 + (BUTTON_WIDTH + 3) * i;
+			int sy = y + BUTTON_HEIGHT_OFFSET + 2;
 			boolean canEnchant = menu.playerCanEnchant(i);
 			int color = canEnchant ? 16777088 : 6839882;
-			List<EnchantmentStack> enchantmentStackList = menu.getOption(i);
-			int count = 0;
-			int totalength = 36 - 9 * enchantmentStackList.size();
-			for(int k = 0; k < enchantmentStackList.size(); k++){
-				int ey = sy + k * 9 + 40 + totalength / 2;
-				EnchantmentStack enchantmentStack = enchantmentStackList.get(k);
-				count += enchantmentStack.getLevel();
-				boolean noLevel = enchantmentStack.minLevel() == enchantmentStack.maxLevel();
-				String level = noLevel ? "" : String.valueOf(enchantmentStack.getLevel());
-				String name = I18n.getInstance().translateKey(enchantmentStack.getEnchantment().translationKeyName());
-				String enchantmentString = String.format("%s %s", name, level);
-				GLRenderer.pushFrame();
-				GLRenderer.modelM4f().scaleAround(0.94f, sx, ey, this.zLevel);
-				if(canEnchant){
-					this.drawStringShadow(this.mc.font, enchantmentString , sx, ey, color);
-				}else{
-					this.drawStringNoShadow(this.mc.font, enchantmentString , sx, ey, color);
-				}
-				GLRenderer.popFrame();
-			}
-			// TODO figure out how to do this differently
-			String label = this.texts[count % this.texts.length];
-			for(int lines = 0; lines < 3 ; lines++){
-				int index = GlyphRenderer.drawString(label, sx, sy + 2 + lines * 9, color, 60 , (i % 2) == 1, canEnchant);
-				label = label.substring(index);
-			}
+			this.renderGlyphs(i, conTains ? tag.getLong("id") : textIndex[i], sx, sy, color, canEnchant);
+			this.renderEnchantments(i, canEnchant, stackInSlot, sx, sy + 6 * LETTER_SIZE, color);
+		}
+	}
 
+	private void renderGlyphs(int option, long id, int sx, int sy, int color, boolean canEnchant) {
+		long random = id >> ((option + 1L) * 12L);
+		boolean useIllager = (random & 1L) == 0;
+		StringBuilder working = new StringBuilder(this.texts[(int) Long.remainderUnsigned(random, this.texts.length)]);
+		for (int lines = 0; lines < 4; lines++) {
+			int index = GlyphRenderer.drawString(working.toString(), sx, sy + lines * LETTER_SIZE, color, 56, useIllager, canEnchant);
+			working.delete(0, index);
+		}
+	}
+
+	private void renderEnchantments(int option, boolean canEnchant, ItemStack stackInSlot, int sx, int sy, int color) {
+		List<EnchantmentStack> enchantmentStackList = menu.getOption(option);
+		for (EnchantmentStack enchantmentStack : enchantmentStackList) {
+			if (canEnchant && stackInSlot != null && !enchantmentStack.canEnchant(stackInSlot)) {
+				continue;
+			}
+			boolean noLevel = enchantmentStack.minLevel() == enchantmentStack.maxLevel();
+			StringBuilder text = new StringBuilder()
+				.append(I18n.getInstance().translateKey(enchantmentStack.getEnchantment().translationKeyName()))
+				.append(" ")
+				.append(noLevel ? "" : String.valueOf(enchantmentStack.getLevel()));
+			GLRenderer.pushFrame();
+			GLRenderer.modelM4f().scaleAround(0.89f, sx, sy, this.zLevel);
+			if (canEnchant) {
+				this.drawStringShadow(this.mc.font, text.toString(), sx, sy, color);
+			} else {
+				this.drawStringNoShadow(this.mc.font, text.toString(), sx, sy, color);
+			}
+			GLRenderer.popFrame();
+			sy += LETTER_SIZE;
 		}
 	}
 

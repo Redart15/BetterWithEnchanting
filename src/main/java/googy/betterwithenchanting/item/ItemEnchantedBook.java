@@ -23,6 +23,7 @@ public class ItemEnchantedBook extends Item {
 		if(!world.isClientSide){
 			((PlayerAdditionalGui)player).displayGuiEnchantmentBook(selfStack);
 			player.inventory.locked(player.inventory.getCurrentSlot());
+			player.inventory.setItem(player.inventory.getCurrentSlot(), null);
 			((ContainerHotbarLocking)player.inventory).enchanted$lockSlot(player.inventory.getCurrentSlot(), true);
 		}
 		return selfStack;
