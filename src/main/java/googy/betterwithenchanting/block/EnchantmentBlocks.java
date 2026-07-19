@@ -8,7 +8,6 @@ import net.minecraft.core.block.tag.BlockTags;
 import net.minecraft.core.data.tag.Tag;
 import net.minecraft.core.sound.BlockSound;
 import net.minecraft.core.sound.BlockSounds;
-import turniplabs.halplibe.mixin.accessors.BlocksAccessor;
 
 
 import static googy.betterwithenchanting.BetterWithEnchanting.*;
@@ -18,12 +17,9 @@ public class EnchantmentBlocks{
 	public static Block<?> ENCHANTED_BOOKSHELF_ACTIVE;
 	public static Block<?> ENCHANTED_BOOKSHELF;
 
+	private EnchantmentBlocks(){}
+
 	private static Block<?> addBlock(Block<?> block) {
-		if (BlocksAccessor.hasInit()) {
-			block.init();
-			block.getLogic().initializeBlock();
-			BlocksAccessor.cacheBlock(block);
-		}
 		return block;
 	}
 
