@@ -106,15 +106,13 @@ public class BetterWithEnchantingClient implements ClientModInitializer {
 			.setTex(BLOCK_DIR + "enchanter/side", SIDES)
 		);
 
-		dispatcher.addDispatch(new BlockModelStandard<>(EnchantmentBlocks.ENCHANTED_BOOKSHELF_ACTIVE)
-			.setTex(BLOCK_DIR + "enchanted_book_shelf/top", Side.TOP)
-			.setTex(BLOCK_DIR + "enchanted_book_shelf/top", Side.BOTTOM)
-			.setTex(BLOCK_DIR + "enchanted_book_shelf/side", SIDES)
-		);
+
+
 		// reassign models
 		@SuppressWarnings("unchecked") Map<Block<?>, BlockModel<?>> dispatches = ((DispatcherAccessor<Block<?>, BlockModel<?>>) (Object) dispatcher).getDispatches();
-		dispatches.put(Blocks.BOOKSHELF_PLANKS_OAK, new BlockModelBookShelf<>(Blocks.BOOKSHELF_PLANKS_OAK, loadDataModel(MOD_ID + ":block/bookshelf"), ":block/bookshelf/"));
-		dispatcher.addDispatch(new BlockModelBookShelf<>(EnchantmentBlocks.ENCHANTED_BOOKSHELF, loadDataModel(MOD_ID + ":block/bookshelf"), ":block/bookshelf/"));
+		dispatches.put(Blocks.BOOKSHELF_PLANKS_OAK, new BlockModelBookShelf<>(Blocks.BOOKSHELF_PLANKS_OAK, loadDataModel(MOD_ID + ":block/bookshelf/0"), ":block/bookshelf/"));
+		dispatcher.addDispatch(new BlockModelBookShelf<>(EnchantmentBlocks.ENCHANTED_BOOKSHELF, loadDataModel(MOD_ID + ":block/enchanted_bookshelf/0"), ":block/enchanted_bookshelf/"));
+		dispatcher.addDispatch(new BlockModelEnchantedBookShelf<>(EnchantmentBlocks.ENCHANTED_BOOKSHELF_ACTIVE, loadDataModel(MOD_ID + ":block/enchanted_bookshelf/0"), ":block/enchanted_bookshelf/"));
 	}
 
 	public static void initItemModels(ItemModelDispatcher dispatcher) {

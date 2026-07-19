@@ -2,10 +2,16 @@
 tile.betterwithenchanting.enchantment.table.name= Enchantment Table
 tile.betterwithenchanting.enchantment.table.desc= It's a kind of magic, magic magic.
 
+tile.betterwithenchanting.enchanted.bookshelf.active.name= Enchanted Bookshelf
+tile.betterwithenchanting.enchanted.bookshelf.active.desc= Hold many secrets.
+tile.betterwithenchanting.enchanted.bookshelf.name= Decorated Bookshelf
+tile.betterwithenchanting.enchanted.bookshelf.desc= Use to hold many secrets.
+
 # item name and description
 item.betterwithenchanting.bottle.score.name= Bottled of Score
 item.betterwithenchanting.bottle.score.desc= Drink for higher score.
-
+item.betterwithenchanting.book.enchanted.name= Enchanted Book
+item.betterwithenchanting.book.enchanted.desc= Used for enchanting and further enhancing items.
 
 # enchantment names
 enchantment.betterwithenchanting.bait.name= Bait
