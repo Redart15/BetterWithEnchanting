@@ -6,17 +6,19 @@ import net.minecraft.client.gui.achievements.data.AchievementPage;
 import net.minecraft.client.gui.achievements.data.AchievementPages;
 import net.minecraft.core.achievement.Achievement;
 import net.minecraft.core.achievement.Achievements;
+import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.util.collection.NamespaceID;
 import net.minecraft.core.util.helper.DyeColor;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import static googy.betterwithenchanting.BetterWithEnchanting.*;
 
 public class EnchantmentAchievements {
 	private static final AchievementPage OVERWORLD_PAGE = AchievementPages.overworldPage;
-	private static final AchievementPage NETHER_PAGE = AchievementPages.netherPage;
-
 
 	public static final Achievement CRAFT_ENCHANTER;
 	public static final Achievement ENCHANT_ITEM;
@@ -93,4 +95,34 @@ public class EnchantmentAchievements {
 	}
 
 	private EnchantmentAchievements(){}
+
+    public static void applyHighEnchant(Player player, List<EnchantmentStack> stacks) {
+        if (player.getStat(HIGH_LEVEL_ENCHANT) != 0) {
+            return;
+        }
+        for (EnchantmentStack stack : stacks) {
+            Enchantment enchantment = stack.getEnchantment();
+            int level = stack.getLevel();
+            int minScore = EnchantmentContainer.calcCostFromEnchantability(enchantment.getMinEnchantability(level), false);
+            if (minScore > MAX_ENCHANTMENT_COST && level == enchantment.maxLevel()) {
+                player.triggerAchievement(HIGH_LEVEL_ENCHANT);
+                break;
+            }
+        }
+    }
+
+    public static void applyFullEnchant(Player player, @NotNull ItemStack enchantItem, List<EnchantmentStack> stacks) {
+        if(player.getStat(FULL_ENCHANTED) == 0){
+            int count = 0;
+            ItemStack controll = new ItemStack(enchantItem.getItem());
+            for (Enchantment enchantment : Enchantments.getInstance()) {
+                if (enchantment.canEnchant(controll)) {
+                    count++;
+                }
+            }
+            if(count == stacks.size() && count > 2){
+                player.triggerAchievement(FULL_ENCHANTED);
+            }
+        }
+    }
 }

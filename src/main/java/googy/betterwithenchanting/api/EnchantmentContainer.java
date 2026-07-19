@@ -113,6 +113,23 @@ public class EnchantmentContainer {
 		}
 	}
 
+	public static void setLevel(@NotNull ItemStack itemStack, @NotNull Enchantment enchantment, int level) {
+		if (!EnchantmentContainer.contains(itemStack, enchantment)) {
+			return;
+		}
+		CompoundTag enchantData = itemStack.getData().getCompound(ENCHANTMENT_DATA_KEY);
+		ListTag enchantList = enchantData.getList(ENCHANTMENT_LIST_KEY);
+		for (int i = 0; i < enchantList.tagCount(); i++) {
+			CompoundTag enchantTag = (CompoundTag) enchantList.tagAt(i);
+			EnchantmentStack enchantmentStack = new EnchantmentStack(enchantTag);
+			if (enchantment.equals(enchantmentStack.getEnchantment())) {
+				enchantmentStack.setLevel(level);
+				enchantmentStack.writeNBT(enchantTag);
+				return;
+			}
+		}
+	}
+
 	public static boolean hasEnchantments(@NotNull ItemStack stack) {
 		CompoundTag enchantData = stack.getData().getCompound(ENCHANTMENT_DATA_KEY);
 		ListTag enchantList = enchantData.getList(ENCHANTMENT_LIST_KEY);
