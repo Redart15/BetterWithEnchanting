@@ -13,7 +13,7 @@ public class EnchantmentItems {
 	public static Item ENCHANTED_BOOK;
 
 	private static String formatTranslationKey(String key) {
-		return String.format("item.%s.%s", MOD_ID, key);
+		return String.format("%s.%s", MOD_ID, key);
 	}
 
 	private static String formatName(String name) {
