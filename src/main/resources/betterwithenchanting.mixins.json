@@ -11,6 +11,7 @@
     "accessor.AchievementToastAccessor",
     "accessor.BlockLogicLeavesBaseAccessor",
     "accessor.ConsumedFoodAccessor",
+    "accessor.CreativeMenuContentsAccessor",
     "accessor.DispatcherAccessor",
     "accessor.EntityAccessor",
     "accessor.ItemAccessor",
@@ -21,6 +22,7 @@
     "accessor.SlotResultAccessor",
     "achievement.SlotResultMixinEnchanter",
     "bookshelf.BlockLogicBookshelfMixin",
+    "creative.CreativeMenuContentsMixin",
     "enchanted_book.ContainerInventoryMixinLock",
     "enchantment.BlockLogicMixinAlterationAndAdditions",
     "enchantment.ConsumedFoodMixinEnchantments",
@@ -45,9 +47,7 @@
     "net.NetClientHandlerMixin",
     "render.ItemModelMixin",
     "render.ItemModelStandardMixinGlint",
-    "render.TooltipElementMixin",
-    "uselessFixedIt.AchievementToastMixinFix",
-    "uselessFixedIt.ScreenAchievementsMixinFix"
+    "render.TooltipElementMixin"
   ],
   "server": [
     "net.PlayerServerMixinAdditionalGui"
