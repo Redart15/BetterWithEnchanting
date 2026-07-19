@@ -4,7 +4,6 @@ import googy.betterwithenchanting.mixins.mixin.accessor.ScreenContainerAbstractA
 import net.minecraft.client.gui.container.ScreenContainerAbstract;
 import net.minecraft.client.option.GameSettings;
 import net.minecraft.core.InventoryAction;
-import net.minecraft.core.block.entity.TileEntityFurnaceBlast;
 import net.minecraft.core.crafting.LookupFuelFurnace;
 import net.minecraft.core.crafting.LookupFuelFurnaceBlast;
 import net.minecraft.core.data.registry.Registries;

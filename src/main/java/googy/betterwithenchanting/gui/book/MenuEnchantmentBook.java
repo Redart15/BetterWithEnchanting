@@ -1,17 +1,12 @@
 package googy.betterwithenchanting.gui.book;
 
-import googy.betterwithenchanting.api.EnchantmentAchievements;
-import googy.betterwithenchanting.api.EnchantmentContainer;
-import googy.betterwithenchanting.api.EnchantmentStack;
-import googy.betterwithenchanting.gui.table.MenuEnchantmentTable;
+import googy.betterwithenchanting.api.*;
 import googy.betterwithenchanting.mixins.interfaces.ContainerHotbarLocking;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.client.entity.player.PlayerLocal;
 import net.minecraft.core.InventoryAction;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemFood;
 import net.minecraft.core.item.ItemStack;
-import net.minecraft.core.player.gamemode.Gamemode;
 import net.minecraft.core.player.gamemode.Gamemodes;
 import net.minecraft.core.player.inventory.container.Container;
 import net.minecraft.core.player.inventory.container.ContainerInventory;
@@ -29,10 +24,15 @@ public class MenuEnchantmentBook extends MenuAbstract {
 	private final Container enchantSlot = new ContainerSimple("enchantmentSlot", 1);
 	private int optioChoosen;
 	private final ItemStack selfStack;
+	@SuppressWarnings("unchecked")
+	private final List<EnchantmentStack>[] enchantmentsOption = (List<EnchantmentStack>[]) new List<?>[2];
 
 	public MenuEnchantmentBook(@NotNull ContainerInventory inventory, ItemStack selfStack) {
-		this.selfStack = selfStack;
 		this.optioChoosen = -1;
+		this.selfStack = selfStack;
+		for(int i = 0; i < 2; i++){
+			enchantmentsOption[i] = EnchantmentContainer.getEnchantments(this.selfStack, i);
+		}
 		this.addSlot(new Slot(enchantSlot, 0, 80, 40 + 7));
 		for (int y = 0; y < 3; ++y) {
 			for (int x = 0; x < 9; ++x) {
@@ -55,9 +55,6 @@ public class MenuEnchantmentBook extends MenuAbstract {
 		}
 		ItemStack itemStack = slot.getItemStack();
 		if (itemStack == null) {
-			return false;
-		}
-		if (!EnchantmentContainer.getEnchantments(itemStack).isEmpty()) {
 			return false;
 		}
 		if (itemStack.getItem().hasTag(UNECHANT)) {
@@ -85,16 +82,41 @@ public class MenuEnchantmentBook extends MenuAbstract {
 		if (player.gamemode != Gamemodes.CREATIVE) {
 			this.optioChoosen = i;
 		}
-		for (EnchantmentStack enchantmentStack : enchantmentStackList) {
-			if (enchantmentStack.canEnchant(enchantItem)) {
-				EnchantmentContainer.addEnchantment(enchantItem, enchantmentStack);
-			}
-		}
+		this.enchantItem(player, i, enchantItem);
 		player.triggerAchievement(EnchantmentAchievements.LOST_KNOWLEDGE);
-		MenuEnchantmentTable.checkAchievements(player, enchantItem);
+		this.checkAchievements(player, enchantItem);
 		return true;
 	}
 
+	private void enchantItem(Player player, int i, ItemStack enchantItem) {
+		if(EnchantmentContainer.hasEnchantments(enchantItem)){
+			for(EnchantmentStack toAddStack: this.getOption(i)){
+				if (toAddStack.canEnchant(enchantItem)) {
+					EnchantmentContainer.addEnchantment(enchantItem, toAddStack);
+					EnchantmentContainer.setLevel(enchantItem, toAddStack.getEnchantment(), toAddStack.getLevel());
+				}
+			}
+			return;
+		}
+		for(EnchantmentStack toAddStack: this.getOption(i)){
+			if (toAddStack.canEnchant(enchantItem)) {
+				EnchantmentContainer.addEnchantment(enchantItem, toAddStack);
+			}
+		}
+		player.triggerAchievement(EnchantmentAchievements.ENCHANT_ITEM);
+		if(enchantItem.getItem() instanceof ItemFood){
+			player.triggerAchievement(EnchantmentAchievements.ENCHANTED_FOOD);
+		}
+	}
+
+	public void checkAchievements(Player player,@NotNull ItemStack enchantItem) {
+		if (player.getStat(EnchantmentAchievements.FULL_ENCHANTED) != 0 && player.getStat(EnchantmentAchievements.HIGH_LEVEL_ENCHANT) != 0) {
+			return;
+		}
+		List<EnchantmentStack> stacks = EnchantmentContainer.getEnchantments(enchantItem);
+		EnchantmentAchievements.applyFullEnchant(player, enchantItem, stacks);
+		EnchantmentAchievements.applyHighEnchant(player, stacks);
+	}
 
 	@Override
 	public void onCraftGuiClosed(@NotNull Player player) {
@@ -137,39 +159,39 @@ public class MenuEnchantmentBook extends MenuAbstract {
 			return this.getSlots(0, 1, false);
 		}
 		if (action == InventoryAction.MOVE_ALL) {
-			if (slot.index >= 1 && slot.index < 30) {
-				return this.getSlots(3, 27, false);
+			if (slot.index >= 1 && slot.index < 28) {
+				return this.getSlots(1, 27, false);
 			}
 
-			if (slot.index >= 30 && slot.index < 39) {
-				return this.getSlots(30, 9, false);
+			if (slot.index >= 28 && slot.index < 37) {
+				return this.getSlots(28, 9, false);
 			}
 		}
-		return slot.index >= 1 && slot.index < 39 ? this.getSlots(1, 36, false) : null;
+		return slot.index >= 1 && slot.index < 37 ? this.getSlots(1, 36, false) : null;
 	}
 
 	@Override
 	public IntList getTargetSlots(@NotNull InventoryAction action, Slot slot, int target, Player entityPlayer) {
-		if (slot.index >= 3 && slot.index <= 39) {
+		if (slot.index >= 1 && slot.index <= 37) {
 			if (action != InventoryAction.MOVE_ALL && target == 1) {
 				return this.getSlots(0, 1, false);
 			}
-			if (slot.index < 30) {
-				return this.getSlots(30, 9, false);
+			if (slot.index < 28) {
+				return this.getSlots(28, 9, false);
 			}
-			if (slot.index < 39) {
-				return this.getSlots(3, 27, false);
+			if (slot.index < 37) {
+				return this.getSlots(1, 27, false);
 			}
 		}
 		if (slot.index == 0) {
-			return this.getSlots(0, 36, false);
+			return this.getSlots(1, 36, false);
 		} else {
 			return null;
 		}
 	}
 
 	public List<EnchantmentStack> getOption(int i) {
-		return EnchantmentContainer.getEnchantments(this.selfStack, i);
+		return enchantmentsOption[i];
 	}
 
 	public int enchantmentChoosenOption() {

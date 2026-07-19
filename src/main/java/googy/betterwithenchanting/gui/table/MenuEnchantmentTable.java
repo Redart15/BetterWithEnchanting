@@ -1,6 +1,5 @@
 package googy.betterwithenchanting.gui.table;
 
-import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.api.*;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.gui.EnchantFuelSlot;
@@ -82,12 +81,12 @@ public class MenuEnchantmentTable extends MenuAbstract {
 			}
 		}
 		EnchantmentContainer.addEnchantments(enchantItem, enchantments);
-		MenuEnchantmentTable.checkAchievements(player, enchantItem);
+		this.checkAchievements(player, enchantItem);
 		this.forceUpdateInventory();
 		return true;
 	}
 
-	public static void checkAchievements(Player player,@NotNull ItemStack enchantItem) {
+	public void checkAchievements(Player player,@NotNull ItemStack enchantItem) {
 		player.triggerAchievement(EnchantmentAchievements.ENCHANT_ITEM);
 		if(enchantItem.getItem() instanceof ItemFood){
 			player.triggerAchievement(EnchantmentAchievements.ENCHANTED_FOOD);
@@ -96,29 +95,8 @@ public class MenuEnchantmentTable extends MenuAbstract {
 			return;
 		}
 		List<EnchantmentStack> stacks = EnchantmentContainer.getEnchantments(enchantItem);
-		if(player.getStat(EnchantmentAchievements.FULL_ENCHANTED) == 0){
-			int count = 0;
-			ItemStack controll = new ItemStack(enchantItem.getItem());
-			for (Enchantment enchantment : Enchantments.getInstance()) {
-				if (enchantment.canEnchant(controll)) {
-					count++;
-				}
-			}
-			if(count == stacks.size() && count > 2){
-				player.triggerAchievement(EnchantmentAchievements.FULL_ENCHANTED);
-			}
-		}
-		if (player.getStat(EnchantmentAchievements.HIGH_LEVEL_ENCHANT) == 0) {
-			for (EnchantmentStack stack : stacks) {
-				Enchantment enchantment = stack.getEnchantment();
-				int level = stack.getLevel();
-				int minScore = EnchantmentContainer.calcCostFromEnchantability(enchantment.getMinEnchantability(level), false);
-				if (minScore > BetterWithEnchanting.MAX_ENCHANTMENT_COST && level == enchantment.maxLevel()) {
-					player.triggerAchievement(EnchantmentAchievements.HIGH_LEVEL_ENCHANT);
-					break;
-				}
-			}
-		}
+		EnchantmentAchievements.applyFullEnchant(player, enchantItem, stacks);
+		EnchantmentAchievements.applyHighEnchant(player, stacks);
 	}
 
 

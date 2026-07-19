@@ -1,10 +1,8 @@
 package googy.betterwithenchanting.gui.book;
 
 import com.mojang.nbt.tags.CompoundTag;
-import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.gui.ScreenFix;
-import googy.betterwithenchanting.network.MessageEnchantItem;
 import googy.betterwithenchanting.render.GlyphRenderer;
 import net.minecraft.client.entity.player.PlayerLocalMultiplayer;
 import net.minecraft.client.render.renderer.GLRenderer;
@@ -12,7 +10,6 @@ import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.player.inventory.container.ContainerInventory;
 import net.minecraft.core.player.inventory.slot.Slot;
-import turniplabs.halplibe.helper.network.NetworkHandler;
 
 import java.util.List;
 
@@ -37,35 +34,41 @@ public class ScreenEnchantmentBook extends ScreenFix {
 
 	// Release Wizard rant
 	String[] texts = {
-		"Knowledge is power",
+		// About Aether
+		"Unlike this realm, the hostile paradise is a place where magic is unbound",
+		"Do not mistake peace for security. It is often in the quietest moments that the greatest threats gather",
+		"The vast plains occasionally reveal the great Mazes lurking beneath",
+		"The Valkyr, once roaming the realm, have withdrawn into their extravagant temples",
+		"The night was banished by the Great Thief, a mortal who crowned himself a god",
+		"Rumors speak of a great foe among the tricksters, one known as Wallace",
+		// About Nether
+		"Its unclear if the hellish realm, is home to the dead",
+		"Avoid any and all liquids in this hellish realm",
+		"This realm is both dead and alive",
+		"Nethercoal embodies the heat that the realm is known for",
+		// About BattleTower
+		"Once contained within a realm of their own, they have slowly seeped into ours",
+		"What was once a prison has become a battle tower",
+		"It great to see some prisons have outlasted their denizens",
+		"Most concerning are the prisons that have descended beneath the earth, hidden from sight",
+		// About LostTreasures
+		"I am still searching for my misplaced wand, I hope noone finds it",
+		"My old bat, as destructive as always",
+		// Abaout Boons
 		"Where there is no struggle there is no strength",
-		"Loyalty is rare if you find it keep it",
 		"The greates wealth is health",
-		"To endure wehat is unendurable is true endurance",
 		"Your focus determins your reality",
 		"That which does not kill us makes us stronger",
-		"Your direction is more important than your speed",
-		"Never mistake knowledge for wisdom",
-		"The keen spirit seizes the prompt occasion",
-		"Every challange you face is an opportunity to grow",
-		"Accustom yourself to tireless activity",
-		"Beauty maybe dangerous but intelligence is lethal",
 		"To the pure all things are pure",
-		"Be exalted",
 		"Though hope is frail its hard to kill",
+		"Vulnerability is not weakness its our most accurate measure of courage",
+		// About Curses
 		"A feeble body weakens the mind",
 		"Cursed is the man who dies but the evil done by him survives",
 		"Too much wit makes the world rotten",
-		"Vulnerability is not weakness its our most accurate measure of courage",
-		"Once exposed a secret loses all its power",
-		"Its the flaw that brings out our beauty",
-		"Uncertainty is most stressfull feeling",
 		"Underneath all reason lies delicium and drift",
-		"The strongest have their moment of fatigue",
 		"Two can keep secret if one of them is dead",
 		"Suppresed emotions eventually erupt",
-		""
-
 	};
 
 	int mouseX = 0;
@@ -78,7 +81,7 @@ public class ScreenEnchantmentBook extends ScreenFix {
 		this.ySize = 194;
 		this.menu = (MenuEnchantmentBook) this.inventorySlots;
 		this.textIndex[0] = 0;
-		this.textIndex[1] = 1;
+		this.textIndex[1] = 1 << 12;
 	}
 
 	@Override
@@ -122,7 +125,7 @@ public class ScreenEnchantmentBook extends ScreenFix {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float delta) {
 		GLRenderer.setColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.textureManager.loadTexture("/assets/" + MOD_ID + "/gui/" + "enchantment_book2.png").bind();
+		this.mc.textureManager.loadTexture("/assets/" + MOD_ID + "/gui/" + "enchantment_book.png").bind();
 		int x = (this.width - this.xSize) / 2;
 		int y = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize, SCALE_U, SCALE_V);
@@ -153,7 +156,7 @@ public class ScreenEnchantmentBook extends ScreenFix {
 	private void renderText(int x, int y) {
 		ItemStack selfStack = menu.selfStack();
 		CompoundTag tag = selfStack.getData();
-		boolean conTains = tag.containsKey("id");
+		boolean contains = tag.containsKey("id");
 		Slot enchantItemSlot = this.menu.getSlot(0);
 		ItemStack stackInSlot = null;
 		if(enchantItemSlot != null){
@@ -163,14 +166,17 @@ public class ScreenEnchantmentBook extends ScreenFix {
 			int sx = x + BUTTON_WIDTH_OFFSET + 2 + (BUTTON_WIDTH + 3) * i;
 			int sy = y + BUTTON_HEIGHT_OFFSET + 2;
 			boolean canEnchant = menu.playerCanEnchant(i);
-			int color = canEnchant ? 16777088 : 6839882;
-			this.renderGlyphs(i, conTains ? tag.getLong("id") : textIndex[i], sx, sy, color, canEnchant);
-			this.renderEnchantments(i, canEnchant, stackInSlot, sx, sy + 6 * LETTER_SIZE, color);
+			boolean optionChoosen = this.menu.enchantmentChoosenOption() == i;
+			boolean useFirstColor = this.menu.enchantmentWasUsed() ? optionChoosen : canEnchant;
+			int color = useFirstColor ? 16777088 : 6839882;
+			this.renderLock(sx, sy, optionChoosen);
+			this.renderGlyphs(i, contains ? tag.getLong("id") : textIndex[i], sx, sy, useFirstColor, color);
+			this.renderEnchantments(stackInSlot, i, sx, sy + 6 * LETTER_SIZE, useFirstColor, color);
 		}
 	}
 
-	private void renderGlyphs(int option, long id, int sx, int sy, int color, boolean canEnchant) {
-		long random = id >> ((option + 1L) * 12L);
+	private void renderGlyphs(int option, long id, int sx, int sy, boolean canEnchant, int color) {
+		long random = id >> ((option) * 12L);
 		boolean useIllager = (random & 1L) == 0;
 		StringBuilder working = new StringBuilder(this.texts[(int) Long.remainderUnsigned(random, this.texts.length)]);
 		for (int lines = 0; lines < 4; lines++) {
@@ -179,17 +185,18 @@ public class ScreenEnchantmentBook extends ScreenFix {
 		}
 	}
 
-	private void renderEnchantments(int option, boolean canEnchant, ItemStack stackInSlot, int sx, int sy, int color) {
+	private void renderEnchantments(ItemStack stackInSlot, int option, int sx, int sy, boolean canEnchant, int color) {
 		List<EnchantmentStack> enchantmentStackList = menu.getOption(option);
 		for (EnchantmentStack enchantmentStack : enchantmentStackList) {
-			if (canEnchant && stackInSlot != null && !enchantmentStack.canEnchant(stackInSlot)) {
+			if (canEnchant && stackInSlot != null && !enchantmentStack.canEnchant(stackInSlot) && !this.menu.enchantmentWasUsed()) {
 				continue;
 			}
 			boolean noLevel = enchantmentStack.minLevel() == enchantmentStack.maxLevel();
 			StringBuilder text = new StringBuilder()
 				.append(I18n.getInstance().translateKey(enchantmentStack.getEnchantment().translationKeyName()))
 				.append(" ")
-				.append(noLevel ? "" : String.valueOf(enchantmentStack.getLevel()));
+				.append(noLevel ? "" : String.valueOf(enchantmentStack.getLevel()))
+				.append("§r");
 			GLRenderer.pushFrame();
 			GLRenderer.modelM4f().scaleAround(0.89f, sx, sy, this.zLevel);
 			if (canEnchant) {
@@ -202,9 +209,15 @@ public class ScreenEnchantmentBook extends ScreenFix {
 		}
 	}
 
+	private void renderLock(int sx, int sy, boolean optionChoosen) {
+		if(optionChoosen){
+			this.drawTexturedModalRect(sx, sy, 176, 0, 8, 12);
+		}
+	}
+
 	@Override
 	public int getTargetSlot(ItemStack stackInSlot, int target) {
-		if (stackInSlot != null && EnchantmentContainer.getEnchantments(stackInSlot).isEmpty()) {
+		if (stackInSlot != null) {
 			return 1;
 		}
 		return 0;
