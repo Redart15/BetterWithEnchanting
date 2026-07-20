@@ -3,7 +3,7 @@ package googy.betterwithenchanting.gui.table;
 import googy.betterwithenchanting.render.GlyphRenderer;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.gui.ScreenFix;
-import googy.betterwithenchanting.network.MessageEnchantItem;
+import googy.betterwithenchanting.network.EnchantItemMessage;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import net.minecraft.client.entity.player.PlayerLocalMultiplayer;
 import net.minecraft.client.render.renderer.GLRenderer;
@@ -58,7 +58,7 @@ public class ScreenEnchantmentTable extends ScreenFix {
 			boolean canEnchant = this.enchantmentTableContainer.playerCanEnchant(this.mc.thePlayer, i);
 			if (canEnchant) {
 				if (this.mc.thePlayer instanceof PlayerLocalMultiplayer) {
-					NetworkHandler.sendToServer(new MessageEnchantItem(this.enchantmentTableContainer.containerId, i));
+					NetworkHandler.sendToServer(new EnchantItemMessage(this.enchantmentTableContainer.containerId, i));
 				} else {
 					this.enchantmentTableContainer.enchantItem(this.mc.thePlayer, i);
 				}

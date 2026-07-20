@@ -2,16 +2,13 @@ package googy.betterwithenchanting.block;
 
 import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
-import net.minecraft.core.Global;
-import net.minecraft.core.block.Block;
-import net.minecraft.core.block.Blocks;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.net.packet.Packet;
+import net.minecraft.core.net.packet.PacketTileEntityData;
 import net.minecraft.core.player.inventory.container.Container;
 import net.minecraft.core.util.helper.MathHelper;
-import net.minecraft.core.world.pos.TilePos;
-import net.minecraft.core.world.pos.TilePosc;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -227,6 +224,10 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 		/* no need for sorting */
 	}
 
+	@Override
+	public Packet getDescriptionPacket() {
+		return new PacketTileEntityData(this);
+	}
 
 	@Override
 	public boolean stillValid(@NotNull Player entityplayer) {

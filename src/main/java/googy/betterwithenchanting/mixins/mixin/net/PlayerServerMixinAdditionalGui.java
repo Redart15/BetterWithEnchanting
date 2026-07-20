@@ -2,8 +2,11 @@ package googy.betterwithenchanting.mixins.mixin.net;
 
 import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
+import googy.betterwithenchanting.gui.book.MenuEnchantmentBook;
 import googy.betterwithenchanting.mixins.interfaces.PlayerAdditionalGui;
 import googy.betterwithenchanting.gui.table.MenuEnchantmentTable;
+import googy.betterwithenchanting.network.OpenGuiBookMessage;
+import googy.betterwithenchanting.network.OpenGuiTableMessage;
 import net.minecraft.core.crafting.ContainerListener;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
@@ -13,6 +16,8 @@ import net.minecraft.server.entity.player.PlayerServer;
 import net.minecraft.server.net.handler.PacketHandlerServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import turniplabs.halplibe.helper.network.NetworkHandler;
 
 @Mixin(value = PlayerServer.class, remap = false)
 public abstract class PlayerServerMixinAdditionalGui extends Player implements PlayerAdditionalGui, ContainerListener {
@@ -25,22 +30,31 @@ public abstract class PlayerServerMixinAdditionalGui extends Player implements P
 	@Shadow
 	public PacketHandlerServer playerNetServerHandler;
 
+	@Unique
+	private final PlayerServer thisAs = (PlayerServer) (Object) this;
+
 	private PlayerServerMixinAdditionalGui(World world) {
 		super(world);
 	}
 
 	@Override
 	public void displayGuiEnchantmentTable(TileEntityEnchantmentTable enchantmentTable) {
+//		this.getNextWindowId();
+//
+//		this.playerNetServerHandler.sendPacket(
+//			new PacketContainerOpen(
+//				this.currentWindowId,
+//				BetterWithEnchanting.WINDOW_ID,
+//				enchantmentTable.getNameTranslationKey(),
+//				enchantmentTable.getContainerSize()
+//			));
+//
+//		this.containerMenu = new MenuEnchantmentTable(this.inventory, enchantmentTable);
+//		this.containerMenu.onCraftGuiClosed(this);
+//		this.containerMenu.containerId = this.currentWindowId;
+//		this.containerMenu.addSlotListener(this);
 		this.getNextWindowId();
-
-		this.playerNetServerHandler.sendPacket(
-			new PacketContainerOpen(
-				this.currentWindowId,
-				BetterWithEnchanting.WINDOW_ID,
-				enchantmentTable.getNameTranslationKey(),
-				enchantmentTable.getContainerSize()
-			));
-
+		NetworkHandler.sendToPlayer(thisAs, new OpenGuiTableMessage(this.currentWindowId, enchantmentTable.tilePos));
 		this.containerMenu = new MenuEnchantmentTable(this.inventory, enchantmentTable);
 		this.containerMenu.onCraftGuiClosed(this);
 		this.containerMenu.containerId = this.currentWindowId;
@@ -49,7 +63,12 @@ public abstract class PlayerServerMixinAdditionalGui extends Player implements P
 
 	@Override
 	public void displayGuiEnchantmentBook(ItemStack book) {
-		// send message
+		this.getNextWindowId();
+		NetworkHandler.sendToPlayer(thisAs, new OpenGuiBookMessage(this.currentWindowId, book));
+		this.containerMenu = new MenuEnchantmentBook(this.inventory, book);
+		this.containerMenu.onCraftGuiClosed(this);
+		this.containerMenu.containerId = this.currentWindowId;
+		this.containerMenu.addSlotListener(this);
 	}
 }
 

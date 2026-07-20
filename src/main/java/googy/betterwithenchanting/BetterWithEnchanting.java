@@ -5,7 +5,9 @@ import googy.betterwithenchanting.block.EnchantmentBlocks;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.item.EnchantmentItems;
 import googy.betterwithenchanting.item.EnchantmentTags;
-import googy.betterwithenchanting.network.MessageEnchantItem;
+import googy.betterwithenchanting.network.OpenGuiBookMessage;
+import googy.betterwithenchanting.network.EnchantItemMessage;
+import googy.betterwithenchanting.network.OpenGuiTableMessage;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.data.registry.Registries;
@@ -108,14 +110,16 @@ public class BetterWithEnchanting implements ModInitializer{
 
 	@Override
 	public void onInitialize() {
-		NetworkHandler.registerNetworkMessage(MessageEnchantItem::new);
-		LOG.info("BetterWithEnchanting initialized!");
+		NetworkHandler.registerNetworkMessage(EnchantItemMessage::new);
+		NetworkHandler.registerNetworkMessage(OpenGuiBookMessage::new);
+		NetworkHandler.registerNetworkMessage(OpenGuiTableMessage::new);
 		CommonEvents.BEFORE_GAME_START.listen(Key.of(MOD_ID), BetterWithEnchanting::beforeGameStart);
 		CommonEvents.AFTER_GAME_START.listen(Key.of(MOD_ID), BetterWithEnchanting::afterGameStart);
 		CommonEvents.RECIPES_NAMESPACE_INIT.listen(Key.of(MOD_ID), BetterWithEnchanting::initNamespaces);
 		CommonEvents.RECIPES_READY.listen(Key.of(MOD_ID), BetterWithEnchanting::onRecipesReady);
 		CommonEvents.AFTER_BLOCK_INIT.listen(Key.of(MOD_ID), EnchantmentBlocks::afterBlockInit);
 		CommonEvents.AFTER_ITEM_INIT.listen(Key.of(MOD_ID), EnchantmentItems::afterItemInit);
+		LOG.info("BetterWithEnchanting initialized!");
 	}
 
 

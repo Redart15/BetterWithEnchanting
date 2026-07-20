@@ -21,7 +21,7 @@ import static googy.betterwithenchanting.item.EnchantmentTags.UNECHANT;
 
 public class MenuEnchantmentBook extends MenuAbstract {
 	public static final int SLOT_SIZE = 18;
-	private final Container enchantSlot = new ContainerSimple("enchantmentSlot", 1);
+	private final Container enchantSlot;
 	private int optioChoosen;
 	private final ItemStack selfStack;
 	@SuppressWarnings("unchecked")
@@ -30,6 +30,7 @@ public class MenuEnchantmentBook extends MenuAbstract {
 	public MenuEnchantmentBook(@NotNull ContainerInventory inventory, ItemStack selfStack) {
 		this.optioChoosen = -1;
 		this.selfStack = selfStack;
+		this.enchantSlot = new ContainerSimple("enchantmentSlot", 1);
 		for(int i = 0; i < 2; i++){
 			enchantmentsOption[i] = EnchantmentContainer.getEnchantments(this.selfStack, i);
 		}

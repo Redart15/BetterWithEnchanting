@@ -21,12 +21,12 @@ public abstract class NetClientHandlerMixin {
 
 	@Inject(method = "handleContainerOpen", at = @At("TAIL"))
 	public void handleOpenWindow(PacketContainerOpen packet, CallbackInfo info) {
-		if (packet.inventoryType != BetterWithEnchanting.WINDOW_ID) {
+		if (packet.inventoryType == BetterWithEnchanting.WINDOW_ID) {
+			TileEntityEnchantmentTable tile = new TileEntityEnchantmentTable();
+			((PlayerAdditionalGui) mc.thePlayer).displayGuiEnchantmentTable(tile);
+			this.mc.thePlayer.containerMenu.containerId = packet.windowId;
 			return;
 		}
-		TileEntityEnchantmentTable tile = new TileEntityEnchantmentTable();
-		((PlayerAdditionalGui) mc.thePlayer).displayGuiEnchantmentTable(tile);
-		this.mc.thePlayer.containerMenu.containerId = packet.windowId;
 	}
 
 }

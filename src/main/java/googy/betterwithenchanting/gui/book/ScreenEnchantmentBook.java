@@ -3,6 +3,7 @@ package googy.betterwithenchanting.gui.book;
 import com.mojang.nbt.tags.CompoundTag;
 import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.gui.ScreenFix;
+import googy.betterwithenchanting.network.EnchantItemMessage;
 import googy.betterwithenchanting.render.GlyphRenderer;
 import net.minecraft.client.entity.player.PlayerLocalMultiplayer;
 import net.minecraft.client.render.renderer.GLRenderer;
@@ -10,6 +11,7 @@ import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.player.inventory.container.ContainerInventory;
 import net.minecraft.core.player.inventory.slot.Slot;
+import turniplabs.halplibe.helper.network.NetworkHandler;
 
 import java.util.List;
 
@@ -107,7 +109,7 @@ public class ScreenEnchantmentBook extends ScreenFix {
 			}
 			if(this.menu.playerCanEnchant(i)){
 				if(this.mc.thePlayer instanceof PlayerLocalMultiplayer){
-//					NetworkHandler.sendToServer(new MessageEnchantItem());
+					NetworkHandler.sendToServer(new EnchantItemMessage(this.menu.containerId, i));
 				}else{
 					this.menu.enchantItem(this.mc.thePlayer, i);
 				}

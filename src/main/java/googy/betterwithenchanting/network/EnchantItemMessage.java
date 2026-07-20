@@ -1,18 +1,19 @@
 package googy.betterwithenchanting.network;
 
+import googy.betterwithenchanting.gui.book.MenuEnchantmentBook;
 import googy.betterwithenchanting.gui.table.MenuEnchantmentTable;
 import net.minecraft.core.player.inventory.menu.MenuAbstract;
 import org.jspecify.annotations.NonNull;
 import turniplabs.halplibe.helper.network.NetworkMessage;
 import turniplabs.halplibe.helper.network.UniversalPacket;
 
-public class MessageEnchantItem implements NetworkMessage {
+public class EnchantItemMessage implements NetworkMessage {
 	public int windowID;
 	public int enchantmentOption;
 
-	public MessageEnchantItem(){}
+	public EnchantItemMessage(){}
 
-	public MessageEnchantItem(int windowID, int enchantmentOption) {
+	public EnchantItemMessage(int windowID, int enchantmentOption) {
 		this.windowID = windowID;
 		this.enchantmentOption = enchantmentOption;
 	}
@@ -32,9 +33,12 @@ public class MessageEnchantItem implements NetworkMessage {
 	@Override
 	public void handleServerEnv(NetworkContext context) {
 		MenuAbstract container = context.player.containerMenu;
-		if (!(container instanceof MenuEnchantmentTable enchantment)) {
+		if (container instanceof MenuEnchantmentTable enchantment) {
+			enchantment.enchantItem(context.player, this.enchantmentOption);
 			return;
 		}
-		enchantment.enchantItem(context.player, this.enchantmentOption);
+		if(container instanceof MenuEnchantmentBook enchantment){
+			enchantment.enchantItem(context.player, this.enchantmentOption);
+		}
 	}
 }
