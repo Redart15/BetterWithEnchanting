@@ -99,6 +99,24 @@ public class MixinsHelperLogic {
 		}
 	}
 
+	public static String getEnchantmentText(@NotNull ItemStack selfStack, int option) {
+		StringBuilder builder = new StringBuilder();
+		List<EnchantmentStack> enchantmentsData = EnchantmentContainer.getEnchantments(selfStack, option);
+		enchantmentsData.removeIf(e -> e == null || e.getEnchantment() == null);
+		enchantmentsData.sort(Comparator.comparing(e -> e.getEnchantment().id()));
+		for (int i = 0; i < enchantmentsData.size(); i++) {
+			EnchantmentStack enchantmentStack = enchantmentsData.get(i);
+			boolean hasLevels = enchantmentStack.minLevel() == enchantmentStack.maxLevel();
+			String name = I18n.getInstance().translateKey(enchantmentStack.getEnchantment().translationKeyName());
+			String lvl = hasLevels ? "" : String.valueOf(enchantmentStack.getLevel());
+			builder.append(name).append(" ").append(lvl);
+			if(i + 1 < enchantmentsData.size()){
+				builder.append(",\n");
+			}
+		}
+		return builder.toString();
+	}
+
 	public static double log(double value, double base) {
 		return Math.log(value) / Math.log(base);
 	}

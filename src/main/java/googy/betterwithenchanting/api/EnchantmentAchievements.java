@@ -2,6 +2,7 @@ package googy.betterwithenchanting.api;
 
 import googy.betterwithenchanting.block.EnchantmentBlocks;
 import googy.betterwithenchanting.item.EnchantmentItems;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.achievements.data.AchievementPage;
 import net.minecraft.client.gui.achievements.data.AchievementPages;
 import net.minecraft.core.achievement.Achievement;
@@ -12,6 +13,7 @@ import net.minecraft.core.item.Items;
 import net.minecraft.core.util.collection.NamespaceID;
 import net.minecraft.core.util.helper.DyeColor;
 import org.jetbrains.annotations.NotNull;
+import turniplabs.halplibe.helper.EnvironmentHelper;
 
 import java.util.List;
 
@@ -105,7 +107,7 @@ public class EnchantmentAchievements {
             int level = stack.getLevel();
             int minScore = EnchantmentContainer.calcCostFromEnchantability(enchantment.getMinEnchantability(level), false);
             if (minScore > MAX_ENCHANTMENT_COST && level == enchantment.maxLevel()) {
-                player.triggerAchievement(HIGH_LEVEL_ENCHANT);
+				player.triggerAchievement(HIGH_LEVEL_ENCHANT);
                 break;
             }
         }
@@ -121,7 +123,7 @@ public class EnchantmentAchievements {
                 }
             }
             if(count == stacks.size() && count > 2){
-                player.triggerAchievement(FULL_ENCHANTED);
+				player.triggerAchievement(FULL_ENCHANTED);
             }
         }
     }

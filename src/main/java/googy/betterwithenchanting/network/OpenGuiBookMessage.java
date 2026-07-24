@@ -38,6 +38,6 @@ public class OpenGuiBookMessage implements NetworkMessage {
 	@Override
 	public void handleClientEnv(NetworkContext context) {
 		Minecraft.getMinecraft().displayScreen(new ScreenEnchantmentBook(context.player.inventory, this.itemStack));
-		context.player.inventoryMenu.containerId = windowId;
+		context.player.containerMenu.containerId = windowId;
 	}
 }

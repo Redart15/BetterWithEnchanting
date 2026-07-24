@@ -58,7 +58,7 @@ public class OpenGuiTableMessage implements NetworkMessage {
 		TileEntity tileEntity = world.getTileEntity(new TilePos(this.tileX, this.tileY, this.tileZ));
 		if(tileEntity instanceof TileEntityEnchantmentTable table){
 			Minecraft.getMinecraft().displayScreen(new ScreenEnchantmentTable(context.player.inventory, table));
-			context.player.inventoryMenu.containerId = windowId;
+			context.player.containerMenu.containerId = windowId;
 		}
 	}
 }

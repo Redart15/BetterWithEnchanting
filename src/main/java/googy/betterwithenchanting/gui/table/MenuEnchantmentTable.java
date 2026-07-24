@@ -20,6 +20,7 @@ import net.minecraft.core.player.inventory.slot.Slot;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.pos.TilePos;
 import org.jetbrains.annotations.NotNull;
+import turniplabs.halplibe.helper.EnvironmentHelper;
 
 import java.util.List;
 import java.util.Random;
@@ -87,6 +88,9 @@ public class MenuEnchantmentTable extends MenuAbstract {
 	}
 
 	public void checkAchievements(Player player,@NotNull ItemStack enchantItem) {
+		if(EnvironmentHelper.isMultiplayerServer()){
+			return;
+		}
 		player.triggerAchievement(EnchantmentAchievements.ENCHANT_ITEM);
 		if(enchantItem.getItem() instanceof ItemFood){
 			player.triggerAchievement(EnchantmentAchievements.ENCHANTED_FOOD);

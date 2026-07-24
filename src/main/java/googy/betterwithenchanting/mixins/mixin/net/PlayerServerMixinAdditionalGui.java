@@ -55,8 +55,8 @@ public abstract class PlayerServerMixinAdditionalGui extends Player implements P
 //		this.containerMenu.addSlotListener(this);
 		this.getNextWindowId();
 		NetworkHandler.sendToPlayer(thisAs, new OpenGuiTableMessage(this.currentWindowId, enchantmentTable.tilePos));
-		this.containerMenu = new MenuEnchantmentTable(this.inventory, enchantmentTable);
 		this.containerMenu.onCraftGuiClosed(this);
+		this.containerMenu = new MenuEnchantmentTable(this.inventory, enchantmentTable);
 		this.containerMenu.containerId = this.currentWindowId;
 		this.containerMenu.addSlotListener(this);
 	}
@@ -65,8 +65,8 @@ public abstract class PlayerServerMixinAdditionalGui extends Player implements P
 	public void displayGuiEnchantmentBook(ItemStack book) {
 		this.getNextWindowId();
 		NetworkHandler.sendToPlayer(thisAs, new OpenGuiBookMessage(this.currentWindowId, book));
-		this.containerMenu = new MenuEnchantmentBook(this.inventory, book);
 		this.containerMenu.onCraftGuiClosed(this);
+		this.containerMenu = new MenuEnchantmentBook(this.inventory, book);
 		this.containerMenu.containerId = this.currentWindowId;
 		this.containerMenu.addSlotListener(this);
 	}

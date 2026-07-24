@@ -35,7 +35,7 @@ public class BlockEnchantedBookShelf extends BlockLogic {
 		if (stack == null || stack.itemID == EnchantmentItems.ENCHANTED_BOOK.id) {
 			int metadata = world.getBlockData(tilePos);
 			ItemStack book = new ItemStack(EnchantmentItems.ENCHANTED_BOOK, 1, (metadata >> 4) & 15);
-			((ItemEnchantedBook)book.getItem()).applyEnchantments(book);
+//			((ItemEnchantedBook)book.getItem()).applyEnchantments(book);
 			player.inventory.insertItem(book, true);
 			if (book.stackSize == 0) {
 				if(((metadata - 1) & 3) == 0){

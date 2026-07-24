@@ -154,7 +154,7 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 
 	@Override
 	public @NotNull String getNameTranslationKey() {
-		return MOD_ID + "contianer.enchantment.table.name";
+		return MOD_ID + ".contianer.enchantment.table.name";
 	}
 
 	@Override

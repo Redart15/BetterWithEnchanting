@@ -4,6 +4,7 @@ import googy.betterwithenchanting.api.*;
 import googy.betterwithenchanting.mixins.interfaces.ContainerHotbarLocking;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.InventoryAction;
+import net.minecraft.core.crafting.ContainerListener;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemFood;
 import net.minecraft.core.item.ItemStack;
@@ -14,6 +15,7 @@ import net.minecraft.core.player.inventory.container.ContainerSimple;
 import net.minecraft.core.player.inventory.menu.MenuAbstract;
 import net.minecraft.core.player.inventory.slot.Slot;
 import org.jetbrains.annotations.NotNull;
+import turniplabs.halplibe.helper.EnvironmentHelper;
 
 import java.util.List;
 
@@ -83,13 +85,27 @@ public class MenuEnchantmentBook extends MenuAbstract {
 		if (player.gamemode != Gamemodes.CREATIVE) {
 			this.optioChoosen = i;
 		}
-		this.enchantItem(player, i, enchantItem);
-		player.triggerAchievement(EnchantmentAchievements.LOST_KNOWLEDGE);
+		this.enchantItem(i, enchantItem);
 		this.checkAchievements(player, enchantItem);
+		this.forceUpdateInventory();
 		return true;
 	}
 
-	private void enchantItem(Player player, int i, ItemStack enchantItem) {
+	public void forceUpdateInventory() {
+		for (int i = 0; i < this.lastSlots.size(); i++) {
+			ItemStack stack = slots.get(i).getItemStack();
+
+			ItemStack stackCopy = stack != null ? stack.copy() : null;
+			lastSlots.set(i, stackCopy);
+
+			for (ContainerListener crafter : this.containerListeners) {
+				crafter.updateInventorySlot(this, i, stackCopy);
+			}
+		}
+		this.broadcastChanges();
+	}
+
+	private void enchantItem(int i, ItemStack enchantItem) {
 		if(EnchantmentContainer.hasEnchantments(enchantItem)){
 			for(EnchantmentStack toAddStack: this.getOption(i)){
 				if (toAddStack.canEnchant(enchantItem)) {
@@ -104,13 +120,17 @@ public class MenuEnchantmentBook extends MenuAbstract {
 				EnchantmentContainer.addEnchantment(enchantItem, toAddStack);
 			}
 		}
+	}
+
+	public void checkAchievements(Player player,@NotNull ItemStack enchantItem) {
+		if(EnvironmentHelper.isMultiplayerServer()){
+			return;
+		}
 		player.triggerAchievement(EnchantmentAchievements.ENCHANT_ITEM);
 		if(enchantItem.getItem() instanceof ItemFood){
 			player.triggerAchievement(EnchantmentAchievements.ENCHANTED_FOOD);
 		}
-	}
-
-	public void checkAchievements(Player player,@NotNull ItemStack enchantItem) {
+		player.triggerAchievement(EnchantmentAchievements.LOST_KNOWLEDGE);
 		if (player.getStat(EnchantmentAchievements.FULL_ENCHANTED) != 0 && player.getStat(EnchantmentAchievements.HIGH_LEVEL_ENCHANT) != 0) {
 			return;
 		}

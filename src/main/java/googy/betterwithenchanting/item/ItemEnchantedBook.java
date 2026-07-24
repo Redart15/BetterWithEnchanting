@@ -6,20 +6,19 @@ import googy.betterwithenchanting.api.Enchantment;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.api.Enchantments;
+import googy.betterwithenchanting.mixins.MixinsHelperLogic;
 import googy.betterwithenchanting.mixins.interfaces.ContainerHotbarLocking;
 import googy.betterwithenchanting.mixins.interfaces.PlayerAdditionalGui;
 import net.minecraft.core.WeightedRandomBag;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.lang.I18n;
 import net.minecraft.core.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import static googy.betterwithenchanting.mixins.mixin.accessor.ItemAccessor.getItemRand;
 
@@ -42,11 +41,6 @@ public class ItemEnchantedBook extends Item {
 			((ContainerHotbarLocking)player.inventory).enchanted$lockSlot(player.inventory.getCurrentSlot(), true);
 		}
 		return selfStack;
-	}
-
-	@Override
-	public @NotNull ItemStack getDefaultStack() {
-		return new ItemStack(this);
 	}
 
 	public void applyEnchantments(ItemStack book) {
@@ -79,4 +73,19 @@ public class ItemEnchantedBook extends Item {
 		book.getData().putLong("id", random.nextLong());
 	}
 
+	@Override
+	public @NotNull String getTranslatedName(@NotNull ItemStack selfStack) {
+		if(!selfStack.getData().containsKey("id")){
+			return I18n.getInstance().translateKey(selfStack.getItemKey() + ".unid.name");
+		}
+		return super.getTranslatedName(selfStack);
+	}
+
+	@Override
+	public @NotNull String getTranslatedDescription(@NotNull ItemStack selfStack) {
+		if(!selfStack.getData().containsKey("id")){
+			return I18n.getInstance().translateKey(selfStack.getItemKey() + ".unid.desc");
+		}
+		return I18n.getInstance().translateKeyAndFormat(selfStack.getItemKey() + ".desc");
+	}
 }
