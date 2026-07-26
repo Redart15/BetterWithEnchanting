@@ -6,6 +6,7 @@ import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.api.Enchantments;
 import googy.betterwithenchanting.block.EnchantmentBlocks;
+import googy.betterwithenchanting.item.ItemEnchantedBook;
 import googy.betterwithenchanting.mixins.interfaces.EnchantmentCannonball;
 import googy.betterwithenchanting.mixins.mixin.accessor.BlockLogicLeavesBaseAccessor;
 import googy.betterwithenchanting.mixins.mixin.accessor.ConsumedFoodAccessor;
@@ -26,6 +27,7 @@ import net.minecraft.core.entity.Mob;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.entity.projectile.ProjectileCannonball;
 import net.minecraft.core.enums.EnumDropCause;
+import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.lang.I18n;
@@ -87,7 +89,31 @@ public class MixinsHelperLogic {
 	}
 
 	public static void getEnchantmentText(ItemStack itemStack, StringBuilder toolTip) {
-		List<EnchantmentStack> enchantmentsData = EnchantmentContainer.getEnchantments(itemStack);
+		if(itemStack == null){
+			return;
+		}
+		Item item = itemStack.getItem();
+		if(item instanceof ItemEnchantedBook){
+			if(!itemStack.getData().containsKey("id")){
+				return;
+			}
+			List<EnchantmentStack> enchantmentsData = null;
+			toolTip.append(TextFormatting.formatted(String.format("%-15s:\n", "Sinister Chapter"), TextFormatting.LIGHT_GRAY));
+			enchantmentsData = EnchantmentContainer.getEnchantments(itemStack, 0);
+			MixinsHelperLogic.buildEnchantmentListToolTip(enchantmentsData, toolTip);
+			toolTip.append(TextFormatting.formatted(String.format("%-15s:\n", "Dexter Chapter"), TextFormatting.LIGHT_GRAY));
+			enchantmentsData = EnchantmentContainer.getEnchantments(itemStack, 1);
+			MixinsHelperLogic.buildEnchantmentListToolTip(enchantmentsData, toolTip);
+		}else{
+			List<EnchantmentStack> enchantmentsData = EnchantmentContainer.getEnchantments(itemStack);
+			if(enchantmentsData.isEmpty()){
+				return;
+			}
+			MixinsHelperLogic.buildEnchantmentListToolTip(enchantmentsData, toolTip);
+		}
+	}
+
+	private static void buildEnchantmentListToolTip(@NotNull List<EnchantmentStack> enchantmentsData, StringBuilder toolTip) {
 		enchantmentsData.removeIf(e -> e == null || e.getEnchantment() == null);
 		enchantmentsData.sort(Comparator.comparing(e -> e.getEnchantment().id()));
 		for (EnchantmentStack enchantmentStack : enchantmentsData) {

@@ -1,5 +1,6 @@
 package googy.betterwithenchanting.block;
 
+import googy.betterwithenchanting.BetterWithEnchanting;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogicBookshelf;
 import net.minecraft.core.block.Blocks;
@@ -41,8 +42,8 @@ public class EnchantmentBlocks{
 					BlockEnchantmentTable::new
 				)
 				.withSound(new BlockSound("step.stone", "step.stone", 1.0f, 1.0f))
-				.withHardness(5)
-				.withBlastResistance(1200)
+				.withHardness(DESTRUCTIBLE ? 5 : -1)
+				.withBlastResistance(DESTRUCTIBLE ? 1200 : 6000000.0F)
 				.withLightEmission(7)
 				.withTags(BlockTags.MINEABLE_BY_PICKAXE));
 

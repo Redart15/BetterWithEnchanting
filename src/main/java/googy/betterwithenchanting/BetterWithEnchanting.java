@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
+import static net.minecraft.core.net.command.util.CommandHelper.registerWorldFeatureClass;
+
 
 public class BetterWithEnchanting implements ModInitializer{
 	public static final String MOD_ID = HalpLibe.registerMod("betterwithenchanting");
@@ -44,8 +46,8 @@ public class BetterWithEnchanting implements ModInitializer{
 
 	public static final boolean COLORED_PARTICLE;
 	public static final boolean ILLAGER_FONT;
-	public static final int WINDOW_ID;
-	public static final boolean DESTRCTABLE;
+	public static final boolean DESTRUCTIBLE;
+	public static final int CHANCE;
 
 	/// cant be client side, needs to be core
 	public static final String[] LABELS = new String[]{
@@ -65,10 +67,10 @@ public class BetterWithEnchanting implements ModInitializer{
 		properties.addCategory("General")
 			.addEntry("BLOCK_ID", 116)
 			.addEntry("ITEM_ID", 18444)
-			.addEntry("ENCHANTING_TABLE_SCREEN_ID", 24)
-			.addEntry("USE_ILLAGER_FONT", true)
-			.addEntry("USE_COLORED_PARTICLES", false)
-			.addEntry("DESTRCTABLE", true);
+			.addEntry("USE_ILLAGER_FONT", "Makes the particles and Enchanting Table use Illager font.", true)
+			.addEntry("USE_COLORED_PARTICLES", "Makes the particle spawed by Enchanting Table colored", false)
+			.addEntry("DESTRUCTIBLE", "Enchanting Table cannot be crafted or mined. It has to be found in the world." , true)
+			.addEntry("CHANCE", "Chance for an enchanting table to spawn in the library. Only applies when DESTRUCTIBLE is false. Odds are 1/value, 1 equals 100%, 10 equals 10%" , 10);
 		CONFIG_HANDLER = new TomlConfigHandler(MOD_ID, properties);
 		File configFile = CONFIG_HANDLER.getConfigFile();
 		if(configFile.exists()){
@@ -103,10 +105,10 @@ public class BetterWithEnchanting implements ModInitializer{
 		}
 		BLOCK_ID = CONFIG_HANDLER.getInt(GENERAL_CATEGORY + "BLOCK_ID");
 		ITEM_ID = CONFIG_HANDLER.getInt(GENERAL_CATEGORY + "ITEM_ID");
-		WINDOW_ID = CONFIG_HANDLER.getInt(GENERAL_CATEGORY + "ENCHANTING_TABLE_SCREEN_ID");
 		ILLAGER_FONT = CONFIG_HANDLER.getBoolean(GENERAL_CATEGORY + "USE_ILLAGER_FONT");
 		COLORED_PARTICLE = CONFIG_HANDLER.getBoolean(GENERAL_CATEGORY + "USE_COLORED_PARTICLES");
-		DESTRCTABLE = CONFIG_HANDLER.getBoolean(GENERAL_CATEGORY + "DESTRCTABLE");
+		DESTRUCTIBLE = CONFIG_HANDLER.getBoolean(GENERAL_CATEGORY + "DESTRUCTIBLE");
+		CHANCE = CONFIG_HANDLER.getInt(GENERAL_CATEGORY + "CHANCE");
 	}
 
 	@Override
@@ -137,6 +139,9 @@ public class BetterWithEnchanting implements ModInitializer{
 	}
 
 	public static void onRecipesReady() {
+		if(!DESTRUCTIBLE){
+			return;
+		}
 		RecipeBuilder.Shaped(MOD_ID, "CBC", "DOD", "OOO")
 			.addInput('C', Items.CLOTH)
 			.addInput('B', Items.BOOK)

@@ -7,8 +7,6 @@
   "package": "googy.betterwithenchanting.mixins.mixin",
   "compatibilityLevel": "JAVA_${java}",
   "mixins": [
-    "WorldFeatureLabyrinthMixinAddBottle",
-    "accessor.AchievementToastAccessor",
     "accessor.BlockLogicLeavesBaseAccessor",
     "accessor.ConsumedFoodAccessor",
     "accessor.CreativeMenuContentsAccessor",
@@ -22,8 +20,7 @@
     "accessor.SlotResultAccessor",
     "achievement.SlotResultMixinEnchanter",
     "bookshelf.BlockLogicBookshelfMixin",
-    "creative.CreativeMenuContentsMixin",
-    "enchanted_book.ContainerInventoryMixinLock",
+    "bookshelf.WorldFeatureLabyrinthMixinLibraryAdditions",
     "enchantment.BlockLogicMixinAlterationAndAdditions",
     "enchantment.ConsumedFoodMixinEnchantments",
     "enchantment.EntityAdditionalSaves",
@@ -38,19 +35,22 @@
     "enchantment.ProjectileArrowMixinBowEnchantment",
     "enchantment.ProjectileCannonballMixinEnchantment",
     "enchantment.TreecapitatorMixinMoltenAxeFix",
-    "net.PlayerLocalMixinAdditionalGui"
+    "gui.creative.CreativeMenuContentsMixin",
+    "gui.enchanted_book.ContainerInventoryMixinLock",
+    "gui.net.PlayerLocalMixinAdditionalGui"
   ],
   "client": [
     "accessor.ScreenContainerAbstractAccessor",
-    "enchanted_book.HudComponentHotbarMixinLockSlot",
     "enchantment.PlayerControllerMixinQuickStrikeMining",
-    "net.NetClientHandlerMixin",
-    "render.ItemModelMixin",
-    "render.ItemModelStandardMixinGlint",
-    "render.TooltipElementMixin"
+    "enchantment.glint.ItemModelMixinGlintSetUp",
+    "enchantment.glint.ItemModelStandardMixinGlint",
+    "enchantment.render.TooltipElementMixinEnchantmentText",
+    "gui.book.HudComponentHotbarMixinLockSlot",
+    "hudcomponent.GameSettingsMixin",
+    "hudcomponent.HudComponentsMixin"
   ],
   "server": [
-    "net.PlayerServerMixinAdditionalGui"
+    "gui.net.PlayerServerMixinAdditionalGui"
   ],
   "injectors": {
     "defaultRequire": 1

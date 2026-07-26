@@ -2,13 +2,18 @@ package googy.betterwithenchanting.block;
 
 import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
+import googy.betterwithenchanting.BetterWithEnchanting;
 import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.net.packet.Packet;
 import net.minecraft.core.net.packet.PacketTileEntityData;
 import net.minecraft.core.player.inventory.container.Container;
 import net.minecraft.core.util.helper.MathHelper;
+import net.minecraft.core.world.ICarriable;
+import net.minecraft.core.world.World;
+import net.minecraft.core.world.pos.TilePosc;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -236,6 +241,14 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	protected @Nullable ICarriable pickup(@NotNull World world, @NotNull Entity holder, @NotNull TilePosc tilePos_) {
+		if(BetterWithEnchanting.DESTRUCTIBLE){
+			return super.pickup(world, holder, tilePos_);
+		}
+		return null;
 	}
 
 	///  getter for EnchantmentTableRenderer (tileentity renderer)
