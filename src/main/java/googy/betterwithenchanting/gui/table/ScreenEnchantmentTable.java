@@ -62,7 +62,7 @@ public class ScreenEnchantmentTable extends ScreenFix {
 				} else {
 					this.enchantmentTableContainer.enchantItem(this.mc.thePlayer, i);
 				}
-				this.enchantmentTableContainer.enchantmentTable.setRandomLabel();
+				this.enchantmentTableContainer.setRandomLabel();
 			}
 		}
 		this.enchantmentTableContainer.broadcastChanges();

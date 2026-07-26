@@ -5,7 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.item.ItemStack;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 import turniplabs.halplibe.helper.network.NetworkMessage;
 import turniplabs.halplibe.helper.network.UniversalPacket;
 
@@ -23,13 +23,13 @@ public class OpenGuiBookMessage implements NetworkMessage {
 	}
 
 	@Override
-	public final void encodeToUniversalPacket(@NonNull UniversalPacket packet) {
+	public final void encodeToUniversalPacket(@NotNull UniversalPacket packet) {
 		packet.writeByte(this.windowId);
 		packet.writeItemStack(itemStack);
 	}
 
 	@Override
-	public final void decodeFromUniversalPacket(@NonNull UniversalPacket packet) {
+	public final void decodeFromUniversalPacket(@NotNull UniversalPacket packet) {
 		this.windowId = packet.readByte();
 		this.itemStack = packet.readItemStack();
 	}

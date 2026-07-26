@@ -32,7 +32,9 @@ public class EnchantmentItems {
 			formatTranslationKey("book.enchanted"),
 			formatName("book_enchanted"),
 			startingId++
-		).withTags(new Tag[]{ItemTags.NOT_IN_CREATIVE_MENU});
+		)
+			.withTags(new Tag[]{ItemTags.NOT_IN_CREATIVE_MENU})
+			.setMaxStackSize(1);
 
 	}
 }

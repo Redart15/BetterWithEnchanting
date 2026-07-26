@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import googy.betterwithenchanting.api.EnchantmentContainer;
@@ -122,6 +123,7 @@ public class MobMixinEnchantments {
 		if(nourishment == 0 && filling == 0){
 			return key;
 		}
+		MixinsHelperLogic.applyInsight((Mob)(Object) this, instance);
 		return String.format("%s.%02d", key, Objects.hash(nourishment, filling));
 	}
 
@@ -130,12 +132,12 @@ public class MobMixinEnchantments {
 	private void healAdditional(
 		Mob instance, int i, Operation<Void> original,
 		@Share("nourishmentLvL")LocalIntRef nourishmentLvL,
-		@Share("fillingLvL")LocalIntRef fillingLvL
+		@Share("fillingLvL")LocalIntRef fillingLvL,
+		@Local ItemStack itemStack
 	){
+		MixinsHelperLogic.applyInsight(instance, itemStack);
 		i += MixinsHelperLogic.getAdditionalHealing(i, fillingLvL.get());
 		i += nourishmentLvL.get() > 0 ? 1: 0;
 		original.call(instance, i);
 	}
-
-
 }

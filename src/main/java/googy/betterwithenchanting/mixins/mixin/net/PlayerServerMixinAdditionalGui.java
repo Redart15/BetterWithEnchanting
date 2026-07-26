@@ -27,9 +27,6 @@ public abstract class PlayerServerMixinAdditionalGui extends Player implements P
 	@Shadow
 	private int currentWindowId;
 
-	@Shadow
-	public PacketHandlerServer playerNetServerHandler;
-
 	@Unique
 	private final PlayerServer thisAs = (PlayerServer) (Object) this;
 
@@ -39,20 +36,6 @@ public abstract class PlayerServerMixinAdditionalGui extends Player implements P
 
 	@Override
 	public void displayGuiEnchantmentTable(TileEntityEnchantmentTable enchantmentTable) {
-//		this.getNextWindowId();
-//
-//		this.playerNetServerHandler.sendPacket(
-//			new PacketContainerOpen(
-//				this.currentWindowId,
-//				BetterWithEnchanting.WINDOW_ID,
-//				enchantmentTable.getNameTranslationKey(),
-//				enchantmentTable.getContainerSize()
-//			));
-//
-//		this.containerMenu = new MenuEnchantmentTable(this.inventory, enchantmentTable);
-//		this.containerMenu.onCraftGuiClosed(this);
-//		this.containerMenu.containerId = this.currentWindowId;
-//		this.containerMenu.addSlotListener(this);
 		this.getNextWindowId();
 		NetworkHandler.sendToPlayer(thisAs, new OpenGuiTableMessage(this.currentWindowId, enchantmentTable.tilePos));
 		this.containerMenu.onCraftGuiClosed(this);

@@ -8,6 +8,7 @@ import googy.betterwithenchanting.item.EnchantmentTags;
 import googy.betterwithenchanting.network.OpenGuiBookMessage;
 import googy.betterwithenchanting.network.EnchantItemMessage;
 import googy.betterwithenchanting.network.OpenGuiTableMessage;
+import googy.betterwithenchanting.network.UpdateLockState;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.data.registry.Registries;
@@ -113,6 +114,7 @@ public class BetterWithEnchanting implements ModInitializer{
 		NetworkHandler.registerNetworkMessage(EnchantItemMessage::new);
 		NetworkHandler.registerNetworkMessage(OpenGuiBookMessage::new);
 		NetworkHandler.registerNetworkMessage(OpenGuiTableMessage::new);
+		NetworkHandler.registerNetworkMessage(UpdateLockState::new);
 		CommonEvents.BEFORE_GAME_START.listen(Key.of(MOD_ID), BetterWithEnchanting::beforeGameStart);
 		CommonEvents.AFTER_GAME_START.listen(Key.of(MOD_ID), BetterWithEnchanting::afterGameStart);
 		CommonEvents.RECIPES_NAMESPACE_INIT.listen(Key.of(MOD_ID), BetterWithEnchanting::initNamespaces);

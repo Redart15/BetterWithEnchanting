@@ -21,6 +21,7 @@ import net.minecraft.core.data.registry.recipe.entry.RecipeEntryBlastFurnace;
 import net.minecraft.core.data.registry.recipe.entry.RecipeEntryFurnace;
 import net.minecraft.core.data.registry.recipe.entry.RecipeEntryTrommel;
 import net.minecraft.core.entity.Entity;
+import net.minecraft.core.entity.Mob;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.entity.projectile.ProjectileCannonball;
 import net.minecraft.core.enums.EnumDropCause;
@@ -285,10 +286,20 @@ public class MixinsHelperLogic {
 		return false;
 	}
 
+	@Deprecated(since = "1.2.0", forRemoval = true)
 	public static void applyScore(Player player, ItemStack itemStack) {
 		int level = EnchantmentContainer.getLevel(itemStack, Enchantments.BOTTLED_SCORE);
 		if (level >= 0) {
 			player.score += level * 400;
+		}
+	}
+
+	public static void applyInsight(Mob mob, ItemStack itemStack) {
+		if(mob instanceof Player player) {
+			int level = EnchantmentContainer.getLevel(itemStack, Enchantments.INSIGHT);
+			if (level >= 0) {
+				player.score += level * 400;
+			}
 		}
 	}
 

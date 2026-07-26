@@ -2,6 +2,7 @@ package googy.betterwithenchanting.gui.book;
 
 import googy.betterwithenchanting.api.*;
 import googy.betterwithenchanting.mixins.interfaces.ContainerHotbarLocking;
+import googy.betterwithenchanting.network.UpdateLockState;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.InventoryAction;
 import net.minecraft.core.crafting.ContainerListener;
@@ -16,6 +17,7 @@ import net.minecraft.core.player.inventory.menu.MenuAbstract;
 import net.minecraft.core.player.inventory.slot.Slot;
 import org.jetbrains.annotations.NotNull;
 import turniplabs.halplibe.helper.EnvironmentHelper;
+import turniplabs.halplibe.helper.network.NetworkHandler;
 
 import java.util.List;
 
@@ -24,19 +26,19 @@ import static googy.betterwithenchanting.item.EnchantmentTags.UNECHANT;
 public class MenuEnchantmentBook extends MenuAbstract {
 	public static final int SLOT_SIZE = 18;
 	private final Container enchantSlot;
-	private int optioChoosen;
 	private final ItemStack selfStack;
+	private int optioChoosen;
 	@SuppressWarnings("unchecked")
 	private final List<EnchantmentStack>[] enchantmentsOption = (List<EnchantmentStack>[]) new List<?>[2];
 
 	public MenuEnchantmentBook(@NotNull ContainerInventory inventory, ItemStack selfStack) {
-		this.optioChoosen = -1;
 		this.selfStack = selfStack;
+		this.optioChoosen = -1;
 		this.enchantSlot = new ContainerSimple("enchantmentSlot", 1);
-		for(int i = 0; i < 2; i++){
-			enchantmentsOption[i] = EnchantmentContainer.getEnchantments(this.selfStack, i);
+		for (int i = 0; i < 2; i++) {
+			this.enchantmentsOption[i] = EnchantmentContainer.getEnchantments(this.selfStack, i);
 		}
-		this.addSlot(new Slot(enchantSlot, 0, 80, 40 + 7));
+		this.addSlot(new Slot(this.enchantSlot, 0, 80, 40 + 7));
 		for (int y = 0; y < 3; ++y) {
 			for (int x = 0; x < 9; ++x) {
 				int id = x + y * 9 + 9;
@@ -50,6 +52,7 @@ public class MenuEnchantmentBook extends MenuAbstract {
 		}
 		this.broadcastChanges();
 	}
+
 
 	public boolean playerCanEnchant(int option) {
 		Slot slot = this.getSlot(0);
@@ -73,6 +76,9 @@ public class MenuEnchantmentBook extends MenuAbstract {
 	}
 
 	public boolean enchantItem(Player player, int i) {
+		if(this.optioChoosen != -1){
+			return false;
+		}
 		Slot slot = this.getSlot(0);
 		if (slot == null || slot.getItemStack() == null) {
 			return false;
@@ -92,22 +98,33 @@ public class MenuEnchantmentBook extends MenuAbstract {
 	}
 
 	public void forceUpdateInventory() {
-		for (int i = 0; i < this.lastSlots.size(); i++) {
-			ItemStack stack = slots.get(i).getItemStack();
-
-			ItemStack stackCopy = stack != null ? stack.copy() : null;
-			lastSlots.set(i, stackCopy);
-
-			for (ContainerListener crafter : this.containerListeners) {
-				crafter.updateInventorySlot(this, i, stackCopy);
-			}
+		ItemStack stack = slots.get(0).getItemStack();
+		ItemStack stackCopy = stack != null ? stack.copy() : null;
+		lastSlots.set(0, stackCopy);
+		for (ContainerListener crafter : this.containerListeners) {
+			crafter.updateInventorySlot(this, 0, stackCopy);
 		}
 		this.broadcastChanges();
 	}
 
+	@Override
+	public void broadcastChanges() {
+		super.broadcastChanges();
+		for (ContainerListener crafter : this.containerListeners) {
+			crafter.updateCraftingInventoryInfo(this, 1, this.optioChoosen);
+		}
+	}
+
+	@Override
+	public void setData(int id, int value) {
+		if(id == 1){
+			this.optioChoosen = value;
+		}
+	}
+
 	private void enchantItem(int i, ItemStack enchantItem) {
-		if(EnchantmentContainer.hasEnchantments(enchantItem)){
-			for(EnchantmentStack toAddStack: this.getOption(i)){
+		if (EnchantmentContainer.hasEnchantments(enchantItem)) {
+			for (EnchantmentStack toAddStack : this.getOption(i)) {
 				if (toAddStack.canEnchant(enchantItem)) {
 					EnchantmentContainer.addEnchantment(enchantItem, toAddStack);
 					EnchantmentContainer.setLevel(enchantItem, toAddStack.getEnchantment(), toAddStack.getLevel());
@@ -115,19 +132,19 @@ public class MenuEnchantmentBook extends MenuAbstract {
 			}
 			return;
 		}
-		for(EnchantmentStack toAddStack: this.getOption(i)){
+		for (EnchantmentStack toAddStack : this.getOption(i)) {
 			if (toAddStack.canEnchant(enchantItem)) {
 				EnchantmentContainer.addEnchantment(enchantItem, toAddStack);
 			}
 		}
 	}
 
-	public void checkAchievements(Player player,@NotNull ItemStack enchantItem) {
-		if(EnvironmentHelper.isMultiplayerServer()){
+	public void checkAchievements(Player player, @NotNull ItemStack enchantItem) {
+		if (EnvironmentHelper.isMultiplayerServer()) {
 			return;
 		}
 		player.triggerAchievement(EnchantmentAchievements.ENCHANT_ITEM);
-		if(enchantItem.getItem() instanceof ItemFood){
+		if (enchantItem.getItem() instanceof ItemFood) {
 			player.triggerAchievement(EnchantmentAchievements.ENCHANTED_FOOD);
 		}
 		player.triggerAchievement(EnchantmentAchievements.LOST_KNOWLEDGE);
@@ -150,23 +167,26 @@ public class MenuEnchantmentBook extends MenuAbstract {
 			this.enchantSlot.setItem(0, null);
 		}
 		ContainerHotbarLocking inventory = (ContainerHotbarLocking) player.inventory;
-		if (inventory.enchanted$isLocked(player.inventory.getCurrentSlot())) {
-			inventory.enchanted$lockSlot(player.inventory.getCurrentSlot(), false);
-		}
+		inventory.enchanted$lockSlot(player.inventory.getCurrentSlot(), false);
+		NetworkHandler.sendToPlayer(player, new UpdateLockState(inventory.enchanted$getValue()));
 		if (this.enchantmentWasUsed()) {
-			if (this.selfStack.stackSize <= 0) {
-				return;
-			}
-			this.selfStack.stackSize--;
-			if (this.selfStack.stackSize == 0) {
-				player.inventory.setItem(player.inventory.getCurrentSlot(), null);
-			} else {
-				player.inventory.setItem(player.inventory.getCurrentSlot(), this.selfStack);
-			}
+			this.removeBook(player);
 		} else {
 			player.inventory.setItem(player.inventory.getCurrentSlot(), this.selfStack);
 		}
 
+	}
+
+	private void removeBook(@NotNull Player player) {
+		if (this.selfStack.stackSize <= 0) {
+			return;
+		}
+		this.selfStack.stackSize--;
+		if (this.selfStack.stackSize == 0) {
+			player.inventory.setItem(player.inventory.getCurrentSlot(), null);
+		} else {
+			player.inventory.setItem(player.inventory.getCurrentSlot(), this.selfStack);
+		}
 	}
 
 	@Override

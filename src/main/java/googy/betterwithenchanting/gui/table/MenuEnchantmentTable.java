@@ -165,11 +165,25 @@ public class MenuEnchantmentTable extends MenuAbstract {
 		for (ContainerListener crafting : this.containerListeners) {
 			for (int i = 0; i < enchantCost.length; i++) {
 				crafting.updateCraftingInventoryInfo(this, i, enchantCost[i]);
-				crafting.updateCraftingInventoryInfo(this, i + 4, this.enchantmentTable.labelIndexes[i]);
+				if(this.enchantmentTable.labelIndexes[i] != this.labelIndexes[i]){
+					crafting.updateCraftingInventoryInfo(this, i + 4, this.enchantmentTable.labelIndexes[i]);
+				}
 			}
 			if (this.type != this.enchantmentTable.type()) {
 				crafting.updateCraftingInventoryInfo(this, 3, this.enchantmentTable.type());
 			}
+		}
+		this.type = (byte) this.enchantmentTable.type();
+		System.arraycopy(this.enchantmentTable.labelIndexes, 0, this.labelIndexes, 0, labelIndexes.length);
+	}
+
+	public void setRandomLabel() {
+		this.enchantmentTable.setRandomLabel();
+		for(ContainerListener listener : this.containerListeners){
+			for (int i = 0; i < enchantCost.length; i++) {
+				listener.updateCraftingInventoryInfo(this, i + 4, this.enchantmentTable.labelIndexes[i]);
+			}
+			listener.updateCraftingInventoryInfo(this, 3, this.enchantmentTable.type());
 		}
 		this.type = (byte) this.enchantmentTable.type();
 		System.arraycopy(this.enchantmentTable.labelIndexes, 0, this.labelIndexes, 0, labelIndexes.length);
@@ -270,4 +284,5 @@ public class MenuEnchantmentTable extends MenuAbstract {
 		}
 		return this.getSlots(2, 36, slot.index == 1);
 	}
+
 }

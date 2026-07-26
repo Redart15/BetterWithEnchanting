@@ -3,7 +3,7 @@ package googy.betterwithenchanting.network;
 import googy.betterwithenchanting.gui.book.MenuEnchantmentBook;
 import googy.betterwithenchanting.gui.table.MenuEnchantmentTable;
 import net.minecraft.core.player.inventory.menu.MenuAbstract;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 import turniplabs.halplibe.helper.network.NetworkMessage;
 import turniplabs.halplibe.helper.network.UniversalPacket;
 
@@ -19,13 +19,13 @@ public class EnchantItemMessage implements NetworkMessage {
 	}
 
 	@Override
-	public void encodeToUniversalPacket(@NonNull UniversalPacket packet) {
+	public void encodeToUniversalPacket(@NotNull UniversalPacket packet) {
 		packet.writeInt(windowID);
 		packet.writeInt(enchantmentOption);
 	}
 
 	@Override
-	public void decodeFromUniversalPacket(@NonNull UniversalPacket packet) {
+	public void decodeFromUniversalPacket(@NotNull UniversalPacket packet) {
 		this.windowID = packet.readInt();
 		this.enchantmentOption = packet.readInt();
 	}

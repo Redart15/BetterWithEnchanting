@@ -96,7 +96,7 @@ public class ScreenEnchantmentBook extends ScreenFix {
 	@Override
 	public void mouseClicked(int clickedX, int clickedY, int mouseButton) {
 		super.mouseClicked(clickedX, clickedY, mouseButton);
-		if(this.menu.enchantmentWasUsed()){
+		if (this.menu.enchantmentWasUsed()) {
 			return;
 		}
 		int x = (width - xSize) / 2;
@@ -107,10 +107,10 @@ public class ScreenEnchantmentBook extends ScreenFix {
 			if ((clickedX <= minWidth || clickedX >= minWidth + BUTTON_WIDTH) || (clickedY <= minHeight || clickedY >= minHeight + BUTTON_HEIGHT)) {
 				continue;
 			}
-			if(this.menu.playerCanEnchant(i)){
-				if(this.mc.thePlayer instanceof PlayerLocalMultiplayer){
+			if (this.menu.playerCanEnchant(i)) {
+				if (this.mc.thePlayer instanceof PlayerLocalMultiplayer) {
 					NetworkHandler.sendToServer(new EnchantItemMessage(this.menu.containerId, i));
-				}else{
+				} else {
 					this.menu.enchantItem(this.mc.thePlayer, i);
 				}
 			}
@@ -152,26 +152,26 @@ public class ScreenEnchantmentBook extends ScreenFix {
 				}
 			}
 			this.drawTexturedModalRect(minWidth, minHeight, offset, heightOffset, BUTTON_WIDTH, BUTTON_HEIGHT, SCALE_U, SCALE_V);
+//			this.renderLock(x + BUTTON_WIDTH_OFFSET, y + BUTTON_HEIGHT_OFFSET, this.menu.enchantmentWasUsed());
 		}
 	}
 
 	private void renderText(int x, int y) {
-		ItemStack selfStack = menu.selfStack();
+		ItemStack selfStack = this.menu.selfStack();
 		CompoundTag tag = selfStack.getData();
 		boolean contains = tag.containsKey("id");
 		Slot enchantItemSlot = this.menu.getSlot(0);
 		ItemStack stackInSlot = null;
-		if(enchantItemSlot != null){
+		if (enchantItemSlot != null) {
 			stackInSlot = enchantItemSlot.getItemStack();
 		}
-		for(int i = 0; i < 2; i++){
+		for (int i = 0; i < 2; i++) {
 			int sx = x + BUTTON_WIDTH_OFFSET + 2 + (BUTTON_WIDTH + 3) * i;
 			int sy = y + BUTTON_HEIGHT_OFFSET + 2;
-			boolean canEnchant = menu.playerCanEnchant(i);
+			boolean canEnchant = this.menu.playerCanEnchant(i);
 			boolean optionChoosen = this.menu.enchantmentChoosenOption() == i;
 			boolean useFirstColor = this.menu.enchantmentWasUsed() ? optionChoosen : canEnchant;
 			int color = useFirstColor ? 16777088 : 6839882;
-			this.renderLock(sx, sy, optionChoosen);
 			this.renderGlyphs(i, contains ? tag.getLong("id") : textIndex[i], sx, sy, useFirstColor, color);
 			this.renderEnchantments(stackInSlot, i, sx, sy + 6 * LETTER_SIZE, useFirstColor, color);
 		}
@@ -211,10 +211,17 @@ public class ScreenEnchantmentBook extends ScreenFix {
 		}
 	}
 
-	private void renderLock(int sx, int sy, boolean optionChoosen) {
-		if(optionChoosen){
-			this.drawTexturedModalRect(sx, sy, 176, 0, 8, 12);
+	private void renderLock(int sx, int sy, boolean used) {
+		if (!used) {
+			return;
 		}
+		if (this.menu.enchantmentChoosenOption() == 0) {
+			sx += BUTTON_WIDTH + 8;
+		}
+		GLRenderer.pushFrame();
+		GLRenderer.modelM4f().scaleAround(0.5F, sx, sy, this.zLevel);
+		this.drawTexturedModalRect(sx + 3, sy + 85, 176, 0, 116, 22, SCALE_U, SCALE_V);
+		GLRenderer.popFrame();
 	}
 
 	@Override

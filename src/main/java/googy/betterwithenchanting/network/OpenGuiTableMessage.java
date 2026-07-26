@@ -10,7 +10,7 @@ import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.pos.TilePos;
 import net.minecraft.core.world.pos.TilePosc;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 import turniplabs.halplibe.helper.network.NetworkMessage;
 import turniplabs.halplibe.helper.network.UniversalPacket;
 
@@ -35,7 +35,7 @@ public class OpenGuiTableMessage implements NetworkMessage {
 	}
 
 	@Override
-	public void encodeToUniversalPacket(@NonNull UniversalPacket packet) {
+	public void encodeToUniversalPacket(@NotNull UniversalPacket packet) {
 		packet.writeInt(this.windowId);
 		packet.writeInt(this.tileX);
 		packet.writeInt(this.tileY);
@@ -43,7 +43,7 @@ public class OpenGuiTableMessage implements NetworkMessage {
 	}
 
 	@Override
-	public void decodeFromUniversalPacket(@NonNull UniversalPacket packet) {
+	public void decodeFromUniversalPacket(@NotNull UniversalPacket packet) {
 		this.windowId = packet.readInt();
 		this.tileX = packet.readInt();
 		this.tileY = packet.readInt();

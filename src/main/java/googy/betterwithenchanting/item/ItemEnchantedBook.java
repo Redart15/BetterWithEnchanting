@@ -6,9 +6,9 @@ import googy.betterwithenchanting.api.Enchantment;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.api.Enchantments;
-import googy.betterwithenchanting.mixins.MixinsHelperLogic;
 import googy.betterwithenchanting.mixins.interfaces.ContainerHotbarLocking;
 import googy.betterwithenchanting.mixins.interfaces.PlayerAdditionalGui;
+import googy.betterwithenchanting.network.UpdateLockState;
 import net.minecraft.core.WeightedRandomBag;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.Item;
@@ -17,6 +17,7 @@ import net.minecraft.core.lang.I18n;
 import net.minecraft.core.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import turniplabs.halplibe.helper.network.NetworkHandler;
 
 import java.util.*;
 
@@ -36,9 +37,10 @@ public class ItemEnchantedBook extends Item {
 				this.applyEnchantments(selfStack);
 			}
 			((PlayerAdditionalGui)player).displayGuiEnchantmentBook(selfStack);
-			player.inventory.locked(player.inventory.getCurrentSlot());
+			ContainerHotbarLocking inventory = (ContainerHotbarLocking) player.inventory;
+			inventory.enchanted$lockSlot(player.inventory.getCurrentSlot(), true);
 			player.inventory.setItem(player.inventory.getCurrentSlot(), null);
-			((ContainerHotbarLocking)player.inventory).enchanted$lockSlot(player.inventory.getCurrentSlot(), true);
+			NetworkHandler.sendToPlayer(player, new UpdateLockState(inventory.enchanted$getValue()));
 		}
 		return selfStack;
 	}
