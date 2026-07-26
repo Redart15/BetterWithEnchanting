@@ -3,6 +3,7 @@ package googy.betterwithenchanting.gui.table;
 import googy.betterwithenchanting.api.*;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.gui.EnchantFuelSlot;
+import googy.betterwithenchanting.util.PlayerUtil;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.InventoryAction;
@@ -76,7 +77,7 @@ public class MenuEnchantmentTable extends MenuAbstract {
 		List<EnchantmentStack> enchantments = EnchantmentContainer.generateEnchantmentsList(random, enchantItem, cost);
 		if (enchantments.isEmpty()) {return false;}
 		if (player.gamemode != Gamemodes.CREATIVE) {
-			player.score -= cost;
+			PlayerUtil.subScore(player, cost);
 			if (lapisSlot.hasItem()) {
 				lapisSlot.remove(enchantOption + 1);
 			}
@@ -224,7 +225,7 @@ public class MenuEnchantmentTable extends MenuAbstract {
 		if(!EnchantmentContainer.getEnchantments(itemStack).isEmpty()) 	{return false;}
 		if(!EnchantmentContainer.hasApplicable(itemStack))				{return false;}
 		if(itemStack.getItem().hasTag(UNECHANT))						{return false;}
-		boolean enoughScore = player.score >= enchantCost[option];
+		boolean enoughScore = player.getScore() >= enchantCost[option];
 		boolean enoughFuel = this.getFuelAmount() > option;
 		boolean isCreative = player.gamemode == Gamemodes.CREATIVE;
 		return ((enoughScore && enoughFuel) || isCreative);

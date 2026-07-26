@@ -9,6 +9,7 @@ import com.mojang.brigadier.builder.ArgumentBuilderRequired;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import googy.betterwithenchanting.util.PlayerUtil;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.net.command.CommandManager;
@@ -78,11 +79,11 @@ public class CommandScore implements CommandManager.CommandRegistry {
 			return code(FAIL);
 		}
 		final Player player = getPlayer(ctx);
-		final int value = ctx.getArgument("value", Integer.class);
+		int value = ctx.getArgument("value", Integer.class);
 		if(value < 0){
 			return removeScore(ctx, counter + 1);
 		}
-		player.score += value;
+		value = PlayerUtil.addScore(player, value);
 		ctx.getSource().sendTranslatableMessage("score.command.add", player.getDisplayName(), value);
 		return Command.SINGLE_SUCCESS;
 	}
@@ -90,7 +91,7 @@ public class CommandScore implements CommandManager.CommandRegistry {
 	private static int setScore(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
 		final Player player = getPlayer(ctx);
 		final int value = ctx.getArgument("value", Integer.class);
-		player.score = value;
+		PlayerUtil.setScore(player, value);
 		ctx.getSource().sendTranslatableMessage("score.command.set", player.getDisplayName(), value);
 		return code(OK);
 	}
@@ -101,18 +102,18 @@ public class CommandScore implements CommandManager.CommandRegistry {
 			return code(FAIL);
 		}
 		final Player player = getPlayer(ctx);
-		final int value = ctx.getArgument("value", Integer.class);
+		int value = ctx.getArgument("value", Integer.class);
 		if(value < 0){
 			return addScore(ctx, counter + 1);
 		}
-		player.score -= value;
+		value = PlayerUtil.subScore(player, value);
 		ctx.getSource().sendTranslatableMessage("score.command.remove", player.getDisplayName(), value);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int infoScore(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
 		Player player = getPlayer(ctx);
-		ctx.getSource().sendTranslatableMessage("score.command.info", player.getDisplayName(), player.score);
+		ctx.getSource().sendTranslatableMessage("score.command.info", player.getDisplayName(), player.getScore());
 		return Command.SINGLE_SUCCESS;
 	}
 }

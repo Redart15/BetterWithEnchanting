@@ -2,6 +2,7 @@ package googy.betterwithenchanting.item;
 
 import googy.betterwithenchanting.api.Enchantments;
 import googy.betterwithenchanting.api.EnchantmentContainer;
+import googy.betterwithenchanting.util.PlayerUtil;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
@@ -20,7 +21,7 @@ public class ItemEnchantmentBottle extends Item {
 	public @Nullable ItemStack onUse(@NotNull ItemStack selfStack, @NotNull World world, @NotNull Player player) {
 		int level = EnchantmentContainer.getLevel(selfStack, Enchantments.BOTTLED_SCORE);
 		if(level > 0){
-			player.score += level * 4000;
+			PlayerUtil.addScore(player, level * 4000);
 			return null;
 		}
 		return selfStack;

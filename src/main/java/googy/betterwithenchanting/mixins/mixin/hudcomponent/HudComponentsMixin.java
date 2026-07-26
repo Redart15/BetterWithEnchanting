@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.mixins.mixin.render;
+package googy.betterwithenchanting.mixins.mixin.hudcomponent;
 
 import googy.betterwithenchanting.BetterWithEnchantingClient;
 import net.fabricmc.api.EnvType;

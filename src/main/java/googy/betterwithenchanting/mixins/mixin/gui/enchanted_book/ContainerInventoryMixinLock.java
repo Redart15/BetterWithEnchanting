@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.mixins.mixin.enchanted_book;
+package googy.betterwithenchanting.mixins.mixin.gui.enchanted_book;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;

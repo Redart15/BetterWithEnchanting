@@ -127,8 +127,9 @@ public class ScreenEnchantmentTable extends ScreenFix {
 	private void renderScore(int x, int y) {
 		int xPos = x + 30;
 		int yPos = y + 10;
+		int score = this.mc.thePlayer.getScore();
 		String scoreText = "Score:";
-		String scoreNumberText = String.valueOf(this.mc.thePlayer.score);
+		String scoreNumberText = score >= 0 ? String.valueOf(score) : "0";
 		int scoreWidth = this.mc.font.stringWidth(scoreText);
 		int scoreNumberWidth = this.mc.font.stringWidth(scoreNumberText);
 		int fontHeight = this.mc.font.getFont().fontHeight() ; // original was 9 now its 8

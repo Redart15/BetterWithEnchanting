@@ -10,6 +10,7 @@ import googy.betterwithenchanting.mixins.interfaces.EnchantmentCannonball;
 import googy.betterwithenchanting.mixins.mixin.accessor.BlockLogicLeavesBaseAccessor;
 import googy.betterwithenchanting.mixins.mixin.accessor.ConsumedFoodAccessor;
 import googy.betterwithenchanting.mixins.mixin.accessor.ProjectileAccessor;
+import googy.betterwithenchanting.util.PlayerUtil;
 import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.WeightedRandomBag;
@@ -169,9 +170,9 @@ public class MixinsHelperLogic {
 	public static void applyInsight(Player player, ItemStack stack, int defaultScore) {
 		int level = EnchantmentContainer.getLevel(stack, Enchantments.INSIGHT);
 		if (level <= 0) {
-			player.score += defaultScore;// to give more excess to xp
+			PlayerUtil.addScore(player, defaultScore); // to give more excess to xp
 		} else {
-			player.score += (int) Math.floor((defaultScore + 7) * Math.pow(level, 0.85));
+			PlayerUtil.addScore(player, (int) Math.floor((defaultScore + 7) * Math.pow(level, 0.85)));
 		}
 	}
 
@@ -182,9 +183,9 @@ public class MixinsHelperLogic {
 		ItemStack held = player.getHeldItem();
 		int level = EnchantmentContainer.getLevel(held, Enchantments.INSIGHT);
 		if (level <= 0) {
-			player.score += defaultScore;// to give more excess to xp
+			PlayerUtil.addScore(player, defaultScore); // to give more excess to xp
 		} else {
-			player.score += (int) Math.floor((defaultScore + 7) * Math.pow(level, 0.85));
+			PlayerUtil.addScore(player, (int) Math.floor((defaultScore + 7) * Math.pow(level, 0.85)));
 		}
 	}
 
@@ -290,7 +291,7 @@ public class MixinsHelperLogic {
 	public static void applyScore(Player player, ItemStack itemStack) {
 		int level = EnchantmentContainer.getLevel(itemStack, Enchantments.BOTTLED_SCORE);
 		if (level >= 0) {
-			player.score += level * 400;
+			PlayerUtil.addScore(player, level * 400);
 		}
 	}
 
@@ -298,7 +299,7 @@ public class MixinsHelperLogic {
 		if(mob instanceof Player player) {
 			int level = EnchantmentContainer.getLevel(itemStack, Enchantments.INSIGHT);
 			if (level >= 0) {
-				player.score += level * 400;
+				PlayerUtil.addScore(player, level * 400);
 			}
 		}
 	}

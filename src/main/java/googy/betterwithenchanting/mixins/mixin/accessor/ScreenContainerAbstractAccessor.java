@@ -13,7 +13,4 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface ScreenContainerAbstractAccessor {
     @Invoker
     int invokeGetSlotId(int x, int y);
-
-    @Accessor
-    TooltipElement getTooltipElement();
 }

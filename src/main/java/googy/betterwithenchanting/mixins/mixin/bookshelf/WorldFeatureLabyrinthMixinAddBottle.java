@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.mixins.mixin;
+package googy.betterwithenchanting.mixins.mixin.bookshelf;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;

@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.mixins.mixin.render;
+package googy.betterwithenchanting.mixins.mixin.enchantment.glint;
 
 import googy.betterwithenchanting.mixins.MixinsHelperRenderer;
 import net.minecraft.client.Minecraft;
@@ -9,7 +9,6 @@ import net.minecraft.core.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = ItemModelStandard.class, remap = false)

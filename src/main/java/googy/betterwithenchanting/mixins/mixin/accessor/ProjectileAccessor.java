@@ -8,13 +8,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ProjectileAccessor {
 
 	@Accessor
-	void setDefaultGravity(float defaultGravity);
-
-	@Accessor
 	void setDefaultProjectileSpeed(float defaultProjectileSpeed);
-
-	@Accessor
-	float getDefaultGravity();
 
 	@Accessor
 	float getDefaultProjectileSpeed();

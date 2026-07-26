@@ -16,7 +16,7 @@ import net.minecraft.client.gui.hud.component.ComponentAnchor;
 import net.minecraft.client.gui.hud.component.HudComponents;
 import net.minecraft.client.gui.hud.component.layout.LayoutAbsolute;
 import net.minecraft.client.gui.options.components.BooleanOptionComponent;
-import net.minecraft.client.option.GameSettings;
+import net.minecraft.client.option.OptionBoolean;
 import net.minecraft.client.render.TileEntityRenderDispatcher;
 import net.minecraft.client.render.block.model.BlockModel;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
@@ -42,10 +42,12 @@ import turniplabs.halplibe.util.dependency.Key;
 import java.util.Map;
 
 import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
+import static net.minecraft.client.option.GameSettings.register;
 import static net.minecraft.client.render.block.model.BlockModelDispatcher.loadDataModel;
 
 public class BetterWithEnchantingClient implements ClientModInitializer {
 	public static @NotNull HudComponentScore SCORE;
+	public static @NotNull OptionBoolean VERTICAL_SCORE;
 
 	@Override
 	public void onInitializeClient() {
@@ -137,8 +139,12 @@ public class BetterWithEnchantingClient implements ClientModInitializer {
 			.register(new HudComponentScore(
 				"score_bar",
 				new LayoutAbsolute(0.5F, 0.0F, ComponentAnchor.TOP_CENTER, 0, 0)
-			).addAttachedOption(GameSettings.VERTICAL_HOT_BAR, () -> new BooleanOptionComponent(GameSettings.VERTICAL_HOT_BAR)));
+			).addAttachedOption(BetterWithEnchantingClient.VERTICAL_SCORE, () -> new BooleanOptionComponent(BetterWithEnchantingClient.VERTICAL_SCORE)));
 
+	}
+
+	public static void gameSettingsRegistry() {
+		VERTICAL_SCORE = register(new OptionBoolean("verticalScore", false));
 	}
 }
 

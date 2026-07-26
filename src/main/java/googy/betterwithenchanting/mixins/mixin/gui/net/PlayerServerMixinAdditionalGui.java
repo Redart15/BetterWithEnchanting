@@ -1,6 +1,5 @@
-package googy.betterwithenchanting.mixins.mixin.net;
+package googy.betterwithenchanting.mixins.mixin.gui.net;
 
-import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.gui.book.MenuEnchantmentBook;
 import googy.betterwithenchanting.mixins.interfaces.PlayerAdditionalGui;
@@ -10,10 +9,8 @@ import googy.betterwithenchanting.network.OpenGuiTableMessage;
 import net.minecraft.core.crafting.ContainerListener;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
-import net.minecraft.core.net.packet.PacketContainerOpen;
 import net.minecraft.core.world.World;
 import net.minecraft.server.entity.player.PlayerServer;
-import net.minecraft.server.net.handler.PacketHandlerServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;

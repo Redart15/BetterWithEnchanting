@@ -1,4 +1,4 @@
-package googy.betterwithenchanting.mixins.mixin.creative;
+package googy.betterwithenchanting.mixins.mixin.gui.creative;
 
 import googy.betterwithenchanting.block.EnchantmentBlocks;
 import googy.betterwithenchanting.item.EnchantmentItems;
