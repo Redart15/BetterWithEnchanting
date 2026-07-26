@@ -184,11 +184,11 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		message.append("Example:\n")
 			.append("For example the process rolls two enchantments ")
 			.append("§r§9")
-			.append(new EnchantmentStack(Enchantments.BOTTLED_SCORE, 1).prettyToString())
+			.append(new EnchantmentStack(Enchantments.INSIGHT, 1).prettyToString())
 			.append("§r and §r§9")
-			.append(new EnchantmentStack(Enchantments.BOTTLED_SCORE, 2).prettyToString())
+			.append(new EnchantmentStack(Enchantments.INSIGHT, 2).prettyToString())
 			.append("§r than those level combine to §r§9")
-			.append(new EnchantmentStack(Enchantments.BOTTLED_SCORE, 3).prettyToString())
+			.append(new EnchantmentStack(Enchantments.INSIGHT, 3).prettyToString())
 			.append(".§r");
 		ctx.getSource().sendMessage(message.toString());
 		return Command.SINGLE_SUCCESS;

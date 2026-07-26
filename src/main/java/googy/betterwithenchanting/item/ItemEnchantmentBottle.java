@@ -9,6 +9,7 @@ import net.minecraft.core.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@Deprecated(since = "1.2.0", forRemoval = true)
 public class ItemEnchantmentBottle extends Item {
 	public ItemEnchantmentBottle(String name, String namespaceId, int id) {
 		super(name, namespaceId, id);

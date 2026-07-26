@@ -1,8 +1,6 @@
 package googy.betterwithenchanting.api;
 
 import googy.betterwithenchanting.block.EnchantmentBlocks;
-import googy.betterwithenchanting.item.EnchantmentItems;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.achievements.data.AchievementPage;
 import net.minecraft.client.gui.achievements.data.AchievementPages;
 import net.minecraft.core.achievement.Achievement;
@@ -13,7 +11,6 @@ import net.minecraft.core.item.Items;
 import net.minecraft.core.util.collection.NamespaceID;
 import net.minecraft.core.util.helper.DyeColor;
 import org.jetbrains.annotations.NotNull;
-import turniplabs.halplibe.helper.EnvironmentHelper;
 
 import java.util.List;
 
@@ -39,7 +36,7 @@ public class EnchantmentAchievements {
 		ItemStack enchantedBread = new ItemStack(Items.FOOD_APPLE);
 		EnchantmentContainer.rawAddEnchantment(enchantedBread, Enchantments.NOURISHMENT.getDefaultStack());
 		ItemStack book = new ItemStack(Items.BOOK);
-		EnchantmentContainer.rawAddEnchantment(book, Enchantments.BOTTLED_SCORE.getDefaultStack());
+		EnchantmentContainer.rawAddEnchantment(book, Enchantments.INSIGHT.getDefaultStack());
 		ItemStack lapiz = new ItemStack(Items.DYE, 64, DyeColor.BLUE.itemMeta);
 
 		CRAFT_ENCHANTER = new Achievement(
@@ -70,7 +67,7 @@ public class EnchantmentAchievements {
 
 		SCORE = new Achievement(
 			NamespaceID.fromPool(MOD_ID, "score"),
-			"score", EnchantmentItems.SCORE_BOTTLE, null
+			"score", Items.FOOD_APPLE_GOLD, null
 		).registerAchievement();
 
 		LOST_KNOWLEDGE = new Achievement(

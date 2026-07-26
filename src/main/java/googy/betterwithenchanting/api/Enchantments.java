@@ -1,6 +1,5 @@
 package googy.betterwithenchanting.api;
 
-import googy.betterwithenchanting.BetterWithEnchanting;
 import googy.betterwithenchanting.item.EnchantmentItems;
 import net.minecraft.core.data.registry.Registry;
 import net.minecraft.core.item.*;
@@ -49,6 +48,7 @@ public class Enchantments extends Registry<Enchantment> {
 	// HOE
 	public static final Enchantment REAP;
 	// FOOD
+	@Deprecated(since = "1.2.0", forRemoval = true)
 	public static final Enchantment BOTTLED_SCORE;
 	public static final Enchantment NOURISHMENT;
 	public static final Enchantment FILLING;
@@ -171,13 +171,13 @@ public class Enchantments extends Registry<Enchantment> {
 			.setEnchantability(15, 65, 0.4f, 1)
 			.build();
 
-
 		BOTTLED_SCORE = new EnchantmentBuilder(new Enchantment(MOD_ID, "score"))
 			.setWeight(1.0f)
 			.setMaxLevel(4)
 			.setTarget(item -> item.id == EnchantmentItems.SCORE_BOTTLE.id || item instanceof ItemFood)
 			.setTargetDescriptions("food", "consumable")
 			.setEnchantability(0, 50, 0.75, 2)
+			.setHidden()
 			.build();
 
 		CRIT = new EnchantmentBuilder(new Enchantment(MOD_ID, "crit"))
@@ -265,6 +265,7 @@ public class Enchantments extends Registry<Enchantment> {
 					|| item instanceof ItemFishingRod
 					|| item instanceof ItemToolHoe
 					|| item instanceof ItemToolShears
+					|| item instanceof ItemFood
 					|| item.hasTag(ENCHANT_TOOL)
 					|| item.hasTag(ENCHANT_PICKAXE)
 					|| item.hasTag(ENCHANT_AXE)
@@ -274,7 +275,7 @@ public class Enchantments extends Registry<Enchantment> {
 					|| item.hasTag(ENCHANT_SHEARS)
 				)
 			)
-			.setTargetDescriptions("pickaxe", "axe", "shovel", "rod", "hoe", "shears", "tool")
+			.setTargetDescriptions("pickaxe", "axe", "shovel", "rod", "hoe", "shears", "tool", "food")
 			.setEnchantability(0, 50, 0.2f, 4)
 			.build();
 
