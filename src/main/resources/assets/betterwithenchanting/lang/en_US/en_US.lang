@@ -157,6 +157,9 @@ achievement.score.desc=Consume an bottle of score.
 achievement.lost.knowlegde=Study up!
 achievement.lost.knowlegde.desc=Enchant an item using an enchantment book.
 
+#Hud
+options.verticalScore=Vertical
+
 # ------------------------------------- currently not ingame -----------------------------------------------------------
 # enchantment that sounded cool but werent all that great
 enchantment.betterwithenchanting.thorn.name= Thorns
