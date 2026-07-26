@@ -8,7 +8,7 @@ public class ModEntryPoint implements PreLaunchEntrypoint {
 	@Override
 	public void onPreLaunch() {
 		if(!FabricLoader.getInstance().isModLoaded("stardew")){
-			Mixins.addConfiguration("compat/stardew.mixins.json");
+//			Mixins.addConfiguration("compat/stardew.mixins.json");
 		}
 	}
 }
