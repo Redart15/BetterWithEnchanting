@@ -5,12 +5,18 @@ import googy.betterwithenchanting.block.EnchantmentBlocks;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.command.CommandEnchantment;
 import googy.betterwithenchanting.command.CommandScore;
+import googy.betterwithenchanting.gui.HudComponentScore;
 import googy.betterwithenchanting.item.EnchantmentItems;
 import googy.betterwithenchanting.mixins.mixin.accessor.DispatcherAccessor;
 import googy.betterwithenchanting.particle.ParticleCrit;
 import googy.betterwithenchanting.particle.ParticleGlyph;
 import googy.betterwithenchanting.render.*;
 import net.fabricmc.api.ClientModInitializer;
+import net.minecraft.client.gui.hud.component.ComponentAnchor;
+import net.minecraft.client.gui.hud.component.HudComponents;
+import net.minecraft.client.gui.hud.component.layout.LayoutAbsolute;
+import net.minecraft.client.gui.options.components.BooleanOptionComponent;
+import net.minecraft.client.option.GameSettings;
 import net.minecraft.client.render.TileEntityRenderDispatcher;
 import net.minecraft.client.render.block.model.BlockModel;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
@@ -39,6 +45,7 @@ import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
 import static net.minecraft.client.render.block.model.BlockModelDispatcher.loadDataModel;
 
 public class BetterWithEnchantingClient implements ClientModInitializer {
+	public static @NotNull HudComponentScore SCORE;
 
 	@Override
 	public void onInitializeClient() {
@@ -123,6 +130,15 @@ public class BetterWithEnchantingClient implements ClientModInitializer {
 
 	public static void initTileEntityModels(TileEntityRenderDispatcher dispatcher) {
 		dispatcher.assignRenderer(TileEntityEnchantmentTable.class, new EnchantmentTableRenderer());
+	}
+
+	public static void hudComponentRegistry(){
+		SCORE = HudComponents
+			.register(new HudComponentScore(
+				"score_bar",
+				new LayoutAbsolute(0.5F, 0.0F, ComponentAnchor.TOP_CENTER, 0, 0)
+			).addAttachedOption(GameSettings.VERTICAL_HOT_BAR, () -> new BooleanOptionComponent(GameSettings.VERTICAL_HOT_BAR)));
+
 	}
 }
 
