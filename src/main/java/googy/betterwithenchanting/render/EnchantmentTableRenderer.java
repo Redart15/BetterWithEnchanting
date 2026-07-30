@@ -38,7 +38,7 @@ public class EnchantmentTableRenderer extends TileEntityRenderer<TileEntityEncha
 		float f = tileEntity.bookRot() - tileEntity.prevBookRot();
 		while (f >= (float) Math.PI) {f -= ((float) Math.PI * 2.0F);}
 		while (f < -(float) Math.PI) {f += ((float) Math.PI * 2.0F);}
-		float f2 = tileEntity.prevBookRot() + f * partialTicks;
+		float f2 =  tileEntity.prevBookRot() + f * partialTicks;
 		float f3 = tileEntity.prevPageFlip() + (tileEntity.pageFlip() - tileEntity.prevPageFlip()) * partialTicks + 0.25F;
 		float f4 = tileEntity.prevPageFlip() + (tileEntity.pageFlip() - tileEntity.prevPageFlip()) * partialTicks + 0.75F;
 		f3 = (f3 - MathHelper.floor_float(f3)) * 1.6F - 0.3F;

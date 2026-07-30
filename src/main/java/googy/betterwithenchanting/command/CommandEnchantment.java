@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static googy.betterwithenchanting.api.EnchantmentAchievements.ENCHANT_ITEM;
 import static googy.betterwithenchanting.command.ReturnValues.*;
 
 public class CommandEnchantment implements CommandManager.CommandRegistry {
@@ -116,7 +117,6 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		if (player == null) {
 			throw NOT_APPLICABLE.create();
 		}
-		// TODO: Once Archiments are made check if the player can get this infomation.
 		final I18n TRANSLATE = I18n.getInstance();
 		final Enchantment enchantment = ctx.getArgument("name", Enchantment.class);
 		StringBuilder message = new StringBuilder()

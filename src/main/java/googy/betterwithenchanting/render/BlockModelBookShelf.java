@@ -13,27 +13,27 @@ import org.useless.dragonfly.models.block.StaticBlockModel;
 import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
 
 public class BlockModelBookShelf<T extends BlockLogic> extends BlockModelGeneric<T> {
-	public static final IconCoordinate[] texCoords = new IconCoordinate[16];
-	public final StaticBlockModel[] models = new StaticBlockModel[16];
+	protected final IconCoordinate[] texCoords = new IconCoordinate[1];
+	protected final StaticBlockModel[] models = new StaticBlockModel[texCoords.length];
 
 	public BlockModelBookShelf(@NotNull Block<T> block, @NotNull StaticBlockModel staticModel, String path) {
 		super(block, staticModel);
-		for(int i = 0; i < 16; i++) {
-			texCoords[i] = TextureRegistry.getTexture(MOD_ID + path + i);
+		for(int i = 0; i < texCoords.length; i++) {
+			this.texCoords[i] = TextureRegistry.getTexture(MOD_ID + path + i);
 			this.models[i] = BlockModelDispatcher.loadDataModel(MOD_ID + path + i).asModel();
 		}
 	}
 
 	public BlockModelBookShelf(@NotNull Block<T> block, @NotNull BlockModelData staticModel, String path) {
 		super(block, staticModel);
-		for(int i = 0; i < 16; i++) {
-			texCoords[i] = TextureRegistry.getTexture(MOD_ID + path + i);
+		for(int i = 0; i < texCoords.length; i++) {
+			this.texCoords[i] = TextureRegistry.getTexture(MOD_ID + path + i);
 			this.models[i] = BlockModelDispatcher.loadDataModel(MOD_ID + path + i).asModel();
 		}
 	}
 
 	@Override
 	public @NotNull StaticBlockModel getModelFromData(int data) {
-		return this.models[data & 15];
+		return this.models[0];
 	}
 }

@@ -17,6 +17,6 @@ public class BlockModelEnchantedBookShelf<T extends BlockLogic> extends BlockMod
 
 	@Override
 	public @NotNull StaticBlockModel getModelFromData(int data) {
-		return this.models[(data >> 2) & 15];
+		return super.getModelFromData((data >> 2) & 15);
 	}
 }

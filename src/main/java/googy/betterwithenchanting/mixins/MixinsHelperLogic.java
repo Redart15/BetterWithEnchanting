@@ -2,6 +2,7 @@ package googy.betterwithenchanting.mixins;
 
 import com.mojang.nbt.tags.CompoundTag;
 import googy.betterwithenchanting.BetterWithEnchanting;
+import googy.betterwithenchanting.api.EnchantmentAchievements;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.EnchantmentStack;
 import googy.betterwithenchanting.api.Enchantments;
@@ -511,8 +512,11 @@ public class MixinsHelperLogic {
 			dir = dir.rotateAxis(angle, view.x, view.y, view.z);
 			world.spawnParticle("crit", x, y, z, dir.x * 0.2f, dir.y * 0.2f, dir.z * 0.2f, 0, 32.0f, false);
 		}
-
-
-
     }
+
+	public static void applyScoreAchievement(Mob mob) {
+		if(mob instanceof Player player && player.world.isClientSide){
+			player.triggerAchievement(EnchantmentAchievements.SCORE);
+		}
+	}
 }

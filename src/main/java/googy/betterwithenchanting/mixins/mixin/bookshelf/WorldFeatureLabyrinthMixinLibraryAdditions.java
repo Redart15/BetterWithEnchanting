@@ -44,9 +44,6 @@ public abstract class WorldFeatureLabyrinthMixinLibraryAdditions {
 		World world, Random random,
 		int blockX, int blockY, int blockZ, CallbackInfo ci
 	){
-		if(BetterWithEnchanting.DESTRUCTIBLE){
-			return;
-		}
 		Random rand = new Random(Objects.hash(blockX, blockY, blockZ));
 		boolean canPlace = rand.nextInt(BetterWithEnchanting.CHANCE) == 0;
 		if (!canPlace) {

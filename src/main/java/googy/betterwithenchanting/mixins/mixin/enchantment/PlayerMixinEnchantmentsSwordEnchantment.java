@@ -46,9 +46,9 @@ public class PlayerMixinEnchantmentsSwordEnchantment {
 		if(EnchantmentContainer.getLevel(itemstack, Enchantments.LIFESTEAL) > 0 && hasHit){
 			((Player) attacker).heal(2);
 		}
-//		if(EnchantmentContainer.getLevel(itemstack, Enchantments.CRIT) > 0 && hasHit){
-//			MixinsHelperLogic.spawnCritParticles((Player)attacker, instance);
-//		}
+		if(EnchantmentContainer.getLevel(itemstack, Enchantments.CRIT) > 0 && hasHit){
+			MixinsHelperLogic.spawnCritParticles((Player)attacker, instance);
+		}
 		return hasHit;
 	}
 

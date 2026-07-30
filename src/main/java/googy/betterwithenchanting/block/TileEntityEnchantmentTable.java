@@ -12,6 +12,7 @@ import net.minecraft.core.net.packet.PacketTileEntityData;
 import net.minecraft.core.player.inventory.container.Container;
 import net.minecraft.core.util.helper.MathHelper;
 import net.minecraft.core.world.ICarriable;
+import net.minecraft.core.world.ICarrySource;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.pos.TilePosc;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,7 @@ import java.util.Random;
 import static googy.betterwithenchanting.BetterWithEnchanting.LABELS;
 import static googy.betterwithenchanting.BetterWithEnchanting.MOD_ID;
 
-public class TileEntityEnchantmentTable extends TileEntity implements Container {
+public class TileEntityEnchantmentTable extends TileEntity implements Container, ICarrySource {
 	protected ItemStack[] items = new ItemStack[2];
 	protected Random random = new Random();
 	private int ticks;
@@ -244,8 +245,10 @@ public class TileEntityEnchantmentTable extends TileEntity implements Container 
 	}
 
 	@Override
-	protected @Nullable ICarriable pickup(@NotNull World world, @NotNull Entity holder, @NotNull TilePosc tilePos_) {
-		if(BetterWithEnchanting.DESTRUCTIBLE){
+	public @Nullable ICarriable pickup(@NotNull World world, @NotNull Entity holder, @NotNull TilePosc tilePos_) {
+		if(BetterWithEnchanting.DESTRUCTIBLE || BetterWithEnchanting.CAN_PICKUP){
+			this.prevPageFlip = pageFlip;
+			this.prevBookSpread = bookSpread;
 			return super.pickup(world, holder, tilePos_);
 		}
 		return null;

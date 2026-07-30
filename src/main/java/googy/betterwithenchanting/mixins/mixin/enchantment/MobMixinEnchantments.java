@@ -8,25 +8,31 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
+import googy.betterwithenchanting.api.EnchantmentAchievements;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.Enchantments;
 import googy.betterwithenchanting.mixins.MixinsHelperLogic;
 import googy.betterwithenchanting.mixins.mixin.accessor.ItemAccessor;
+import net.minecraft.core.WeightedRandomLootObject;
+import net.minecraft.core.achievement.Achievements;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.Mob;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.util.helper.DamageType;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.List;
 import java.util.Objects;
 
 @Mixin(value = Mob.class, remap = false)
-public class MobMixinEnchantments {
+public abstract class MobMixinEnchantments {
+
 	@Inject(method = "hurt", at = @At(value = "RETURN"))
 	private void applyQuickStrike(Entity attacker, int damage, DamageType type, CallbackInfoReturnable<Boolean> info) {
 		if (!(attacker instanceof Player player)) {
@@ -123,6 +129,7 @@ public class MobMixinEnchantments {
 		if(nourishment == 0 && filling == 0){
 			return key;
 		}
+		MixinsHelperLogic.applyScoreAchievement((Mob) (Object) this);
 		MixinsHelperLogic.applyInsight((Mob)(Object) this, instance);
 		return String.format("%s.%02d", key, Objects.hash(nourishment, filling));
 	}
@@ -133,8 +140,9 @@ public class MobMixinEnchantments {
 		Mob instance, int i, Operation<Void> original,
 		@Share("nourishmentLvL")LocalIntRef nourishmentLvL,
 		@Share("fillingLvL")LocalIntRef fillingLvL,
-		@Local ItemStack itemStack
+		@Local(argsOnly = true) ItemStack itemStack
 	){
+		MixinsHelperLogic.applyScoreAchievement((Mob) (Object) this);
 		MixinsHelperLogic.applyInsight(instance, itemStack);
 		i += MixinsHelperLogic.getAdditionalHealing(i, fillingLvL.get());
 		i += nourishmentLvL.get() > 0 ? 1: 0;

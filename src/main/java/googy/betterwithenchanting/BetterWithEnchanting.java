@@ -30,8 +30,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
-import static net.minecraft.core.net.command.util.CommandHelper.registerWorldFeatureClass;
-
 
 public class BetterWithEnchanting implements ModInitializer{
 	public static final String MOD_ID = HalpLibe.registerMod("betterwithenchanting");
@@ -48,6 +46,7 @@ public class BetterWithEnchanting implements ModInitializer{
 	public static final boolean ILLAGER_FONT;
 	public static final boolean DESTRUCTIBLE;
 	public static final int CHANCE;
+	public static final boolean CAN_PICKUP;
 
 	/// cant be client side, needs to be core
 	public static final String[] LABELS = new String[]{
@@ -69,8 +68,9 @@ public class BetterWithEnchanting implements ModInitializer{
 			.addEntry("ITEM_ID", 18444)
 			.addEntry("USE_ILLAGER_FONT", "Makes the particles and Enchanting Table use Illager font.", true)
 			.addEntry("USE_COLORED_PARTICLES", "Makes the particle spawed by Enchanting Table colored", false)
-			.addEntry("DESTRUCTIBLE", "Enchanting Table cannot be crafted or mined. It has to be found in the world." , true)
-			.addEntry("CHANCE", "Chance for an enchanting table to spawn in the library. Only applies when DESTRUCTIBLE is false. Odds are 1/value, 1 equals 100%, 10 equals 10%" , 10);
+			.addEntry("DESTRUCTIBLE", "Enchanting Table cannot be crafted or mined." , true)
+			.addEntry("CHANCE", "Chance for an enchanting table to spawn in the library. Odds are 1/value, 1 equals 100%, 10 equals 10%" , 10)
+			.addEntry("CAN_PICKUP", "Only applies when DESTRUCTIBLE is false. Allows the enchanting table to be picked up.", true);
 		CONFIG_HANDLER = new TomlConfigHandler(MOD_ID, properties);
 		File configFile = CONFIG_HANDLER.getConfigFile();
 		if(configFile.exists()){
@@ -109,6 +109,7 @@ public class BetterWithEnchanting implements ModInitializer{
 		COLORED_PARTICLE = CONFIG_HANDLER.getBoolean(GENERAL_CATEGORY + "USE_COLORED_PARTICLES");
 		DESTRUCTIBLE = CONFIG_HANDLER.getBoolean(GENERAL_CATEGORY + "DESTRUCTIBLE");
 		CHANCE = CONFIG_HANDLER.getInt(GENERAL_CATEGORY + "CHANCE");
+		CAN_PICKUP = CONFIG_HANDLER.getBoolean(GENERAL_CATEGORY + "CAN_PICKUP");
 	}
 
 	@Override

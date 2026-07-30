@@ -1,7 +1,6 @@
 package googy.betterwithenchanting.block;
 
 import googy.betterwithenchanting.item.EnchantmentItems;
-import googy.betterwithenchanting.item.ItemEnchantedBook;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.block.Blocks;
@@ -21,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class BlockEnchantedBookShelf extends BlockLogic {
 
-	public static final int VARIANTS_POS = 2;
 	private static final PackedField VARIANT_MASK = new PackedField(2, 4);
 
 	public BlockEnchantedBookShelf(@NotNull Block<?> block, @NotNull Material material) {
@@ -35,7 +33,6 @@ public class BlockEnchantedBookShelf extends BlockLogic {
 		if (stack == null || stack.itemID == EnchantmentItems.ENCHANTED_BOOK.id) {
 			int metadata = world.getBlockData(tilePos);
 			ItemStack book = new ItemStack(EnchantmentItems.ENCHANTED_BOOK, 1, (metadata >> 4) & 15);
-//			((ItemEnchantedBook)book.getItem()).applyEnchantments(book);
 			player.inventory.insertItem(book, true);
 			if (book.stackSize == 0) {
 				if(((metadata - 1) & 3) == 0){
