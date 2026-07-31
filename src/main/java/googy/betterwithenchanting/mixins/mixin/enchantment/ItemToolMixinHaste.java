@@ -17,10 +17,10 @@ public abstract class ItemToolMixinHaste {
 	private float applyHaste(ToolMaterial instance, boolean haste, Operation<Float> original, ItemStack itemStack){
 		float ret = original.call(instance, haste);
 		int hasteLevel = EnchantmentContainer.getLevel(itemStack, Enchantments.HASTE);
-		if(haste){
-			return ret * (float)Math.pow(1.25f, hasteLevel);
+		if(hasteLevel > 0){
+			ret *= (float)Math.pow(1.5f, hasteLevel);
 		}
-		return original.call(instance, true);
+		return ret;
 	}
 
 }

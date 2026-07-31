@@ -93,8 +93,8 @@ public class Enchantments extends Registry<Enchantment> {
 				|| item.hasTag(ENCHANT_TOOL)
 			)
 			.setTargetDescriptions("pickaxe", "axe", "shovel", "tool")
-			.setMinEnchantability(level -> 10)
-			.setMaxEnchatability(level -> 60)
+			.setMaxLevel(2)
+			.setEnchantability(10, 60, 0.5, 2)
 			.build();
 
 		UNBREAKING = new EnchantmentBuilder(new Enchantment(MOD_ID, "unbreaking"), 2)

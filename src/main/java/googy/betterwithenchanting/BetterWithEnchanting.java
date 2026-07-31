@@ -1,5 +1,6 @@
 package googy.betterwithenchanting;
 
+import googy.betterwithenchanting.api.EnchantmentAchievements;
 import googy.betterwithenchanting.api.Enchantments;
 import googy.betterwithenchanting.block.EnchantmentBlocks;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
@@ -146,7 +147,7 @@ public class BetterWithEnchanting implements ModInitializer{
 		RecipeBuilder.Shaped(MOD_ID, "CBC", "DOD", "OOO")
 			.addInput('C', Items.CLOTH)
 			.addInput('B', Items.BOOK)
-			.addInput('O', Blocks.OBSIDIAN)
+			.addInput('O', "minecraft:cobblestones")
 			.addInput('D', Items.DIAMOND)
 			.create("enchantingtable", new ItemStack(EnchantmentBlocks.ENCHANTMENT_TABLE));
 	}

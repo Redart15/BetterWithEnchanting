@@ -1,8 +1,7 @@
 package googy.betterwithenchanting.api;
 
 import googy.betterwithenchanting.block.EnchantmentBlocks;
-import net.minecraft.client.gui.achievements.data.AchievementPage;
-import net.minecraft.client.gui.achievements.data.AchievementPages;
+import googy.betterwithenchanting.item.EnchantmentItems;
 import net.minecraft.core.achievement.Achievement;
 import net.minecraft.core.achievement.Achievements;
 import net.minecraft.core.entity.player.Player;
@@ -17,7 +16,7 @@ import java.util.List;
 import static googy.betterwithenchanting.BetterWithEnchanting.*;
 
 public class EnchantmentAchievements {
-	private static final AchievementPage OVERWORLD_PAGE = AchievementPages.overworldPage;
+	private EnchantmentAchievements(){}
 
 	public static final Achievement CRAFT_ENCHANTER;
 	public static final Achievement ENCHANT_ITEM;
@@ -28,15 +27,13 @@ public class EnchantmentAchievements {
 	public static final Achievement LOST_KNOWLEDGE;
 
 	static {
-
 		ItemStack enchantedItem = new ItemStack(Items.TOOL_AXE_GOLD);
 		EnchantmentContainer.rawAddEnchantment(enchantedItem, Enchantments.CRIT.getDefaultStack());
 		ItemStack highEnchanted = new ItemStack(Items.TOOL_SWORD_DIAMOND);
 		EnchantmentContainer.rawAddEnchantment(highEnchanted, Enchantments.CRIT.getDefaultStack());
 		ItemStack enchantedBread = new ItemStack(Items.FOOD_APPLE);
 		EnchantmentContainer.rawAddEnchantment(enchantedBread, Enchantments.NOURISHMENT.getDefaultStack());
-		ItemStack book = new ItemStack(Items.BOOK);
-		EnchantmentContainer.rawAddEnchantment(book, Enchantments.INSIGHT.getDefaultStack());
+		ItemStack book = new ItemStack(EnchantmentItems.ENCHANTED_BOOK, 1, DyeColor.RED.itemMeta);
 		ItemStack lapiz = new ItemStack(Items.DYE, 64, DyeColor.BLUE.itemMeta);
 
 		CRAFT_ENCHANTER = new Achievement(
@@ -78,22 +75,6 @@ public class EnchantmentAchievements {
 	}
 
 
-	public static void init(){
-		int tableEnchantX = -4;
-		int tableEnchantY = 2;
-		OVERWORLD_PAGE.addAchievement(EnchantmentAchievements.CRAFT_ENCHANTER, tableEnchantX, tableEnchantY);
-		int itemEnchantX = tableEnchantX - 1;
-		int itemEnchantY = tableEnchantY - 2;
-		OVERWORLD_PAGE.addAchievement(EnchantmentAchievements.ENCHANT_ITEM, itemEnchantX, itemEnchantY);
-		OVERWORLD_PAGE.addAchievement(EnchantmentAchievements.ENCHANT_ITEM, itemEnchantX, itemEnchantY);
-		OVERWORLD_PAGE.addAchievement(EnchantmentAchievements.FULL_ENCHANTED, itemEnchantX + 2, itemEnchantY - 1);
-		OVERWORLD_PAGE.addAchievement(EnchantmentAchievements.HIGH_LEVEL_ENCHANT, itemEnchantX - 1, itemEnchantY - 3);
-		OVERWORLD_PAGE.addAchievement(EnchantmentAchievements.ENCHANTED_FOOD, itemEnchantX - 2, itemEnchantY);
-		OVERWORLD_PAGE.addAchievement(EnchantmentAchievements.SCORE, 11, 3);
-		OVERWORLD_PAGE.addAchievement(EnchantmentAchievements.LOST_KNOWLEDGE, 9, 5);
-	}
-
-	private EnchantmentAchievements(){}
 
     public static void applyHighEnchant(Player player, List<EnchantmentStack> stacks) {
         if (player.getStat(HIGH_LEVEL_ENCHANT) != 0) {

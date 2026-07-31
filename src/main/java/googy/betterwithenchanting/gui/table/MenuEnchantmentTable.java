@@ -89,9 +89,6 @@ public class MenuEnchantmentTable extends MenuAbstract {
 	}
 
 	public void checkAchievements(Player player,@NotNull ItemStack enchantItem) {
-		if(EnvironmentHelper.isMultiplayerServer()){
-			return;
-		}
 		player.triggerAchievement(EnchantmentAchievements.ENCHANT_ITEM);
 		if(enchantItem.getItem() instanceof ItemFood){
 			player.triggerAchievement(EnchantmentAchievements.ENCHANTED_FOOD);

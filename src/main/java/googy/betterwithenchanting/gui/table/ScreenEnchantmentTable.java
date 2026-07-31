@@ -1,5 +1,7 @@
 package googy.betterwithenchanting.gui.table;
 
+import googy.betterwithenchanting.BetterWithEnchanting;
+import googy.betterwithenchanting.api.EnchantmentAchievements;
 import googy.betterwithenchanting.render.GlyphRenderer;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
 import googy.betterwithenchanting.gui.ScreenFix;
@@ -34,6 +36,9 @@ public class ScreenEnchantmentTable extends ScreenFix {
 	public ScreenEnchantmentTable(ContainerInventory inventory, TileEntityEnchantmentTable tileEntity) {
 		super(new MenuEnchantmentTable(inventory, tileEntity));
 		this.enchantmentTableContainer = (MenuEnchantmentTable) inventorySlots;
+		if(!DESTRUCTIBLE){
+			this.mc.thePlayer.triggerAchievement(EnchantmentAchievements.CRAFT_ENCHANTER);
+		}
 	}
 
 	@Override

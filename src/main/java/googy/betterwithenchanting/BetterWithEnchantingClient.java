@@ -1,5 +1,6 @@
 package googy.betterwithenchanting;
 
+import googy.betterwithenchanting.api.EnchantmentAchievementPage;
 import googy.betterwithenchanting.api.EnchantmentAchievements;
 import googy.betterwithenchanting.block.EnchantmentBlocks;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
@@ -101,7 +102,7 @@ public class BetterWithEnchantingClient implements ClientModInitializer {
 
 	public static void afterClientStart() {
 		GlyphRenderer.init();
-		EnchantmentAchievements.init();
+		EnchantmentAchievementPage.init();
 	}
 
 	static final String BLOCK_DIR = MOD_ID + ":block/";
