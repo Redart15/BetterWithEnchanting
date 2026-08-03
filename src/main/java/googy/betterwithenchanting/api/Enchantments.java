@@ -121,7 +121,7 @@ public class Enchantments extends Registry<Enchantment> {
 		FLAME = new EnchantmentBuilder(new Enchantment(MOD_ID, "flame"), 5)
 			.setWeight(1.0f)
 			.setMaxLevel(5)
-			.setTarget(item -> item instanceof ItemToolSword || item instanceof ItemBow || item.hasTag(ENCHANT_WEAPON))
+			.setTarget(item -> item instanceof ItemToolSword || item.hasTag(ENCHANT_WEAPON))
 			.setTargetDescriptions("sword", "bow", "meele", "ranged")
 			.setEnchantability(0, 50, 0.75, 4)
 			.build();
