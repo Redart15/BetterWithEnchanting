@@ -44,6 +44,7 @@
     "enchantment.PlayerControllerMixinQuickStrikeMining",
     "enchantment.glint.ItemModelMixinGlintSetUp",
     "enchantment.glint.ItemModelStandardMixinGlint",
+    "enchantment.render.HudComponentHealthBarMixinPreview",
     "enchantment.render.TooltipElementMixinEnchantmentText",
     "gui.book.HudComponentHotbarMixinLockSlot",
     "hudcomponent.GameSettingsMixin",
