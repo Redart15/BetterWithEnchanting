@@ -108,6 +108,7 @@ enchantment.command.decreased= Decreased the level of %1$s from %2$d to %3$d.
 enchantment.command.no.change= No level were changed.
 enchantment.command.enchant= Enchanted %s.
 enchantment.command.info.upgrading=In §r§ered§r are the upgrading levels.
+enchantment.command.info.locked= Acquire the achievement "%s" first.
 enchantment.command.upgrading.name=Upgrading
 enchantment.command.upgrading.desc=Some levels can only be achieved by rolling multiple copies of the same enchantment during the enchantment process. These copies then upgrade the enchantment to one level higher than the highest level obtained.
 

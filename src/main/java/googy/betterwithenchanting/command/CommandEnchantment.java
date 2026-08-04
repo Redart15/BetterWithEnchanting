@@ -10,10 +10,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import googy.betterwithenchanting.BetterWithEnchanting;
-import googy.betterwithenchanting.api.Enchantment;
-import googy.betterwithenchanting.api.EnchantmentContainer;
-import googy.betterwithenchanting.api.EnchantmentStack;
-import googy.betterwithenchanting.api.Enchantments;
+import googy.betterwithenchanting.api.*;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.lang.I18n;
@@ -76,7 +73,7 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 		}
 		List<Enchantment> applicable = new ArrayList<>();
 		for (Enchantment enchantment : Enchantments.getInstance()) {
-			if (enchantment.canEnchant(stack)) {
+			if (enchantment.canEnchant(stack) && !enchantment.hidden()) {
 				applicable.add(enchantment);
 			}
 		}
@@ -118,6 +115,11 @@ public class CommandEnchantment implements CommandManager.CommandRegistry {
 			throw NOT_APPLICABLE.create();
 		}
 		final I18n TRANSLATE = I18n.getInstance();
+		if(player.getStat(EnchantmentAchievements.CRAFT_ENCHANTER) == 0 && player.gamemode.hasBlockConsumption()){
+			String name = TRANSLATE.translateKey(EnchantmentAchievements.CRAFT_ENCHANTER.getStatKey());
+			ctx.getSource().sendTranslatableMessage("enchantment.command.info.locked", name);
+			return code(FAIL);
+		}
 		final Enchantment enchantment = ctx.getArgument("name", Enchantment.class);
 		StringBuilder message = new StringBuilder()
 			.append("§r§n§9") // formating name

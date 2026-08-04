@@ -19,10 +19,9 @@ public abstract class ItemStackMixinUnbreaking {
 		if (damage <= 0 || unbreakingLevel <= 0) {
 			return damage;
 		}
-		ItemStack asThis = (ItemStack) (Object) this;
 		Random random = ItemAccessor.getItemRand();
 		for (int i = 0; i < damage; i++) {
-			if (asThis.getItem() instanceof ItemArmor && unbreakingLevel > random.nextInt(Enchantments.UNBREAKING.maxLevel() * 2)) {
+			if (unbreakingLevel > random.nextInt(unbreakingLevel + 2)) {
 				damage--;
 			}
 		}

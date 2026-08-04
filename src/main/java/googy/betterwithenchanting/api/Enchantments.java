@@ -100,7 +100,7 @@ public class Enchantments extends Registry<Enchantment> {
 		UNBREAKING = new EnchantmentBuilder(new Enchantment(MOD_ID, "unbreaking"), 2)
 			.setWeight(10.0f)
 			.setMaxLevel(2)
-			.setTarget(Item::isDamagable)
+			.setTarget(item -> item.isDamagable() && !(item instanceof IArmorItem))
 			.setTargetDescriptions("damageable")
 			.setEnchantability(0, 50, 0.5)
 			.build();
