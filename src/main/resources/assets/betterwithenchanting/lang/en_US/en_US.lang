@@ -113,8 +113,8 @@ enchantment.command.upgrading.desc=Some levels can only be achieved by rolling m
 
 score.command.not.applicable= The command is not applicable to this entity.
 score.command.cannot= Invalid target.
-score.command.add= Added %2$d to %1$s.
-score.command.remove= Subtracted %1$s from %2$d.
+score.command.add= Added %2$d score to %1$s.
+score.command.remove= Subtracted %2$d from %1$s.
 score.command.info= Player %1$s has a score of %2$d.
 score.command.set= Set %1$s score to %2$d.
 
