@@ -36,7 +36,7 @@ public class ItemEnchantedBook extends Item {
 			if(!selfStack.getData().containsKey("id")){
 				this.applyEnchantments(selfStack);
 			}
-			((PlayerAdditionalGui)player).displayGuiEnchantmentBook(selfStack);
+			((PlayerAdditionalGui)player).betterWithEnchanting$displayGuiEnchantmentBook(selfStack);
 			ContainerHotbarLocking inventory = (ContainerHotbarLocking) player.inventory;
 			inventory.enchanted$lockSlot(player.inventory.getCurrentSlot(), true);
 			player.inventory.setItem(player.inventory.getCurrentSlot(), null);

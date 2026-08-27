@@ -13,21 +13,17 @@ import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.Enchantments;
 import googy.betterwithenchanting.mixins.MixinsHelperLogic;
 import googy.betterwithenchanting.mixins.mixin.accessor.ItemAccessor;
-import net.minecraft.core.WeightedRandomLootObject;
-import net.minecraft.core.achievement.Achievements;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.Mob;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.util.helper.DamageType;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
 import java.util.Objects;
 
 @Mixin(value = Mob.class, remap = false)
@@ -126,11 +122,14 @@ public abstract class MobMixinEnchantments {
 		String key = original.call(instance);
 		int nourishment = nourishmentLvL.get();
 		int filling = fillingLvL.get();
+		Mob mob = (Mob) (Object) this;
+		if(EnchantmentContainer.hasEnchantments(instance) && mob instanceof Player player) {
+			player.triggerAchievement(EnchantmentAchievements.SCORE);
+		}
 		if(nourishment == 0 && filling == 0){
 			return key;
 		}
-		MixinsHelperLogic.applyScoreAchievement((Mob) (Object) this);
-		MixinsHelperLogic.applyInsight((Mob)(Object) this, instance);
+		MixinsHelperLogic.applyInsight(mob, instance);
 		return String.format("%s.%02d", key, Objects.hash(nourishment, filling));
 	}
 
@@ -142,7 +141,9 @@ public abstract class MobMixinEnchantments {
 		@Share("fillingLvL")LocalIntRef fillingLvL,
 		@Local(argsOnly = true) ItemStack itemStack
 	){
-		MixinsHelperLogic.applyScoreAchievement((Mob) (Object) this);
+		if(EnchantmentContainer.hasEnchantments(itemStack) && instance instanceof Player player) {
+			player.triggerAchievement(EnchantmentAchievements.SCORE);
+		}
 		MixinsHelperLogic.applyInsight(instance, itemStack);
 		i += MixinsHelperLogic.getAdditionalHealing(i, fillingLvL.get());
 		i += nourishmentLvL.get() > 0 ? 1: 0;

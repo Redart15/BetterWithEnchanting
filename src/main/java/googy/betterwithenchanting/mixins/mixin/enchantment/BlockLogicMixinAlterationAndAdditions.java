@@ -49,7 +49,7 @@ public abstract class BlockLogicMixinAlterationAndAdditions {
 		}
 		MixinsHelperLogic.applyDiscovery(world, tilePos, stack);
 		MixinsHelperLogic.applyFortune(world, tilePos, stack);
-		MixinsHelperLogic.applyForaging(world, tilePos, stack, (BlockLogic) (Object) this);
+		MixinsHelperLogic.applyForaging(world, tilePos, stack, logic);
 		MixinsHelperLogic.applyInsight(player, stack, 3);
 	}
 

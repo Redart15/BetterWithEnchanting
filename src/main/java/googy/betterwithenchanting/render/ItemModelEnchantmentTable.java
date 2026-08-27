@@ -56,8 +56,8 @@ public class ItemModelEnchantmentTable extends ItemModelBlock {
 		model.getTransform("pagesLeft").posZ = MathHelper.sin(-randianAngle * 0.2f);
 		model.getTransform("pagesRight").posZ = MathHelper.sin(randianAngle * 0.2f);
 		if("gui".equals(displayPosId)){
-			model.getTransform("flippingPageRight").rotY = MathHelper.toRadians(45);
-			model.getTransform("flippingPageLeft").rotY = MathHelper.toRadians(45);
+			model.getTransform("flippingPageRight").rotY = MathHelper.toRadians(75);
+			model.getTransform("flippingPageLeft").rotY = MathHelper.toRadians(75);
 		}else{
 			this.animatePages(model);
 		}
@@ -70,14 +70,14 @@ public class ItemModelEnchantmentTable extends ItemModelBlock {
 	) {
 		//	animate model
 		long currentTime = System.nanoTime();
-		if(currentTime - this.prevTime >= 1_000_000_0L * 5) { // cause it loos nicer not much other reason to do so
+		if(currentTime - this.prevTime >= 10_000_000L * 5) { // cause it loos nicer not much other reason to do so
 			this.prevTime = currentTime;
 			this.prevPageFlip = this.pageFlip;
 			this.prevBookSpread = this.bookSpread;
 			this.adjustRotation();
 		}
-		float t = currentTime / 1_000_000F;
-		float partialTick = MathHelper.clamp((currentTime - this.prevTime) / 1_000_000F, 0.0f, 1.0f);
+		float t = currentTime / 10_000_000F;
+		float partialTick = MathHelper.clamp((currentTime - this.prevTime) / 10_000_000F, 0.0f, 1.0f);
 		// animating the pages flipping
 		float f5 = this.prevBookSpread + (this.bookSpread - this.prevBookSpread) * partialTick;
 		float f1 = (MathHelper.sin(t * 0.02F) * 0.1F + 1.25F) * f5;
@@ -91,7 +91,7 @@ public class ItemModelEnchantmentTable extends ItemModelBlock {
 		if (f4 > 1.0F) f4 = 1.0F;
 		model.getTransform("flippingPageRight").rotY = f1 - f1 * 2.0F * f4;
 		model.getTransform("flippingPageLeft").rotY = f1 - f1 * 2.0F * f3;
-		GLRenderer.modelM4f().translate(0.1F + MathHelper.sin((t + partialTick) * 0.003F) * 0.23f, 0.0F, 0.0F);
+		GLRenderer.modelM4f().translate(0.1F + MathHelper.sin((t + partialTick) * 0.02F) * 0.23f, 0.0F, 0.0F);
 	}
 
 	private void adjustRotation() {

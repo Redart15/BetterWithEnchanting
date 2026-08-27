@@ -1,6 +1,5 @@
 package googy.betterwithenchanting;
 
-import googy.betterwithenchanting.api.EnchantmentAchievements;
 import googy.betterwithenchanting.api.Enchantments;
 import googy.betterwithenchanting.block.EnchantmentBlocks;
 import googy.betterwithenchanting.block.TileEntityEnchantmentTable;
@@ -11,7 +10,6 @@ import googy.betterwithenchanting.network.EnchantItemMessage;
 import googy.betterwithenchanting.network.OpenGuiTableMessage;
 import googy.betterwithenchanting.network.UpdateLockState;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.core.block.Blocks;
 import net.minecraft.core.data.registry.Registries;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
@@ -130,7 +128,7 @@ public class BetterWithEnchanting implements ModInitializer{
 
 
 	public static void beforeGameStart() {
-		EntityHelper.addMapping(TileEntityEnchantmentTable.class, NamespaceID.getPermanent(MOD_ID, "enchantment_table"));
+		EntityHelper.addMapping(TileEntityEnchantmentTable.class, NamespaceID.fromPool(MOD_ID, "enchantment_table"));
 	}
 
 	public static void afterGameStart() {

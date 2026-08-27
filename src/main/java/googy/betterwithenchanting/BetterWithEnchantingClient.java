@@ -22,6 +22,7 @@ import net.minecraft.client.render.TileEntityRenderDispatcher;
 import net.minecraft.client.render.block.model.BlockModel;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
 import net.minecraft.client.render.block.model.BlockModelStandard;
+import net.minecraft.client.render.block.model.generic.BlockModelGeneric;
 import net.minecraft.client.render.item.model.ItemModelDispatcher;
 import net.minecraft.client.render.item.model.ItemModelStandard;
 import net.minecraft.client.render.particle.Particle;
@@ -49,6 +50,7 @@ import static net.minecraft.client.render.block.model.BlockModelDispatcher.loadD
 public class BetterWithEnchantingClient implements ClientModInitializer {
 	public static @NotNull HudComponentScore SCORE;
 	public static @NotNull OptionBoolean VERTICAL_SCORE;
+	public static @NotNull OptionBoolean HIDE_SCORE;
 
 	@Override
 	public void onInitializeClient() {
@@ -110,12 +112,13 @@ public class BetterWithEnchantingClient implements ClientModInitializer {
 	static final Side[] SIDES = new Side[]{Side.WEST, Side.NORTH, Side.SOUTH, Side.EAST};
 
 	public static void initBlockModels(BlockModelDispatcher dispatcher) {
-		dispatcher.addDispatch(new BlockModelStandard<>(EnchantmentBlocks.ENCHANTMENT_TABLE)
-			.setTex(BLOCK_DIR + "enchanter/top", Side.TOP)
-			.setTex(BLOCK_DIR + "enchanter/bottom", Side.BOTTOM)
-			.setTex(BLOCK_DIR + "enchanter/side", SIDES)
-		);
+//		dispatcher.addDispatch(new BlockModelStandard<>(EnchantmentBlocks.ENCHANTMENT_TABLE)
+//			.setTex(BLOCK_DIR + "enchanter/top", Side.TOP)
+//			.setTex(BLOCK_DIR + "enchanter/bottom", Side.BOTTOM)
+//			.setTex(BLOCK_DIR + "enchanter/side", SIDES)
+//		);
 
+		dispatcher.addDispatch(new BlockModelGeneric<>(EnchantmentBlocks.ENCHANTMENT_TABLE, loadDataModel(MOD_ID + ":block/enchantment_table")));
 
 
 		// reassign models
@@ -139,13 +142,16 @@ public class BetterWithEnchantingClient implements ClientModInitializer {
 		SCORE = HudComponents
 			.register(new HudComponentScore(
 				"score_bar",
-				new LayoutAbsolute(0.5F, 0.0F, ComponentAnchor.TOP_CENTER, 0, 0)
-			).addAttachedOption(BetterWithEnchantingClient.VERTICAL_SCORE, () -> new BooleanOptionComponent(BetterWithEnchantingClient.VERTICAL_SCORE)));
+				new LayoutAbsolute(0.5F, 0.0F, ComponentAnchor.TOP_CENTER, 0, 0))
+				.addAttachedOption(BetterWithEnchantingClient.VERTICAL_SCORE, () -> new BooleanOptionComponent(BetterWithEnchantingClient.VERTICAL_SCORE))
+				.addAttachedOption(BetterWithEnchantingClient.HIDE_SCORE, () -> new BooleanOptionComponent(BetterWithEnchantingClient.HIDE_SCORE))
+			);
 
 	}
 
 	public static void gameSettingsRegistry() {
 		VERTICAL_SCORE = register(new OptionBoolean("verticalScore", false));
+		HIDE_SCORE = register(new OptionBoolean("hideScore", false));
 	}
 }
 

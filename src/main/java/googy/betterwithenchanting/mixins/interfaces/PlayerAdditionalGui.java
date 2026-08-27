@@ -5,6 +5,6 @@ import net.minecraft.core.item.ItemStack;
 
 public interface PlayerAdditionalGui
 {
-	void displayGuiEnchantmentTable(TileEntityEnchantmentTable enchantmentTable);
-	void displayGuiEnchantmentBook(ItemStack book);
+	void betterWithEnchanting$displayGuiEnchantmentTable(TileEntityEnchantmentTable enchantmentTable);
+	void betterWithEnchanting$displayGuiEnchantmentBook(ItemStack book);
 }

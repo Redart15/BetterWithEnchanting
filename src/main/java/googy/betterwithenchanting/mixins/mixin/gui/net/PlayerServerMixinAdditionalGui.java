@@ -32,7 +32,7 @@ public abstract class PlayerServerMixinAdditionalGui extends Player implements P
 	}
 
 	@Override
-	public void displayGuiEnchantmentTable(TileEntityEnchantmentTable enchantmentTable) {
+	public void betterWithEnchanting$displayGuiEnchantmentTable(TileEntityEnchantmentTable enchantmentTable) {
 		this.getNextWindowId();
 		NetworkHandler.sendToPlayer(thisAs, new OpenGuiTableMessage(this.currentWindowId, enchantmentTable.tilePos));
 		this.containerMenu.onCraftGuiClosed(this);
@@ -42,7 +42,7 @@ public abstract class PlayerServerMixinAdditionalGui extends Player implements P
 	}
 
 	@Override
-	public void displayGuiEnchantmentBook(ItemStack book) {
+	public void betterWithEnchanting$displayGuiEnchantmentBook(ItemStack book) {
 		this.getNextWindowId();
 		NetworkHandler.sendToPlayer(thisAs, new OpenGuiBookMessage(this.currentWindowId, book));
 		this.containerMenu.onCraftGuiClosed(this);

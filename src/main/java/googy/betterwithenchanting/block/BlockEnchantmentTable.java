@@ -36,7 +36,7 @@ public class BlockEnchantmentTable extends BlockLogicRotatable {
 		if (!world.isClientSide) {
 			TileEntity tile = world.getTileEntity(tilePos);
 			if(tile instanceof TileEntityEnchantmentTable table){
-				((PlayerAdditionalGui) player).displayGuiEnchantmentTable(table);
+				((PlayerAdditionalGui) player).betterWithEnchanting$displayGuiEnchantmentTable(table);
 			}
 		}
 		return true;

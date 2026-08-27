@@ -160,6 +160,7 @@ achievement.lost.knowlegde.desc=Enchant an item using an enchantment book.
 
 #Hud
 options.verticalScore=Vertical
+options.hideScore=Hide
 
 # ------------------------------------- currently not ingame -----------------------------------------------------------
 # enchantment that sounded cool but werent all that great

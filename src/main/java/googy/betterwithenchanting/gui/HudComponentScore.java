@@ -21,7 +21,10 @@ public class HudComponentScore extends HudComponentMovable {
 
 	@Override
 	public boolean isVisible() {
-		return GameSettings.IMMERSIVE_MODE.drawHotbar() || mc.thePlayer.getGamemode().hasInvulnerablePlayer();
+		return mc.thePlayer != null
+			&& !BetterWithEnchantingClient.HIDE_SCORE.value
+			&& GameSettings.IMMERSIVE_MODE.drawHotbar()
+			&& !mc.thePlayer.getGamemode().hasInvulnerablePlayer();
 	}
 
 	@Override

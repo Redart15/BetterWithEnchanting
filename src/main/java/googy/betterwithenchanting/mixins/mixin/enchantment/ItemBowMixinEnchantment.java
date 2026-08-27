@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import googy.betterwithenchanting.mixins.EnchantedArrow;
 import net.minecraft.core.entity.Entity;
+import net.minecraft.core.entity.EntityDispatcher;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.entity.projectile.Projectile;
 import net.minecraft.core.item.ItemBow;
@@ -21,7 +22,7 @@ public class ItemBowMixinEnchantment {
 		World instance, Entity entity, Operation<Boolean> original,
 		ItemStack itemStack, @Local(argsOnly = true) Player player
 	) {
-		EnchantedArrow arrows = new EnchantedArrow(player, itemStack);
+		EnchantedArrow arrows = new EnchantedArrow(player, itemStack, entity);
 		arrows.setOnFire((Projectile) entity);
 		arrows.setMultiHit((Projectile) entity);
 		arrows.setIncreasedSpeed((Projectile) entity);

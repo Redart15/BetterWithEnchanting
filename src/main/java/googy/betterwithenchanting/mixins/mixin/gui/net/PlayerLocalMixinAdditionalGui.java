@@ -17,12 +17,12 @@ public abstract class PlayerLocalMixinAdditionalGui implements PlayerAdditionalG
 	protected Minecraft mc;
 
 	@Override
-	public void displayGuiEnchantmentTable(TileEntityEnchantmentTable enchantmentTable) {
+	public void betterWithEnchanting$displayGuiEnchantmentTable(TileEntityEnchantmentTable enchantmentTable) {
 		mc.displayScreen(new ScreenEnchantmentTable(this.mc.thePlayer.inventory, enchantmentTable));
 	}
 
 	@Override
-	public void displayGuiEnchantmentBook(ItemStack selfStack){
+	public void betterWithEnchanting$displayGuiEnchantmentBook(ItemStack selfStack){
 		mc.displayScreen(new ScreenEnchantmentBook(this.mc.thePlayer.inventory, selfStack));
 	}
 }

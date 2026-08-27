@@ -514,9 +514,7 @@ public class MixinsHelperLogic {
 		}
     }
 
-	public static void applyScoreAchievement(Mob mob) {
-		if(mob instanceof Player player && player.world.isClientSide){
-			player.triggerAchievement(EnchantmentAchievements.SCORE);
-		}
+	public static void applyScoreAchievement(Mob mob, ItemStack itemStack) {
+
 	}
 }

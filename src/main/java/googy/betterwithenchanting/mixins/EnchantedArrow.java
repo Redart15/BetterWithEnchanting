@@ -4,33 +4,45 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import googy.betterwithenchanting.api.EnchantmentContainer;
 import googy.betterwithenchanting.api.Enchantments;
 import googy.betterwithenchanting.mixins.interfaces.EnchantmentArrow;
+import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.player.Player;
-import net.minecraft.core.entity.projectile.Projectile;
-import net.minecraft.core.entity.projectile.ProjectileArrowPurple;
+import net.minecraft.core.entity.projectile.*;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.world.World;
 
 public class EnchantedArrow {
-	Player player;
-	int flameLevel = 0;
-	int multiShot = 0;
-	boolean multiHit = false;
-	int buckShot = 0;
-	int power = 0;
+	private final Player player;
+	private final Class<? extends Entity> projectileClass;
+	private final int flameLevel;
+	private final int multiShot;
+	private final boolean multiHit;
+	private final int buckShot;
+	private final int power;
 
-	public EnchantedArrow(Player player, ItemStack itemStack) {
+	public EnchantedArrow(Player player, ItemStack itemStack, Entity entity) {
 		this.player = player;
 		this.flameLevel = EnchantmentContainer.getLevel(itemStack, Enchantments.FLAME);
 		this.multiShot = EnchantmentContainer.getLevel(itemStack, Enchantments.MULTI_SHOT);
 		this.buckShot = EnchantmentContainer.getLevel(itemStack, Enchantments.BUCK_SHOT);
 		this.multiHit = this.multiShot > 0 || this.buckShot > 0;
 		this.power = EnchantmentContainer.getLevel(itemStack, Enchantments.POWER);
+		this.projectileClass = entity instanceof ProjectileArrow ? entity.getClass() : ProjectileArrowPurple.class;
+	}
+
+	private ProjectileArrow createArrow(World world) {
+		if (projectileClass.equals(ProjectileArrowGolden.class)) {
+			return new ProjectileArrowGolden(world, this.player, false);
+		}
+		if (projectileClass.equals(ProjectileArrowFlaming.class)) {
+			return new ProjectileArrowFlaming(world, this.player, false);
+		}
+		return new ProjectileArrowPurple(world, this.player, false);
 	}
 
 	public boolean doMultiShot(World instance, Operation<Boolean> original) {
 		boolean returnValues = true;
 		for (int i = 1; i <= this.multiShot; i++) {
-			Projectile projectile = new ProjectileArrowPurple(instance, this.player, false);
+			Projectile projectile = this.createArrow(instance);
 			this.setOnFire(projectile);
 			this.setMultiHit(projectile);
 			this.setIncreasedSpeed(projectile);
@@ -60,7 +72,7 @@ public class EnchantedArrow {
 		double randomness = 5.0f;
 		double speed = 2.5;
 		for (int i = 0; i < (int) Math.ceil(this.buckShot * 1.5f); i++) {
-			Projectile projectile = new ProjectileArrowPurple(instance, this.player, false);
+			Projectile projectile = this.createArrow(instance);
 			this.setOnFire(projectile);
 			this.setMultiHit(projectile);
 			this.setIncreasedSpeed(projectile);
@@ -76,7 +88,7 @@ public class EnchantedArrow {
 
 	public void setOnFire(Projectile projectile) {
 		if (flameLevel > 0 && projectile instanceof EnchantmentArrow iEnchantment) {
-			iEnchantment.enchanting$writeFlame((byte)this.flameLevel);
+			iEnchantment.enchanting$writeFlame((byte) this.flameLevel);
 			projectile.fireHurt();
 		}
 	}

@@ -20,6 +20,7 @@
     "accessor.SlotResultAccessor",
     "achievement.SlotResultMixinEnchanter",
     "bookshelf.BlockLogicBookshelfMixin",
+    "bookshelf.BlockLogicMixinExtend",
     "bookshelf.WorldFeatureLabyrinthMixinLibraryAdditions",
     "enchantment.BlockLogicMixinAlterationAndAdditions",
     "enchantment.ConsumedFoodMixinEnchantments",
