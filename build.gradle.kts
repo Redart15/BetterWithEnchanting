@@ -25,6 +25,11 @@ repositories {
     maven("https://maven.thesignalumproject.net/infrastructure") { name = "SignalumMavenInfrastructure" }
     maven("https://maven.thesignalumproject.net/releases") { name = "SignalumMavenReleases" }
     maven("https://maven.thesignalumproject.net/nightly") { name = "SignalumMavenNightly" }
+    maven("https://api.modrinth.com/maven") { name = "Modrinth"
+        content {
+            includeGroup("maven.modrinth")
+        }
+    }
     ivy("https://piston-data.mojang.com") {
         patternLayout { artifact("v1/[organisation]/[revision]/[module].jar") }
         metadataSources { artifact() }
@@ -38,6 +43,8 @@ dependencies {
 	// If you do not need Halplibe you can comment out or delete this line.
 	implementation(libs.halplibe)
 	implementation(libs.modMenu)
+//	compileOnly(libs.tooltip)
+//    https://modrinth.com/mod/bta!-additional-tooltips/version/1.0.0
 
     // Only required at compilation
     // provides documentation, can be removed if that isn't needed
